@@ -24,16 +24,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable}`}
         style={{
-          height: "10vh",
+          height: "100vh",
+          // height: "100%",
           width: "100%",
-          minHeight: "100vh",
+          // minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
+          backgroundColor: "#E8E8E8",
         }}
       >
-        <Box h="100%">
-          <ChakraProvider theme={myTheme}>{children}</ChakraProvider>
-        </Box>
+        <ChakraProvider theme={myTheme}>{children}</ChakraProvider>
       </body>
     </html>
   );

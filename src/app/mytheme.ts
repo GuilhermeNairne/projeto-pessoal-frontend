@@ -12,7 +12,8 @@ const myTheme = extendTheme({
     verde700: "#339c00",
     cinza: "gray",
     cinza_hover: "#E8E8E8",
-    cinza_200: "#F0F0F0",
+    cinza_200: "#f5f5f513",
+    cinza_400: "#e5e5e5ff",
     cinza_600: "#ccc",
     cinza_700: "#C0C0C0",
     cinza_900: "#9D9D9D",
@@ -21,6 +22,7 @@ const myTheme = extendTheme({
     preto: "black",
     menu_principal: "#000432",
     menu_secundario: "#000647",
+    menu_selecionado: "#0095AF",
   },
   breakpoints: {
     celular: "320px",
