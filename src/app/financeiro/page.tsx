@@ -2,14 +2,16 @@
 
 import { Menu } from "@/componnents/menu";
 import { PainelContas } from "@/componnents/painel-contas";
-import { Box, Flex, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Icon, Stack, Text } from "@chakra-ui/react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { GrTransaction } from "react-icons/gr";
 import {
   FaChevronDown,
   FaArrowAltCircleUp,
   FaArrowAltCircleDown,
+  FaPencilAlt,
 } from "react-icons/fa";
+import { VictoryPie, VictoryTheme } from "victory";
 
 const ocorrenciasPrevidencia = [
   {
@@ -28,15 +30,44 @@ const ocorrenciasPrevidencia = [
   },
 ];
 
+const sampleData = [
+  { x: "Aluguel", y: 1200, color: "#d50c20" },
+  { x: "Mercado", y: 800, color: "#339c00" },
+  { x: "Transporte", y: 250, color: "#ffc107" },
+  { x: "Lazer", y: 300, color: "#007bff" },
+  { x: "Outros", y: 150, color: "#9c27b0" },
+];
+
+const total = sampleData.reduce((acc, item) => acc + item.y, 0);
+
 export default function Financeiro() {
   return (
-    <Flex w={"100%"} h={"100%"} p={"20px"} flexDir={"row"} gap={10}>
+    <Flex
+      w={"100%"}
+      h={"100%"}
+      p={"20px"}
+      flexDir={"row"}
+      gap={10}
+      overflow="hidden"
+    >
       <Menu />
 
-      <Flex flexDir={"column"}>
+      <Flex
+        flexDir={"column"}
+        w={"full"}
+        mr={"18px"}
+        overflow={"auto"}
+        css={{
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+          "-ms-overflow-style": "none",
+          "scrollbar-width": "none",
+        }}
+      >
         <HStack justifyContent={"flex-end"} mt={"10px"} mr={"10px"}>
-          <Icon as={IoIosAddCircleOutline} boxSize={"8"} />
           <Text>Novo painel</Text>
+          <Icon as={IoIosAddCircleOutline} boxSize={"8"} />
         </HStack>
 
         <PainelContas />
@@ -51,12 +82,12 @@ export default function Financeiro() {
           borderRadius={"8px"}
         >
           <HStack display={"flex"} justifyContent={"space-between"}>
-            <Text fontSize={"2xl"} fontWeight={"bold"}>
+            <Text fontSize={"3xl"} fontWeight={"bold"}>
               Previdência
             </Text>
             <Box display={"flex"} flexDir={"row"} alignItems={"center"} gap={3}>
+              <Text fontSize={"lg"}>Registrar movimento</Text>
               <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
-              <Text>Fazer movimentação</Text>
             </Box>
           </HStack>
 
@@ -64,11 +95,13 @@ export default function Financeiro() {
             display={"flex"}
             justifyContent={"space-between"}
             alignItems={"center"}
-            mt={"50px"}
+            mt={"35px"}
           >
-            <Text fontSize={"lg"}>Entradas e saídas</Text>
+            <Text fontSize={"lg"} fontWeight={"bold"}>
+              Entradas e saídas
+            </Text>
             <Box display={"flex"} flexDir={"row"} alignItems={"center"} gap={3}>
-              <Text>Filtrar por</Text>
+              <Text fontSize={"lg"}>Filtrar por</Text>
               <Icon as={FaChevronDown} boxSize={"5"} />
             </Box>
           </HStack>
@@ -133,6 +166,59 @@ export default function Financeiro() {
               </Box>
             ))}
           </Stack>
+
+          <HStack w={"100%"} display={"flex"} mt={"80px"}>
+            <Box display={"flex"} flexDir={"column"} w={"100%"}>
+              <HStack display={"flex"} justifyContent={"space-between"}>
+                <Text fontSize={"lg"} fontWeight={"bold"}>
+                  Gráfico por tipo de gasto
+                </Text>
+                <HStack gap={3} display={"flex"} alignItems={"center"}>
+                  <Text fontSize={"lg"}>Editar categorias</Text>
+                  <Icon
+                    color={"menu_principal"}
+                    as={FaPencilAlt}
+                    boxSize={"5"}
+                  />
+                </HStack>
+              </HStack>
+              <Box w={"50%"} display={"flex"} flexDir={"row"}>
+                <VictoryPie
+                  startAngle={90}
+                  labels={({ datum }) =>
+                    `${((datum.y / total) * 100).toFixed(1)}%`
+                  }
+                  endAngle={450}
+                  data={sampleData}
+                  theme={VictoryTheme.clean}
+                  style={{
+                    labels: {
+                      fontWeight: "bold",
+                    },
+                    data: {
+                      fill: ({ datum }) => datum.color,
+                    },
+                  }}
+                />
+
+                <Stack mt={"80px"}>
+                  {sampleData.map((item) => (
+                    <HStack>
+                      <Box
+                        borderRadius={"5px"}
+                        w={"20px"}
+                        h={"20px"}
+                        bg={item.color}
+                      />
+                      <Text fontSize={"lg"} fontWeight={"bold"}>
+                        {item.x}
+                      </Text>
+                    </HStack>
+                  ))}
+                </Stack>
+              </Box>
+            </Box>
+          </HStack>
         </Box>
       </Flex>
     </Flex>

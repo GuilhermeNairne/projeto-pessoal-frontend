@@ -14,7 +14,7 @@ const contas = [
 
 export function PainelContas() {
   return (
-    <HStack mt={"50px"}>
+    <HStack mt={"20px"}>
       <Box gap={10} display={"flex"}>
         {contas.map((conta) => (
           <Box
@@ -29,9 +29,11 @@ export function PainelContas() {
           >
             <HStack gap={3}>
               <Icon as={PiMoneyWavyFill} boxSize={"8"} color={"green"} />
-              <Text fontSize={"2xl"}>{conta.nome}</Text>
+              <Text fontWeight={"bold"} fontSize={"2xl"}>
+                {conta.nome}
+              </Text>
             </HStack>
-            <Text mt={"20px"} fontWeight={"bold"} fontSize={"2xl"}>
+            <Text mt={"20px"} fontSize={"2xl"}>
               R$ {conta.valor}
             </Text>
           </Box>
@@ -48,16 +50,11 @@ export function PainelContas() {
         >
           <HStack gap={3}>
             <Icon as={PiPiggyBankFill} boxSize={"8"} color={"white"} />
-            <Text fontSize={"2xl"} color={"white"}>
+            <Text fontWeight={"bold"} fontSize={"2xl"} color={"white"}>
               Total
             </Text>
           </HStack>
-          <Text
-            mt={"20px"}
-            fontWeight={"bold"}
-            fontSize={"2xl"}
-            color={"white"}
-          >
+          <Text mt={"20px"} fontSize={"2xl"} color={"white"}>
             R$ 60.785,12
           </Text>
         </Box>
