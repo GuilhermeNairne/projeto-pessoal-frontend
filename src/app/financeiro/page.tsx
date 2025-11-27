@@ -1,8 +1,17 @@
 "use client";
 
 import { Menu } from "@/componnents/menu";
-import { PainelContas } from "@/componnents/painel-contas";
-import { Box, Button, Flex, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import { PainelContas } from "@/componnents/financeiro/painel-contas";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { GrTransaction } from "react-icons/gr";
 import {
@@ -12,6 +21,10 @@ import {
   FaPencilAlt,
 } from "react-icons/fa";
 import { VictoryPie, VictoryTheme } from "victory";
+import { ModalNovoPainel } from "@/componnents/financeiro/modal-novo-painel";
+import { useState } from "react";
+import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registrar-movimento";
+import { ModalCategorias } from "@/componnents/financeiro/modal-categorias";
 
 const ocorrenciasPrevidencia = [
   {
@@ -38,9 +51,11 @@ const sampleData = [
   { x: "Outros", y: 150, color: "#9c27b0" },
 ];
 
-const total = sampleData.reduce((acc, item) => acc + item.y, 0);
-
 export default function Financeiro() {
+  const [openModalNovoPainel, setOpenNovoPainel] = useState(false);
+  const [openModalMovimento, setOpenModalMovimento] = useState(false);
+  const [openModalCategorias, setOpenModalCategorias] = useState(false);
+
   return (
     <Flex
       w={"100%"}
@@ -51,6 +66,23 @@ export default function Financeiro() {
       overflow="hidden"
     >
       <Menu />
+
+      <ModalNovoPainel
+        isOpen={openModalNovoPainel}
+        onClose={() => setOpenNovoPainel(false)}
+      />
+
+      <ModalRegistrarMovimento
+        isOpen={openModalMovimento}
+        onClose={() => setOpenModalMovimento(false)}
+        painel="Previdência"
+      />
+
+      <ModalCategorias
+        isOpen={openModalCategorias}
+        onClose={() => setOpenModalCategorias(false)}
+        categorias={sampleData}
+      />
 
       <Flex
         flexDir={"column"}
@@ -66,8 +98,16 @@ export default function Financeiro() {
         }}
       >
         <HStack justifyContent={"flex-end"} mt={"10px"} mr={"10px"}>
-          <Text>Novo painel</Text>
-          <Icon as={IoIosAddCircleOutline} boxSize={"8"} />
+          <Link
+            display={"flex"}
+            flexDir={"row"}
+            alignItems={"center"}
+            gap={2}
+            onClick={() => setOpenNovoPainel(true)}
+          >
+            <Text>Novo painel</Text>
+            <Icon as={IoIosAddCircleOutline} boxSize={"8"} />
+          </Link>
         </HStack>
 
         <PainelContas />
@@ -85,7 +125,13 @@ export default function Financeiro() {
             <Text fontSize={"3xl"} fontWeight={"bold"}>
               Previdência
             </Text>
-            <Box display={"flex"} flexDir={"row"} alignItems={"center"} gap={3}>
+            <Box
+              onClick={() => setOpenModalMovimento(true)}
+              display={"flex"}
+              flexDir={"row"}
+              alignItems={"center"}
+              gap={3}
+            >
               <Text fontSize={"lg"}>Registrar movimento</Text>
               <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
             </Box>
@@ -173,7 +219,12 @@ export default function Financeiro() {
                 <Text fontSize={"lg"} fontWeight={"bold"}>
                   Gráfico por tipo de gasto
                 </Text>
-                <HStack gap={3} display={"flex"} alignItems={"center"}>
+                <HStack
+                  gap={3}
+                  display={"flex"}
+                  alignItems={"center"}
+                  onClick={() => setOpenModalCategorias(true)}
+                >
                   <Text fontSize={"lg"}>Editar categorias</Text>
                   <Icon
                     color={"menu_principal"}
@@ -185,9 +236,7 @@ export default function Financeiro() {
               <Box w={"50%"} display={"flex"} flexDir={"row"}>
                 <VictoryPie
                   startAngle={90}
-                  labels={({ datum }) =>
-                    `${((datum.y / total) * 100).toFixed(1)}%`
-                  }
+                  labels={({ datum }) => `R$ ${datum.y},00`}
                   endAngle={450}
                   data={sampleData}
                   theme={VictoryTheme.clean}

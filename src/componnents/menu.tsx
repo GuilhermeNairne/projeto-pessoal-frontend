@@ -54,7 +54,7 @@ export function Menu() {
             borderRadius={"100%"}
           />
           <Text color={"white"} fontWeight={"bold"} fontSize={"18px"}>
-            Guilherme
+            GUILHERME
           </Text>
         </Box>
 
