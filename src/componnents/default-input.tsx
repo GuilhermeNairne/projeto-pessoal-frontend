@@ -1,14 +1,26 @@
 import { HStack, Input, Stack, Text } from "@chakra-ui/react";
 
 type Props = {
-  position: "cima" | "baixo";
+  position: "cima" | "lado";
   placeholder: string;
   title: string;
   w?: string;
   mt?: string;
+  value?: string;
+  isNumeric?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export function DefaultInput({ placeholder, position, title, w, mt }: Props) {
+export function DefaultInput({
+  placeholder,
+  position,
+  title,
+  w,
+  mt,
+  value,
+  isNumeric,
+  onChange,
+}: Props) {
   return (
     <>
       {position === "cima" ? (
@@ -19,6 +31,9 @@ export function DefaultInput({ placeholder, position, title, w, mt }: Props) {
             borderRadius={"10px"}
             placeholder={placeholder}
             w={w ?? "100%"}
+            onChange={onChange}
+            value={value}
+            type={isNumeric ? "number" : "string"}
           />
         </Stack>
       ) : (
@@ -29,6 +44,9 @@ export function DefaultInput({ placeholder, position, title, w, mt }: Props) {
             borderRadius={"10px"}
             placeholder={placeholder}
             w={w ?? "100%"}
+            onChange={onChange}
+            value={value}
+            type={isNumeric ? "number" : "string"}
           />
         </HStack>
       )}

@@ -6,14 +6,23 @@ type Props = {
   bg?: string;
   title: string;
   titleColor?: string;
+  onClick?: () => void;
 };
 
-export function DefaultButton({ w, icon, title, bg, titleColor }: Props) {
+export function DefaultButton({
+  w,
+  icon,
+  title,
+  bg,
+  titleColor,
+  onClick,
+}: Props) {
   return (
     <Button
       h={"40px"}
       w={w ?? "250px"}
       borderRadius={"10px"}
+      onClick={onClick}
       bg={bg ?? "menu_principal"}
       _hover={{
         bg: "menu_principal",

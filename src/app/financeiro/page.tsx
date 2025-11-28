@@ -1,30 +1,23 @@
 "use client";
 
-import { Menu } from "@/componnents/menu";
+import { Filtros } from "@/componnents/financeiro/filtros";
+import { ModalCategorias } from "@/componnents/financeiro/modal-categorias";
+import { ModalNovoPainel } from "@/componnents/financeiro/modal-novo-painel";
+import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registrar-movimento";
 import { PainelContas } from "@/componnents/financeiro/painel-contas";
+import { Menu } from "@/componnents/menu";
+import { Box, Flex, HStack, Icon, Link, Stack, Text } from "@chakra-ui/react";
+import { useState } from "react";
 import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Icon,
-  Link,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { IoIosAddCircleOutline } from "react-icons/io";
-import { GrTransaction } from "react-icons/gr";
-import {
-  FaChevronDown,
-  FaArrowAltCircleUp,
   FaArrowAltCircleDown,
+  FaArrowAltCircleUp,
+  FaChevronDown,
+  FaChevronUp,
   FaPencilAlt,
 } from "react-icons/fa";
+import { GrTransaction } from "react-icons/gr";
+import { IoIosAddCircleOutline } from "react-icons/io";
 import { VictoryPie, VictoryTheme } from "victory";
-import { ModalNovoPainel } from "@/componnents/financeiro/modal-novo-painel";
-import { useState } from "react";
-import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registrar-movimento";
-import { ModalCategorias } from "@/componnents/financeiro/modal-categorias";
 
 const ocorrenciasPrevidencia = [
   {
@@ -52,9 +45,15 @@ const sampleData = [
 ];
 
 export default function Financeiro() {
+  const [paineis, setPaineis] = useState<{ nome: string; valor: string }[]>([]);
+  const [openFiltros, setOpenFiltros] = useState(false);
   const [openModalNovoPainel, setOpenNovoPainel] = useState(false);
   const [openModalMovimento, setOpenModalMovimento] = useState(false);
   const [openModalCategorias, setOpenModalCategorias] = useState(false);
+
+  function criaPainel(values: { nome: string; valor: string }) {
+    setPaineis((prev) => [...prev, values]);
+  }
 
   return (
     <Flex
@@ -70,6 +69,7 @@ export default function Financeiro() {
       <ModalNovoPainel
         isOpen={openModalNovoPainel}
         onClose={() => setOpenNovoPainel(false)}
+        handleSave={(values) => criaPainel(values)}
       />
 
       <ModalRegistrarMovimento
@@ -110,7 +110,7 @@ export default function Financeiro() {
           </Link>
         </HStack>
 
-        <PainelContas />
+        <PainelContas paineis={paineis} />
 
         <Box
           display={"flex"}
@@ -146,11 +146,24 @@ export default function Financeiro() {
             <Text fontSize={"lg"} fontWeight={"bold"}>
               Entradas e saídas
             </Text>
-            <Box display={"flex"} flexDir={"row"} alignItems={"center"} gap={3}>
+            <Box
+              onClick={() =>
+                openFiltros ? setOpenFiltros(false) : setOpenFiltros(true)
+              }
+              display={"flex"}
+              flexDir={"row"}
+              alignItems={"center"}
+              gap={3}
+            >
               <Text fontSize={"lg"}>Filtrar por</Text>
-              <Icon as={FaChevronDown} boxSize={"5"} />
+              <Icon
+                as={openFiltros ? FaChevronUp : FaChevronDown}
+                boxSize={"5"}
+              />
             </Box>
           </HStack>
+
+          <Filtros open={openFiltros} />
 
           <Stack mt={"10px"}>
             <Box

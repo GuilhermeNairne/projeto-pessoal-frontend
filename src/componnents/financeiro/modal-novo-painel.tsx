@@ -1,3 +1,4 @@
+import { useFormik } from "formik";
 import { FaSave } from "react-icons/fa";
 import { DefaultInput } from "../default-input";
 import { DefaultButton } from "../default-button";
@@ -15,9 +16,24 @@ import {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  handleSave: (values: any) => void;
 };
 
-export function ModalNovoPainel({ isOpen, onClose }: Props) {
+export function ModalNovoPainel({ isOpen, onClose, handleSave }: Props) {
+  const { values, handleChange, resetForm } = useFormik({
+    initialValues: {
+      nome: "",
+      valor: "",
+    },
+    onSubmit: (values) => {},
+  });
+
+  function handleClick() {
+    handleSave(values);
+    onClose();
+    return resetForm();
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -33,17 +49,27 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
             placeholder="Informe o nome do painel"
             position="cima"
             title="Nome"
+            value={values.nome}
+            onChange={handleChange("nome")}
           />
           <DefaultInput
             placeholder="Informe o valor da conta"
             position="cima"
             title="Valor"
+            value={values.valor}
             mt="20px"
+            isNumeric={true}
+            onChange={handleChange("valor")}
           />
         </ModalBody>
 
         <ModalFooter display={"flex"} justifyContent={"center"}>
-          <DefaultButton icon={FaSave} title="Salvar" w="150px" />
+          <DefaultButton
+            icon={FaSave}
+            title="Salvar"
+            w="150px"
+            onClick={handleClick}
+          />
         </ModalFooter>
       </ModalContent>
     </Modal>
