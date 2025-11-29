@@ -6,6 +6,7 @@ import { ModalNovoPainel } from "@/componnents/financeiro/modal-novo-painel";
 import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registrar-movimento";
 import { PainelContas } from "@/componnents/financeiro/painel-contas";
 import { Menu } from "@/componnents/menu";
+import { PaineisType } from "@/types/financeiro-types";
 import { Box, Flex, HStack, Icon, Link, Stack, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import {
@@ -44,16 +45,20 @@ const sampleData = [
   { x: "Outros", y: 150, color: "#9c27b0" },
 ];
 
+
+
 export default function Financeiro() {
-  const [paineis, setPaineis] = useState<{ nome: string; valor: string }[]>([]);
+  const [paineis, setPaineis] = useState<PaineisType>([]);
   const [openFiltros, setOpenFiltros] = useState(false);
   const [openModalNovoPainel, setOpenNovoPainel] = useState(false);
   const [openModalMovimento, setOpenModalMovimento] = useState(false);
   const [openModalCategorias, setOpenModalCategorias] = useState(false);
 
-  function criaPainel(values: { nome: string; valor: string }) {
-    setPaineis((prev) => [...prev, values]);
-  }
+function criaPainel(values: { nome: string; valor: string }) {
+    setPaineis((prev) => [...prev, { painel: values }]);
+}  
+
+function cadastrasMovimentacoes() {}
 
   return (
     <Flex
@@ -76,6 +81,7 @@ export default function Financeiro() {
         isOpen={openModalMovimento}
         onClose={() => setOpenModalMovimento(false)}
         painel="Previdência"
+        handleSave={(values) => cadastrasMovimentacoes()}
       />
 
       <ModalCategorias
@@ -109,6 +115,7 @@ export default function Financeiro() {
             <Icon as={IoIosAddCircleOutline} boxSize={"8"} />
           </Link>
         </HStack>
+
 
         <PainelContas paineis={paineis} />
 

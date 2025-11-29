@@ -14,14 +14,38 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useFormik } from "formik";
 
 type Props = {
   painel: string;
   isOpen: boolean;
   onClose: () => void;
+  handleSave: (values: any) => void;
+
 };
 
-export function ModalRegistrarMovimento({ isOpen, onClose, painel }: Props) {
+
+
+
+export function ModalRegistrarMovimento({ isOpen, onClose, painel, handleSave }: Props) {
+
+const { values, handleChange, resetForm } = useFormik({
+    initialValues: {
+      nome: "",
+      categoria: "",
+      valor: "",
+      tipo: "",
+      data: ""
+    },
+    onSubmit: (values) => {},
+  });
+
+  function handleClick() {
+    handleSave(values),
+    onClose(),
+    resetForm()
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -37,6 +61,7 @@ export function ModalRegistrarMovimento({ isOpen, onClose, painel }: Props) {
             title="Nome da movimentação"
             position="cima"
             placeholder="Informe o nome da movimentação"
+            value={values.nome}
           />
 
           <DefaultInput
@@ -44,12 +69,13 @@ export function ModalRegistrarMovimento({ isOpen, onClose, painel }: Props) {
             placeholder="Selecione a categoria da movimentação"
             position="cima"
             mt="20px"
+            value={values.categoria}
           />
 
           <Stack mt="20px">
             <Text fontWeight={"bold"}>Tipo da movimentação</Text>
             <RadioGroup defaultValue="2">
-              <Radio color="red" value="1" mr={"20px"}>
+              <Radio  color="red" value="1" mr={"20px"}>
                 Entrada
               </Radio>
               <Radio color="red" value="2">
@@ -63,6 +89,7 @@ export function ModalRegistrarMovimento({ isOpen, onClose, painel }: Props) {
             placeholder="Informa o valor da movimentação"
             position="cima"
             mt="20px"
+            value={values.valor}
           />
 
           <DefaultInput
@@ -70,6 +97,7 @@ export function ModalRegistrarMovimento({ isOpen, onClose, painel }: Props) {
             placeholder="Informe a data movimentação"
             position="cima"
             mt="20px"
+            value={values.data}
           />
         </ModalBody>
 
