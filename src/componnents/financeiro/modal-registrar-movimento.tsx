@@ -11,6 +11,7 @@ import {
   ModalOverlay,
   Radio,
   RadioGroup,
+  Select,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -19,31 +20,37 @@ import { useFormik } from "formik";
 type Props = {
   painel: string;
   isOpen: boolean;
+  id: string;
   onClose: () => void;
   handleSave: (values: any) => void;
-
 };
 
+const categorias = ["Mercado", "Presente", "Alimentação"];
 
-
-
-export function ModalRegistrarMovimento({ isOpen, onClose, painel, handleSave }: Props) {
-
-const { values, handleChange, resetForm } = useFormik({
+export function ModalRegistrarMovimento({
+  isOpen,
+  onClose,
+  painel,
+  id,
+  handleSave,
+}: Props) {
+  const { values, handleChange, resetForm } = useFormik({
     initialValues: {
       nome: "",
       categoria: "",
       valor: "",
       tipo: "",
-      data: ""
+      id: id,
+      data: new Date().toLocaleDateString("pt-BR"),
     },
+    enableReinitialize: true,
     onSubmit: (values) => {},
   });
 
   function handleClick() {
-    handleSave(values),
-    onClose(),
-    resetForm()
+    handleSave(values);
+    onClose();
+    resetForm();
   }
 
   return (
@@ -62,23 +69,30 @@ const { values, handleChange, resetForm } = useFormik({
             position="cima"
             placeholder="Informe o nome da movimentação"
             value={values.nome}
+            onChange={handleChange("nome")}
           />
 
-          <DefaultInput
-            title="Categoria"
-            placeholder="Selecione a categoria da movimentação"
-            position="cima"
-            mt="20px"
-            value={values.categoria}
-          />
+          <Stack mt={"20px"}>
+            <Text fontWeight={"bold"}>Tipo</Text>
+            <Select
+              placeholder="Selecione a categoria"
+              borderColor={"gray.400"}
+              borderRadius={"10px"}
+              onChange={handleChange("categoria")}
+            >
+              {categorias.map((categoria) => (
+                <option value={categoria}>{categoria}</option>
+              ))}
+            </Select>
+          </Stack>
 
           <Stack mt="20px">
             <Text fontWeight={"bold"}>Tipo da movimentação</Text>
-            <RadioGroup defaultValue="2">
-              <Radio  color="red" value="1" mr={"20px"}>
+            <RadioGroup defaultValue="2" onChange={handleChange("tipo")}>
+              <Radio color="red" value="entrada" mr={"20px"}>
                 Entrada
               </Radio>
-              <Radio color="red" value="2">
+              <Radio color="red" value="saida">
                 Saída
               </Radio>
             </RadioGroup>
@@ -90,6 +104,7 @@ const { values, handleChange, resetForm } = useFormik({
             position="cima"
             mt="20px"
             value={values.valor}
+            onChange={handleChange("valor")}
           />
 
           <DefaultInput
@@ -98,11 +113,17 @@ const { values, handleChange, resetForm } = useFormik({
             position="cima"
             mt="20px"
             value={values.data}
+            onChange={handleChange("data")}
           />
         </ModalBody>
 
         <ModalFooter display={"flex"} justifyContent={"center"}>
-          <DefaultButton icon={FaSave} title="Salvar" w="150px" />
+          <DefaultButton
+            icon={FaSave}
+            title="Salvar"
+            w="150px"
+            onClick={handleClick}
+          />
         </ModalFooter>
       </ModalContent>
     </Modal>
