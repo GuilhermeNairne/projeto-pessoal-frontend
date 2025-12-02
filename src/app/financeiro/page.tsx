@@ -7,7 +7,16 @@ import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registra
 import { PainelContas } from "@/componnents/financeiro/painel-contas";
 import { Menu } from "@/componnents/menu";
 import { PaineisType } from "@/types/financeiro-types";
-import { Box, Flex, HStack, Icon, Link, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import { GrTransaction } from "react-icons/gr";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -59,26 +68,23 @@ export default function Financeiro() {
     nome: string;
     valor: string;
     data: string;
-    tipo: "entrada" | "saida";
+    tipo: "Entrada" | "Saida";
     categoria: string;
     id: string;
   }) {
     setPaineis((prev) =>
       prev.map((painel) => {
         if (painel.id === values.id) {
-          // transforma "58.529,67" → 58529.67
+          console.log("painel", painel.painel.valor);
+
           const valorMov = Number(
             values.valor.replace(/\./g, "").replace(",", ".")
           );
 
-          // transforma o valor atual do painel
-          const valorAtual = Number(
-            painel.painel.valor.replace(/\./g, "").replace(",", ".")
-          );
+          const valorAtual = Number(painel.painel.valor);
 
-          // calcula baseado no tipo
           const novoValor =
-            values.tipo === "entrada"
+            values.tipo === "Entrada"
               ? valorAtual + valorMov
               : valorAtual - valorMov;
 
@@ -86,7 +92,7 @@ export default function Financeiro() {
             ...painel,
             painel: {
               ...painel.painel,
-              valor: novoValor.toString(), // mantém como string
+              valor: novoValor.toString(),
             },
             ocorrencias: [
               ...(painel.ocorrencias || []),
@@ -158,12 +164,23 @@ export default function Financeiro() {
             gap={2}
             onClick={() => setOpenNovoPainel(true)}
           >
-            <Text>Novo painel</Text>
+            <Text fontSize={"lg"}>Novo painel</Text>
             <Icon as={IoIosAddCircleOutline} boxSize={"8"} />
           </Link>
         </HStack>
 
         <PainelContas paineis={paineis} />
+
+        {paineis.length === 0 ? (
+          <Center mt={"200px"} display={"flex"} flexDir={"column"}>
+            <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
+              Você ainda não criou nenhum painel,
+            </Text>
+            <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
+              Clique no botão acima para adicionar um.
+            </Text>
+          </Center>
+        ) : null}
 
         {paineis.map((painel) => (
           <Box
@@ -264,7 +281,7 @@ export default function Financeiro() {
                         {occ.nome}
                       </Text>
                       <Text w={"15%"} color={"black"}>
-                        {occ.valor}
+                        R$ {occ.valor}
                       </Text>
                       <Text w={"15%"} color={"black"}>
                         {occ.data}
@@ -275,11 +292,11 @@ export default function Financeiro() {
                       <Icon
                         w={"10%"}
                         as={
-                          occ.movimentacao === "entrada"
+                          occ.tipo === "Entrada"
                             ? FaArrowAltCircleUp
                             : FaArrowAltCircleDown
                         }
-                        color={occ.movimentacao === "entrada" ? "green" : "red"}
+                        color={occ.tipo === "Entrada" ? "green" : "red"}
                         boxSize={"5"}
                       />
                     </Box>

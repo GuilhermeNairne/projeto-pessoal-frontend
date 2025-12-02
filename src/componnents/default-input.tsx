@@ -7,7 +7,7 @@ type Props = {
   w?: string;
   mt?: string;
   value?: string;
-  isNumeric?: boolean;
+  type?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -17,8 +17,8 @@ export function DefaultInput({
   title,
   w,
   mt,
+  type,
   value,
-  isNumeric,
   onChange,
 }: Props) {
   return (
@@ -33,7 +33,7 @@ export function DefaultInput({
             w={w ?? "100%"}
             onChange={onChange}
             value={value}
-            type={isNumeric ? "number" : "string"}
+            type={type ?? "string"}
           />
         </Stack>
       ) : (
@@ -46,7 +46,7 @@ export function DefaultInput({
             w={w ?? "100%"}
             onChange={onChange}
             value={value}
-            type={isNumeric ? "number" : "string"}
+            type={type ?? "string"}
           />
         </HStack>
       )}

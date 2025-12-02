@@ -41,7 +41,7 @@ export function ModalRegistrarMovimento({
       valor: "",
       tipo: "",
       id: id,
-      data: new Date().toLocaleDateString("pt-BR"),
+      data: brToIso(new Date().toLocaleDateString("pt-BR")),
     },
     enableReinitialize: true,
     onSubmit: (values) => {},
@@ -51,6 +51,11 @@ export function ModalRegistrarMovimento({
     handleSave(values);
     onClose();
     resetForm();
+  }
+
+  function brToIso(brDate: string) {
+    const [dia, mes, ano] = brDate.split("/");
+    return `${ano}-${mes}-${dia}`;
   }
 
   return (
@@ -89,10 +94,10 @@ export function ModalRegistrarMovimento({
           <Stack mt="20px">
             <Text fontWeight={"bold"}>Tipo da movimentação</Text>
             <RadioGroup defaultValue="2" onChange={handleChange("tipo")}>
-              <Radio color="red" value="entrada" mr={"20px"}>
+              <Radio color="red" value="Entrada" mr={"20px"}>
                 Entrada
               </Radio>
-              <Radio color="red" value="saida">
+              <Radio color="red" value="Saída">
                 Saída
               </Radio>
             </RadioGroup>
@@ -112,6 +117,7 @@ export function ModalRegistrarMovimento({
             placeholder="Informe a data movimentação"
             position="cima"
             mt="20px"
+            type="date"
             value={values.data}
             onChange={handleChange("data")}
           />

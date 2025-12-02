@@ -58,7 +58,7 @@ export function ModalNovoPainel({ isOpen, onClose, handleSave }: Props) {
             title="Valor"
             value={values.valor}
             mt="20px"
-            isNumeric={true}
+            type="number"
             onChange={handleChange("valor")}
           />
         </ModalBody>
