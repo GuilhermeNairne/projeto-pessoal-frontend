@@ -28,7 +28,9 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaPencilAlt,
+  FaTrash,
 } from "react-icons/fa";
+import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 
 const sampleData = [
   { x: "Aluguel", y: 1200, color: "#d50c20" },
@@ -39,14 +41,17 @@ const sampleData = [
 ];
 
 export default function Financeiro() {
-  const [paineis, setPaineis] = useState<PaineisType>([]);
   const [openFiltros, setOpenFiltros] = useState(false);
+  const [paineis, setPaineis] = useState<PaineisType>([]);
   const [openModalNovoPainel, setOpenNovoPainel] = useState(false);
   const [openModalMovimento, setOpenModalMovimento] = useState<{
     aberto: boolean;
     idPainel: string;
   }>({ aberto: false, idPainel: "" });
   const [openModalCategorias, setOpenModalCategorias] = useState(false);
+  const [categorias, setCategorias] = useState<
+    { name: string; color: string }[]
+  >([]);
 
   function criaPainel(values: { nome: string; valor: string }) {
     setPaineis((prev) => {
@@ -140,7 +145,7 @@ export default function Financeiro() {
       <ModalCategorias
         isOpen={openModalCategorias}
         onClose={() => setOpenModalCategorias(false)}
-        categorias={sampleData}
+        categorias={categorias}
       />
 
       <Flex
@@ -264,6 +269,7 @@ export default function Financeiro() {
                   Tipo
                 </Text>
                 <Text w={"10%"} color={"white"}></Text>
+                <Text w={"10%"} color={"white"}></Text>
               </Box>
               {painel.ocorrencias && painel.ocorrencias?.length > 0
                 ? painel.ocorrencias.map((occ, index) => (
@@ -280,25 +286,25 @@ export default function Financeiro() {
                       <Text w={"30%"} color={"black"}>
                         {occ.nome}
                       </Text>
-                      <Text w={"15%"} color={"black"}>
+                      <Text w={"14%"} color={"black"}>
                         R$ {occ.valor}
                       </Text>
-                      <Text w={"15%"} color={"black"}>
-                        {occ.data}
+                      <Text w={"16%"} color={"black"}>
+                        {ConvertDataToBR(occ.data)}
                       </Text>
-                      <Text w={"35%"} color={"black"}>
-                        {occ.tipo}
-                      </Text>
-                      <Icon
-                        w={"10%"}
-                        as={
-                          occ.tipo === "Entrada"
-                            ? FaArrowAltCircleUp
-                            : FaArrowAltCircleDown
-                        }
-                        color={occ.tipo === "Entrada" ? "green" : "red"}
-                        boxSize={"5"}
-                      />
+                      <HStack w={"40%"}>
+                        <Text color={"black"}>{occ.tipo}</Text>
+                        <Icon
+                          as={
+                            occ.tipo === "Entrada"
+                              ? FaArrowAltCircleUp
+                              : FaArrowAltCircleDown
+                          }
+                          color={occ.tipo === "Entrada" ? "green" : "red"}
+                          boxSize={"5"}
+                        />
+                      </HStack>
+                      <Icon w={"1%"} as={FaTrash} />
                     </Box>
                   ))
                 : null}

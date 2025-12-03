@@ -21,8 +21,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   categorias: {
-    x: string;
-    y: number;
+    name: string;
     color: string;
   }[];
 };
@@ -51,7 +50,12 @@ export function ModalCategorias({ isOpen, onClose, categorias }: Props) {
                     borderRadius={"5px"}
                     bg={cate.color}
                   />
-                  <Input fontSize={"lg"} w={"65%"} h={"35px"} value={cate.x} />
+                  <Input
+                    fontSize={"lg"}
+                    w={"65%"}
+                    h={"35px"}
+                    value={cate.name}
+                  />
                 </HStack>
               ))}
             </Stack>
