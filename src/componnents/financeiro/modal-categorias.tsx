@@ -1,7 +1,10 @@
 import {
   Box,
+  Button,
   HStack,
+  Icon,
   Input,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,17 +15,20 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { FaSave } from "react-icons/fa";
+import { FaSave, FaTrash } from "react-icons/fa";
 import { DefaultButton } from "../default-button";
 import { SketchPicker } from "react-color";
 import { useState } from "react";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { FaPencil } from "react-icons/fa6";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   categorias: {
-    name: string;
+    x: string;
     color: string;
+    y: number;
   }[];
 };
 
@@ -41,31 +47,51 @@ export function ModalCategorias({ isOpen, onClose, categorias }: Props) {
         <ModalCloseButton />
         <ModalBody>
           <HStack ml={"30px"} mt={"30px"}>
-            <Stack>
-              {categorias.map((cate) => (
+            <Stack
+              w={"100%"}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              ml={"60px"}
+            >
+              {categorias.map((categoria) => (
                 <HStack>
                   <Box
                     w={"25px"}
                     h={"25px"}
                     borderRadius={"5px"}
-                    bg={cate.color}
+                    bg={categoria.color}
                   />
                   <Input
                     fontSize={"lg"}
-                    w={"65%"}
+                    w={"50%"}
                     h={"35px"}
-                    value={cate.name}
+                    value={categoria.x}
                   />
+
+                  <Icon as={FaPencil} ml={"5px"} />
+                  <Icon as={FaTrash} ml={"5px"} />
                 </HStack>
               ))}
+
+              {/* <Link>
+                <HStack>
+                  <Text color={"menu_principal"}>Nova categoria</Text>
+                  <Icon
+                    color={"menu_principal"}
+                    boxSize={6}
+                    as={MdOutlineAddCircleOutline}
+                  />
+                </HStack>
+              </Link> */}
             </Stack>
 
-            <Box mr={"30px"}>
+            {/* <Box mr={"30px"}>
               <SketchPicker
                 color={color}
                 onChange={(c: any) => setColor(c.hex)}
               />
-            </Box>
+            </Box> */}
           </HStack>
         </ModalBody>
         <ModalFooter mt={"30px"} display={"flex"} justifyContent={"center"}>

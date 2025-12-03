@@ -13,6 +13,7 @@ import {
   Flex,
   HStack,
   Icon,
+  Input,
   Link,
   Stack,
   Text,
@@ -31,6 +32,7 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
+import { FaPencil } from "react-icons/fa6";
 
 const sampleData = [
   { x: "Aluguel", y: 1200, color: "#d50c20" },
@@ -50,7 +52,7 @@ export default function Financeiro() {
   }>({ aberto: false, idPainel: "" });
   const [openModalCategorias, setOpenModalCategorias] = useState(false);
   const [categorias, setCategorias] = useState<
-    { name: string; color: string }[]
+    { name: string; color: string; valor?: string }[]
   >([]);
 
   function criaPainel(values: { nome: string; valor: string }) {
@@ -145,7 +147,7 @@ export default function Financeiro() {
       <ModalCategorias
         isOpen={openModalCategorias}
         onClose={() => setOpenModalCategorias(false)}
-        categorias={categorias}
+        categorias={sampleData}
       />
 
       <Flex
@@ -310,27 +312,20 @@ export default function Financeiro() {
                 : null}
             </Stack>
 
-            <HStack w={"100%"} display={"flex"} mt={"80px"}>
-              <Box display={"flex"} flexDir={"column"} w={"100%"}>
+            <HStack
+              w={"100%"}
+              display={"flex"}
+              mt={"80px"}
+              justifyContent={"space-between"}
+              alignItems={"flex-start"}
+            >
+              <Box display={"flex"} flexDir={"column"}>
                 <HStack display={"flex"} justifyContent={"space-between"}>
                   <Text fontSize={"lg"} fontWeight={"bold"}>
                     Gráfico por tipo de gasto
                   </Text>
-                  <HStack
-                    gap={3}
-                    display={"flex"}
-                    alignItems={"center"}
-                    onClick={() => setOpenModalCategorias(true)}
-                  >
-                    <Text fontSize={"lg"}>Editar categorias</Text>
-                    <Icon
-                      color={"menu_principal"}
-                      as={FaPencilAlt}
-                      boxSize={"5"}
-                    />
-                  </HStack>
                 </HStack>
-                <Box w={"50%"} display={"flex"} flexDir={"row"}>
+                <Box w={"100%"} display={"flex"} flexDir={"row"}>
                   <VictoryPie
                     startAngle={90}
                     labels={({ datum }) => `R$ ${datum.y},00`}
@@ -363,6 +358,47 @@ export default function Financeiro() {
                     ))}
                   </Stack>
                 </Box>
+              </Box>
+
+              <Box
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                flexDir={"column"}
+              >
+                <HStack mb={"30px"}>
+                  <Text fontSize={"lg"} fontWeight={"bold"}>
+                    Editar categorias
+                  </Text>
+                  <Icon as={FaChevronDown} />
+                </HStack>
+                <Stack
+                  w={"100%"}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  ml={"60px"}
+                >
+                  {sampleData.map((categoria) => (
+                    <HStack>
+                      <Box
+                        w={"25px"}
+                        h={"25px"}
+                        borderRadius={"5px"}
+                        bg={categoria.color}
+                      />
+                      <Input
+                        fontSize={"lg"}
+                        w={"50%"}
+                        h={"35px"}
+                        value={categoria.x}
+                      />
+
+                      <Icon as={FaPencil} ml={"5px"} />
+                      <Icon as={FaTrash} ml={"5px"} />
+                    </HStack>
+                  ))}
+                </Stack>
               </Box>
             </HStack>
           </Box>

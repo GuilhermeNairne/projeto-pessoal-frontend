@@ -33,6 +33,7 @@ export function DefaultInput({
             w={w ?? "100%"}
             onChange={onChange}
             value={value}
+            bg={"white"}
             type={type ?? "string"}
           />
         </Stack>
@@ -44,6 +45,7 @@ export function DefaultInput({
             borderRadius={"10px"}
             placeholder={placeholder}
             w={w ?? "100%"}
+            bg={"white"}
             onChange={onChange}
             value={value}
             type={type ?? "string"}

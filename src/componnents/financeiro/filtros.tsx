@@ -50,10 +50,10 @@ export function Filtros({ open }: Props) {
           <Stack>
             <Text fontWeight={"bold"}>Ordenar por data</Text>
             <RadioGroup defaultValue="2">
-              <Radio borderColor={"white"} value="1" mr={"20px"}>
+              <Radio borderColor={"gray.400"} value="1" mr={"20px"}>
                 Mais recentes
               </Radio>
-              <Radio borderColor={"white"} value="2">
+              <Radio borderColor={"gray.400"} value="2">
                 Mais antigos
               </Radio>
             </RadioGroup>
@@ -61,10 +61,10 @@ export function Filtros({ open }: Props) {
           <Stack>
             <Text fontWeight={"bold"}>Ordenar por valor</Text>
             <RadioGroup defaultValue="2">
-              <Radio borderColor={"white"} value="1" mr={"20px"}>
+              <Radio borderColor={"gray.400"} value="1" mr={"20px"}>
                 Maior valor
               </Radio>
-              <Radio borderColor={"white"} value="2">
+              <Radio borderColor={"gray.400"} value="2">
                 Menor valor
               </Radio>
             </RadioGroup>
@@ -72,10 +72,10 @@ export function Filtros({ open }: Props) {
           <Stack>
             <Text fontWeight={"bold"}>Movimento</Text>
             <RadioGroup defaultValue="2">
-              <Radio borderColor={"white"} value="1" mr={"20px"}>
+              <Radio borderColor={"gray.400"} value="1" mr={"20px"}>
                 Entrada
               </Radio>
-              <Radio borderColor={"white"} value="2">
+              <Radio borderColor={"gray.400"} value="2">
                 Saída
               </Radio>
             </RadioGroup>
@@ -86,6 +86,7 @@ export function Filtros({ open }: Props) {
             <Select
               placeholder="Selecione o tipo"
               w={"170px"}
+              bg={"white"}
               borderColor={"gray.400"}
               borderRadius={"10px"}
             >
