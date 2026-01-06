@@ -16,22 +16,23 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
+import { CategoryType } from "@/app/financeiro/page";
 
 type Props = {
   painel: string;
   isOpen: boolean;
   id: string;
+  categorys: CategoryType[];
   onClose: () => void;
   handleSave: (values: any) => void;
 };
-
-const categorias = ["Mercado", "Presente", "Alimentação"];
 
 export function ModalRegistrarMovimento({
   isOpen,
   onClose,
   painel,
   id,
+  categorys,
   handleSave,
 }: Props) {
   const { values, handleChange, resetForm } = useFormik({
@@ -59,7 +60,7 @@ export function ModalRegistrarMovimento({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -85,8 +86,8 @@ export function ModalRegistrarMovimento({
               borderRadius={"10px"}
               onChange={handleChange("categoria")}
             >
-              {categorias.map((categoria) => (
-                <option value={categoria}>{categoria}</option>
+              {categorys.map((categoria) => (
+                <option value={categoria.x}>{categoria.x}</option>
               ))}
             </Select>
           </Stack>

@@ -86,12 +86,12 @@ export function ModalCategorias({ isOpen, onClose, categorias }: Props) {
               </Link> */}
             </Stack>
 
-            {/* <Box mr={"30px"}>
+            <Box mr={"30px"}>
               <SketchPicker
                 color={color}
                 onChange={(c: any) => setColor(c.hex)}
               />
-            </Box> */}
+            </Box>
           </HStack>
         </ModalBody>
         <ModalFooter mt={"30px"} display={"flex"} justifyContent={"center"}>

@@ -22,6 +22,7 @@ import { useState } from "react";
 import { GrTransaction } from "react-icons/gr";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { VictoryPie, VictoryTheme } from "victory";
+import { SketchPicker } from "react-color";
 
 import {
   FaArrowAltCircleDown,
@@ -29,31 +30,50 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaPencilAlt,
+  FaPlus,
   FaTrash,
 } from "react-icons/fa";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import { FaPencil } from "react-icons/fa6";
 
-const sampleData = [
-  { x: "Aluguel", y: 1200, color: "#d50c20" },
-  { x: "Mercado", y: 800, color: "#339c00" },
-  { x: "Transporte", y: 250, color: "#ffc107" },
-  { x: "Lazer", y: 300, color: "#007bff" },
-  { x: "Outros", y: 150, color: "#9c27b0" },
-];
+export type CategoryType = {
+  x: string;
+  y: number;
+  color: string;
+};
 
 export default function Financeiro() {
+  const [categorySelected, setCategorySelected] = useState<string | null>(null);
   const [openFiltros, setOpenFiltros] = useState(false);
   const [paineis, setPaineis] = useState<PaineisType>([]);
   const [openModalNovoPainel, setOpenNovoPainel] = useState(false);
-  const [openModalMovimento, setOpenModalMovimento] = useState<{
-    aberto: boolean;
+  const [openTransactionModal, setOpenTransactionModal] = useState<{
+    open: boolean;
     idPainel: string;
-  }>({ aberto: false, idPainel: "" });
+    name: string;
+  }>({ open: false, idPainel: "", name: "" });
   const [openModalCategorias, setOpenModalCategorias] = useState(false);
-  const [categorias, setCategorias] = useState<
-    { name: string; color: string; valor?: string }[]
-  >([]);
+  const [collorPalette, setColorPalette] = useState(false);
+
+  const [categorys, setCategorys] = useState<CategoryType[]>([
+    { x: "Aluguel", y: 1200, color: "#d50c20" },
+    { x: "Mercado", y: 800, color: "#339c00" },
+    { x: "Transporte", y: 250, color: "#ffc107" },
+    { x: "Lazer", y: 300, color: "#007bff" },
+    { x: "Outros", y: 150, color: "#9c27b0" },
+  ]);
+
+  function handleChangeColor(color: string) {
+    if (!categorySelected) return;
+
+    setCategorys((prev) =>
+      prev.map((item) =>
+        item.x === categorySelected ? { ...item, color } : item
+      )
+    );
+
+    setColorPalette(false);
+  }
 
   function criaPainel(values: { nome: string; valor: string }) {
     setPaineis((prev) => {
@@ -137,17 +157,20 @@ export default function Financeiro() {
       />
 
       <ModalRegistrarMovimento
-        isOpen={openModalMovimento.aberto === true}
-        onClose={() => setOpenModalMovimento({ aberto: false, idPainel: "" })}
-        painel="Previdência"
-        id={openModalMovimento.idPainel}
+        isOpen={openTransactionModal.open === true}
+        onClose={() =>
+          setOpenTransactionModal({ open: false, idPainel: "", name: "" })
+        }
+        painel={openTransactionModal.name}
+        id={openTransactionModal.idPainel}
+        categorys={categorys}
         handleSave={(values) => cadastrasMovimentacoes(values)}
       />
 
       <ModalCategorias
         isOpen={openModalCategorias}
         onClose={() => setOpenModalCategorias(false)}
-        categorias={sampleData}
+        categorias={categorys}
       />
 
       <Flex
@@ -205,9 +228,10 @@ export default function Financeiro() {
               </Text>
               <Box
                 onClick={() =>
-                  setOpenModalMovimento({
-                    aberto: true,
+                  setOpenTransactionModal({
+                    open: true,
                     idPainel: painel.id ?? "",
+                    name: painel.painel.nome,
                   })
                 }
                 display={"flex"}
@@ -330,7 +354,7 @@ export default function Financeiro() {
                     startAngle={90}
                     labels={({ datum }) => `R$ ${datum.y},00`}
                     endAngle={450}
-                    data={sampleData}
+                    data={categorys}
                     theme={VictoryTheme.clean}
                     style={{
                       labels: {
@@ -343,7 +367,7 @@ export default function Financeiro() {
                   />
 
                   <Stack mt={"80px"}>
-                    {sampleData.map((item) => (
+                    {categorys.map((item) => (
                       <HStack>
                         <Box
                           borderRadius={"5px"}
@@ -360,27 +384,35 @@ export default function Financeiro() {
                 </Box>
               </Box>
 
+              {collorPalette ? (
+                <SketchPicker
+                  color={"#FF0000"}
+                  onChange={(c: any) => {
+                    handleChangeColor(c.hex);
+                  }}
+                />
+              ) : null}
+
               <Box
                 display={"flex"}
                 alignItems={"center"}
                 justifyContent={"center"}
                 flexDir={"column"}
               >
-                <HStack mb={"30px"}>
-                  <Text fontSize={"lg"} fontWeight={"bold"}>
-                    Editar categorias
-                  </Text>
-                  <Icon as={FaChevronDown} />
-                </HStack>
                 <Stack
                   w={"100%"}
                   display={"flex"}
                   justifyContent={"center"}
                   alignItems={"center"}
                   ml={"60px"}
+                  mt={"60px"}
                 >
-                  {sampleData.map((categoria) => (
-                    <HStack>
+                  {categorys.map((categoria) => (
+                    <HStack
+                      onClick={() => {
+                        setCategorySelected(categoria.x), setColorPalette(true);
+                      }}
+                    >
                       <Box
                         w={"25px"}
                         h={"25px"}
@@ -398,6 +430,10 @@ export default function Financeiro() {
                       <Icon as={FaTrash} ml={"5px"} />
                     </HStack>
                   ))}
+                  <HStack mt={"20px"} mr={"70px"}>
+                    <Icon as={FaPlus} />
+                    <Text>Adicionar categoria</Text>
+                  </HStack>
                 </Stack>
               </Box>
             </HStack>
