@@ -27,14 +27,14 @@ import { SketchPicker } from "react-color";
 import {
   FaArrowAltCircleDown,
   FaArrowAltCircleUp,
+  FaCheck,
   FaChevronDown,
   FaChevronUp,
-  FaPencilAlt,
   FaPlus,
   FaTrash,
 } from "react-icons/fa";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
-import { FaPencil } from "react-icons/fa6";
+import { PopUpDeleteCategory } from "@/componnents/financeiro/pop-up-delete-category";
 
 export type CategoryType = {
   x: string;
@@ -52,15 +52,23 @@ export default function Financeiro() {
     idPainel: string;
     name: string;
   }>({ open: false, idPainel: "", name: "" });
+  const [popUpDeleteCategory, setPopUpDeleteCategory] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState("");
   const [openModalCategorias, setOpenModalCategorias] = useState(false);
   const [collorPalette, setColorPalette] = useState(false);
+  const [editing, setEditing] = useState<{
+    index: number | null;
+    name: string;
+  }>({
+    index: null,
+    name: "",
+  });
 
   const [categorys, setCategorys] = useState<CategoryType[]>([
-    { x: "Aluguel", y: 1200, color: "#d50c20" },
-    { x: "Mercado", y: 800, color: "#339c00" },
-    { x: "Transporte", y: 250, color: "#ffc107" },
-    { x: "Lazer", y: 300, color: "#007bff" },
-    { x: "Outros", y: 150, color: "#9c27b0" },
+    { x: "Mercado", y: 0, color: "#d50c20" },
+    { x: "Alimentação", y: 0, color: "#0cd513ff" },
+    { x: "Roupas", y: 0, color: "#0c2ad5ff" },
+    { x: "Academia", y: 0, color: "#111a4bff" },
   ]);
 
   function handleChangeColor(color: string) {
@@ -75,7 +83,30 @@ export default function Financeiro() {
     setColorPalette(false);
   }
 
-  function criaPainel(values: { nome: string; valor: string }) {
+  function handleNewCategory() {
+    setCategorys((prev) => [
+      ...prev,
+      { x: "nova categoria", y: 0, color: "#3c191dff" },
+    ]);
+  }
+
+  function handleSaveCategoryName(index: number) {
+    if (editing.index === index) {
+      setCategorys((prev) =>
+        prev.map((c, i) => (i === index ? { ...c, x: editing.name } : c))
+      );
+
+      setEditing({ index: null, name: "" });
+    }
+  }
+
+  function handleDeleteCategory() {
+    setCategorys((prev) => prev.filter((cate) => cate.x !== categoryToDelete));
+
+    setCategoryToDelete("");
+  }
+
+  function createPainel(values: { nome: string; valor: string }) {
     setPaineis((prev) => {
       const ultimoId = prev.length > 0 ? prev[prev.length - 1].id : 0;
       const novoId = ultimoId ? ultimoId + 1 : "1";
@@ -150,10 +181,17 @@ export default function Financeiro() {
     >
       <Menu />
 
+      <PopUpDeleteCategory
+        isOpen={popUpDeleteCategory}
+        onClose={() => setPopUpDeleteCategory(false)}
+        onConfirm={handleDeleteCategory}
+        categoryName={categoryToDelete}
+      />
+
       <ModalNovoPainel
         isOpen={openModalNovoPainel}
         onClose={() => setOpenNovoPainel(false)}
-        handleSave={(values) => criaPainel(values)}
+        handleSave={(values) => createPainel(values)}
       />
 
       <ModalRegistrarMovimento
@@ -407,30 +445,50 @@ export default function Financeiro() {
                   ml={"60px"}
                   mt={"60px"}
                 >
-                  {categorys.map((categoria) => (
-                    <HStack
-                      onClick={() => {
-                        setCategorySelected(categoria.x), setColorPalette(true);
-                      }}
-                    >
+                  {categorys.map((category, index) => (
+                    <HStack>
                       <Box
                         w={"25px"}
                         h={"25px"}
                         borderRadius={"5px"}
-                        bg={categoria.color}
+                        bg={category.color}
+                        onClick={() => {
+                          setCategorySelected(category.x),
+                            setColorPalette(true);
+                        }}
                       />
                       <Input
-                        fontSize={"lg"}
-                        w={"50%"}
-                        h={"35px"}
-                        value={categoria.x}
+                        fontSize="lg"
+                        w="50%"
+                        h="35px"
+                        value={
+                          editing.index === index ? editing.name : category.x
+                        }
+                        onChange={(e) =>
+                          setEditing({
+                            index,
+                            name: e.target.value,
+                          })
+                        }
                       />
 
-                      <Icon as={FaPencil} ml={"5px"} />
-                      <Icon as={FaTrash} ml={"5px"} />
+                      <Icon
+                        as={FaCheck}
+                        ml="5px"
+                        cursor="pointer"
+                        onClick={() => handleSaveCategoryName(index)}
+                      />
+                      <Icon
+                        as={FaTrash}
+                        ml={"5px"}
+                        onClick={() => {
+                          setCategoryToDelete(category.x);
+                          setPopUpDeleteCategory(true);
+                        }}
+                      />
                     </HStack>
                   ))}
-                  <HStack mt={"20px"} mr={"70px"}>
+                  <HStack mt={"20px"} mr={"70px"} onClick={handleNewCategory}>
                     <Icon as={FaPlus} />
                     <Text>Adicionar categoria</Text>
                   </HStack>
