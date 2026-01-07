@@ -64,7 +64,7 @@ export default function Financeiro() {
     name: "",
   });
 
-  const [categorys, setCategorys] = useState<CategoryType[]>([
+  const [categories, setCategories] = useState<CategoryType[]>([
     { x: "Mercado", y: 0, color: "#d50c20" },
     { x: "Alimentação", y: 0, color: "#0cd513ff" },
     { x: "Roupas", y: 0, color: "#0c2ad5ff" },
@@ -74,7 +74,7 @@ export default function Financeiro() {
   function handleChangeColor(color: string) {
     if (!categorySelected) return;
 
-    setCategorys((prev) =>
+    setCategories((prev) =>
       prev.map((item) =>
         item.x === categorySelected ? { ...item, color } : item
       )
@@ -84,7 +84,7 @@ export default function Financeiro() {
   }
 
   function handleNewCategory() {
-    setCategorys((prev) => [
+    setCategories((prev) => [
       ...prev,
       { x: "nova categoria", y: 0, color: "#3c191dff" },
     ]);
@@ -92,7 +92,7 @@ export default function Financeiro() {
 
   function handleSaveCategoryName(index: number) {
     if (editing.index === index) {
-      setCategorys((prev) =>
+      setCategories((prev) =>
         prev.map((c, i) => (i === index ? { ...c, x: editing.name } : c))
       );
 
@@ -101,7 +101,7 @@ export default function Financeiro() {
   }
 
   function handleDeleteCategory() {
-    setCategorys((prev) => prev.filter((cate) => cate.x !== categoryToDelete));
+    setCategories((prev) => prev.filter((cate) => cate.x !== categoryToDelete));
 
     setCategoryToDelete("");
   }
@@ -133,7 +133,7 @@ export default function Financeiro() {
     const valorMov = Number(values.valor.replace(/\./g, "").replace(",", "."));
 
     if (values.tipo === "Saída") {
-      setCategorys((prev) =>
+      setCategories((prev) =>
         prev.map((cat) =>
           cat.x === values.categoria ? { ...cat, y: cat.y + valorMov } : cat
         )
@@ -211,14 +211,14 @@ export default function Financeiro() {
         }
         painel={openTransactionModal.name}
         id={openTransactionModal.idPainel}
-        categorys={categorys}
+        categorys={categories}
         handleSave={(values) => cadastrasMovimentacoes(values)}
       />
 
       <ModalCategorias
         isOpen={openModalCategorias}
         onClose={() => setOpenModalCategorias(false)}
-        categorias={categorys}
+        categorias={categories}
       />
 
       <Flex
@@ -348,46 +348,63 @@ export default function Financeiro() {
                 <Text w={"10%"} color={"white"}></Text>
                 <Text w={"10%"} color={"white"}></Text>
               </Box>
-              {painel.ocorrencias && painel.ocorrencias?.length > 0
-                ? painel.ocorrencias.map((occ, index) => (
-                    <Box
-                      boxShadow={"md"}
-                      display={"flex"}
-                      flexDir={"row"}
-                      bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
-                      w={"full"}
-                      h={"35px"}
-                      alignItems={"center"}
-                      px={"15px"}
-                    >
-                      <Text w={"25%"} color={"black"}>
-                        {occ.nome}
-                      </Text>
-                      <Text w={"20%"} color={"black"}>
-                        {occ.movimentacao}
-                      </Text>
-                      <Text w={"15%"} color={"black"}>
-                        R$ {occ.valor}
-                      </Text>
-                      <Text w={"15%"} color={"black"}>
-                        {ConvertDataToBR(occ.data)}
-                      </Text>
-                      <HStack w={"34%"}>
-                        <Text color={"black"}>{occ.tipo}</Text>
-                        <Icon
-                          as={
-                            occ.tipo === "Entrada"
-                              ? FaArrowAltCircleUp
-                              : FaArrowAltCircleDown
-                          }
-                          color={occ.tipo === "Entrada" ? "green" : "red"}
-                          boxSize={"5"}
-                        />
-                      </HStack>
-                      <Icon w={"1%"} as={FaTrash} />
-                    </Box>
-                  ))
-                : null}
+              <Flex
+                w={"full"}
+                flexDir={"column"}
+                gap={2}
+                maxH={"250px"}
+                overflowY="auto"
+                sx={{
+                  "::-webkit-scrollbar": {
+                    display: "none",
+                  },
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                }}
+              >
+                {painel.ocorrencias && painel.ocorrencias?.length > 0
+                  ? painel.ocorrencias.map((occ, index) => (
+                      <Box
+                        boxShadow="md"
+                        display="flex"
+                        flexDir="row"
+                        bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
+                        w="full"
+                        h="35px"
+                        alignItems="center"
+                        px="15px"
+                        py={"10px"}
+                      >
+                        <Text w="20%" color="black">
+                          {occ.nome}
+                        </Text>
+                        <Text w="20%" color="black">
+                          {occ.movimentacao}
+                        </Text>
+                        <Text w="15%" color="black">
+                          R$ {occ.valor}
+                        </Text>
+                        <Text w="15%" color="black">
+                          {ConvertDataToBR(occ.data)}
+                        </Text>
+
+                        <HStack w="28%">
+                          <Icon
+                            as={
+                              occ.tipo === "Entrada"
+                                ? FaArrowAltCircleUp
+                                : FaArrowAltCircleDown
+                            }
+                            color={occ.tipo === "Entrada" ? "green" : "red"}
+                            boxSize="5"
+                          />
+                        </HStack>
+
+                        <Icon w="2%" as={FaTrash} />
+                      </Box>
+                    ))
+                  : null}
+              </Flex>
             </Stack>
 
             <HStack
@@ -408,7 +425,7 @@ export default function Financeiro() {
                     startAngle={90}
                     labels={({ datum }) => `R$ ${datum.y},00`}
                     endAngle={450}
-                    data={categorys}
+                    data={categories}
                     theme={VictoryTheme.clean}
                     style={{
                       labels: {
@@ -420,20 +437,35 @@ export default function Financeiro() {
                     }}
                   />
 
-                  <Stack mt={"80px"}>
-                    {categorys.map((item) => (
-                      <HStack>
-                        <Box
-                          borderRadius={"5px"}
-                          w={"20px"}
-                          h={"20px"}
-                          bg={item.color}
-                        />
-                        <Text fontSize={"lg"} fontWeight={"bold"}>
-                          {item.x}
-                        </Text>
-                      </HStack>
-                    ))}
+                  <Stack
+                    mt={"20px"}
+                    maxH={"200px"}
+                    overflowY={"auto"}
+                    overflowX="hidden"
+                    w={"200px"}
+                    sx={{
+                      "::-webkit-scrollbar": {
+                        display: "none",
+                      },
+                      scrollbarWidth: "none",
+                      msOverflowStyle: "none",
+                    }}
+                  >
+                    {categories
+                      .filter((item) => item.y > 0)
+                      .map((item) => (
+                        <HStack key={item.x}>
+                          <Box
+                            borderRadius="5px"
+                            w="20px"
+                            h="20px"
+                            bg={item.color}
+                          />
+                          <Text fontSize="lg" fontWeight="bold">
+                            {item.x}
+                          </Text>
+                        </HStack>
+                      ))}
                   </Stack>
                 </Box>
               </Box>
@@ -456,12 +488,30 @@ export default function Financeiro() {
                 <Stack
                   w={"100%"}
                   display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  ml={"60px"}
-                  mt={"60px"}
+                  mt={"20px"}
+                  maxH={"250px"}
+                  overflowY={"auto"}
+                  overflowX="hidden"
+                  sx={{
+                    "::-webkit-scrollbar": {
+                      width: "4px",
+                    },
+                    "::-webkit-scrollbar-button": {
+                      height: "0px",
+                      display: "block",
+                    },
+                    "::-webkit-scrollbar-track": {
+                      background: "transparent",
+                    },
+                    "::-webkit-scrollbar-thumb": {
+                      background: "rgba(0, 0, 0, 0.3)",
+                      borderRadius: "20px",
+                    },
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "rgba(0,0,0,0.3) transparent",
+                  }}
                 >
-                  {categorys.map((category, index) => (
+                  {categories.map((category, index) => (
                     <HStack>
                       <Box
                         w={"25px"}
@@ -504,11 +554,11 @@ export default function Financeiro() {
                       />
                     </HStack>
                   ))}
-                  <HStack mt={"20px"} mr={"70px"} onClick={handleNewCategory}>
-                    <Icon as={FaPlus} />
-                    <Text>Adicionar categoria</Text>
-                  </HStack>
                 </Stack>
+                <HStack mt={"20px"} mr={"70px"} onClick={handleNewCategory}>
+                  <Icon as={FaPlus} />
+                  <Text>Adicionar categoria</Text>
+                </HStack>
               </Box>
             </HStack>
           </Box>
