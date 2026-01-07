@@ -126,10 +126,20 @@ export default function Financeiro() {
     nome: string;
     valor: string;
     data: string;
-    tipo: "Entrada" | "Saida";
+    tipo: "Entrada" | "Saída";
     categoria: string;
     id: string;
   }) {
+    const valorMov = Number(values.valor.replace(/\./g, "").replace(",", "."));
+
+    if (values.tipo === "Saída") {
+      setCategorys((prev) =>
+        prev.map((cat) =>
+          cat.x === values.categoria ? { ...cat, y: cat.y + valorMov } : cat
+        )
+      );
+    }
+
     setPaineis((prev) =>
       prev.map((painel) => {
         if (painel.id === values.id) {
@@ -320,8 +330,11 @@ export default function Financeiro() {
                 alignItems={"center"}
                 px={"15px"}
               >
-                <Text w={"30%"} color={"white"}>
+                <Text w={"25%"} color={"white"}>
                   Movimentação
+                </Text>
+                <Text w={"20%"} color={"white"}>
+                  Categoria
                 </Text>
                 <Text w={"15%"} color={"white"}>
                   Valor
@@ -347,16 +360,19 @@ export default function Financeiro() {
                       alignItems={"center"}
                       px={"15px"}
                     >
-                      <Text w={"30%"} color={"black"}>
+                      <Text w={"25%"} color={"black"}>
                         {occ.nome}
                       </Text>
-                      <Text w={"14%"} color={"black"}>
+                      <Text w={"20%"} color={"black"}>
+                        {occ.movimentacao}
+                      </Text>
+                      <Text w={"15%"} color={"black"}>
                         R$ {occ.valor}
                       </Text>
-                      <Text w={"16%"} color={"black"}>
+                      <Text w={"15%"} color={"black"}>
                         {ConvertDataToBR(occ.data)}
                       </Text>
-                      <HStack w={"40%"}>
+                      <HStack w={"34%"}>
                         <Text color={"black"}>{occ.tipo}</Text>
                         <Icon
                           as={
