@@ -375,16 +375,16 @@ export default function Financeiro() {
                         px="15px"
                         py={"10px"}
                       >
-                        <Text w="20%" color="black">
+                        <Text w="24%" color="black">
                           {occ.nome}
                         </Text>
-                        <Text w="20%" color="black">
+                        <Text w="17%" color="black">
                           {occ.movimentacao}
                         </Text>
-                        <Text w="15%" color="black">
+                        <Text w="12%" color="black">
                           R$ {occ.valor}
                         </Text>
-                        <Text w="15%" color="black">
+                        <Text w="16%" color="black">
                           {ConvertDataToBR(occ.data)}
                         </Text>
 
