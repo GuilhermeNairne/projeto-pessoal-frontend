@@ -4,6 +4,7 @@ import { Box, ChakraProvider } from "@chakra-ui/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import myTheme from "./mytheme";
 import { AuthProvider } from "react-oidc-context";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +23,6 @@ const cognitoAuthConfig = {
   response_type: "code",
   scope: "email openid phone",
   onSigninCallback: (user: any) => {
-    console.log(user);
     const token = user.id_token || user.access_token;
 
     if (token) {
@@ -32,6 +32,8 @@ const cognitoAuthConfig = {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
 };
+
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -51,7 +53,9 @@ export default function RootLayout({
         }}
       >
         <AuthProvider {...cognitoAuthConfig}>
-          <ChakraProvider theme={myTheme}>{children}</ChakraProvider>
+          <QueryClientProvider client={queryClient}>
+            <ChakraProvider theme={myTheme}>{children}</ChakraProvider>
+          </QueryClientProvider>
         </AuthProvider>
       </body>
     </html>

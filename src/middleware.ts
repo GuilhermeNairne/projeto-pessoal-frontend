@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 export function middleware(req: any) {
-  console.log("estou no middleware");
   const token = req.cookies.get("idToken")?.value;
   const routeProtected = req.nextUrl.pathname.startsWith("/financeiro");
   if (routeProtected && !token) {

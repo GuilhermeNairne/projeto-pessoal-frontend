@@ -35,6 +35,8 @@ import {
 } from "react-icons/fa";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import { PopUpDeleteCategory } from "@/componnents/financeiro/pop-up-delete-category";
+import { usePanels } from "@/hooks/usePanels";
+import { useQuery } from "react-query";
 
 export type CategoryType = {
   x: string;
@@ -43,9 +45,9 @@ export type CategoryType = {
 };
 
 export default function Financeiro() {
+  const { listPanels } = usePanels();
   const [categorySelected, setCategorySelected] = useState<string | null>(null);
   const [openFiltros, setOpenFiltros] = useState(false);
-  const [paineis, setPaineis] = useState<PaineisType>([]);
   const [openModalNovoPainel, setOpenNovoPainel] = useState(false);
   const [openTransactionModal, setOpenTransactionModal] = useState<{
     open: boolean;
@@ -62,6 +64,11 @@ export default function Financeiro() {
   }>({
     index: null,
     name: "",
+  });
+
+  const { data: panels } = useQuery({
+    queryKey: ["panels"],
+    queryFn: async () => listPanels(),
   });
 
   const [categories, setCategories] = useState<CategoryType[]>([
@@ -107,78 +114,77 @@ export default function Financeiro() {
   }
 
   function createPainel(values: { nome: string; valor: string }) {
-    setPaineis((prev) => {
-      const ultimoId = prev.length > 0 ? prev[prev.length - 1].id : 0;
-      const novoId = ultimoId ? ultimoId + 1 : "1";
-
-      return [
-        ...prev,
-        {
-          id: novoId,
-          painel: values,
-          ocorrencias: [],
-        },
-      ];
-    });
+    // setPaineis((prev) => {
+    //   const ultimoId = prev.length > 0 ? prev[prev.length - 1].id : 0;
+    //   const novoId = ultimoId ? ultimoId + 1 : "1";
+    //   return [
+    //     ...prev,
+    //     {
+    //       id: novoId,
+    //       painel: values,
+    //       ocorrencias: [],
+    //     },
+    //   ];
+    // });
   }
 
-  function cadastrasMovimentacoes(values: {
-    nome: string;
-    valor: string;
-    data: string;
-    tipo: "Entrada" | "Saída";
-    categoria: string;
-    id: string;
-  }) {
-    const valorMov = Number(values.valor.replace(/\./g, "").replace(",", "."));
+  // function cadastrasMovimentacoes(values: {
+  //   nome: string;
+  //   valor: string;
+  //   data: string;
+  //   tipo: "Entrada" | "Saída";
+  //   categoria: string;
+  //   id: string;
+  // }) {
+  //   const valorMov = Number(values.valor.replace(/\./g, "").replace(",", "."));
 
-    if (values.tipo === "Saída") {
-      setCategories((prev) =>
-        prev.map((cat) =>
-          cat.x === values.categoria ? { ...cat, y: cat.y + valorMov } : cat
-        )
-      );
-    }
+  //   if (values.tipo === "Saída") {
+  //     setCategories((prev) =>
+  //       prev.map((cat) =>
+  //         cat.x === values.categoria ? { ...cat, y: cat.y + valorMov } : cat
+  //       )
+  //     );
+  //   }
 
-    setPaineis((prev) =>
-      prev.map((painel) => {
-        if (painel.id === values.id) {
-          console.log("painel", painel.painel.valor);
+  //   setPaineis((prev) =>
+  //     prev.map((painel) => {
+  //       if (painel.id === values.id) {
+  //         console.log("painel", painel.painel.valor);
 
-          const valorMov = Number(
-            values.valor.replace(/\./g, "").replace(",", ".")
-          );
+  //         const valorMov = Number(
+  //           values.valor.replace(/\./g, "").replace(",", ".")
+  //         );
 
-          const valorAtual = Number(painel.painel.valor);
+  //         const valorAtual = Number(painel.painel.valor);
 
-          const novoValor =
-            values.tipo === "Entrada"
-              ? valorAtual + valorMov
-              : valorAtual - valorMov;
+  //         const novoValor =
+  //           values.tipo === "Entrada"
+  //             ? valorAtual + valorMov
+  //             : valorAtual - valorMov;
 
-          return {
-            ...painel,
-            painel: {
-              ...painel.painel,
-              valor: novoValor.toString(),
-            },
-            ocorrencias: [
-              ...(painel.ocorrencias || []),
-              {
-                nome: values.nome,
-                valor: values.valor,
-                data: values.data,
-                tipo: values.tipo,
-                movimentacao: values.categoria,
-              },
-            ],
-          };
-        }
+  //         return {
+  //           ...painel,
+  //           painel: {
+  //             ...painel.painel,
+  //             valor: novoValor.toString(),
+  //           },
+  //           ocorrencias: [
+  //             ...(painel.ocorrencias || []),
+  //             {
+  //               nome: values.nome,
+  //               valor: values.valor,
+  //               data: values.data,
+  //               tipo: values.tipo,
+  //               movimentacao: values.categoria,
+  //             },
+  //           ],
+  //         };
+  //       }
 
-        return painel;
-      })
-    );
-  }
+  //       return painel;
+  //     })
+  //   );
+  // }
 
   return (
     <Flex
@@ -212,7 +218,7 @@ export default function Financeiro() {
         painel={openTransactionModal.name}
         id={openTransactionModal.idPainel}
         categorys={categories}
-        handleSave={(values) => cadastrasMovimentacoes(values)}
+        handleSave={(values) => {}}
       />
 
       <ModalCategorias
@@ -247,9 +253,9 @@ export default function Financeiro() {
           </Link>
         </HStack>
 
-        <PainelContas paineis={paineis} />
+        <PainelContas paineis={panels?.data ?? []} />
 
-        {paineis.length === 0 ? (
+        {panels?.data.length === 0 ? (
           <Center mt={"200px"} display={"flex"} flexDir={"column"}>
             <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
               Você ainda não criou nenhum painel,
@@ -260,7 +266,7 @@ export default function Financeiro() {
           </Center>
         ) : null}
 
-        {paineis.map((painel) => (
+        {panels?.data.map((painel) => (
           <Box
             display={"flex"}
             flexDir={"column"}
@@ -272,14 +278,14 @@ export default function Financeiro() {
           >
             <HStack display={"flex"} justifyContent={"space-between"}>
               <Text fontSize={"3xl"} fontWeight={"bold"}>
-                {painel.painel.nome}
+                {painel.name}
               </Text>
               <Box
                 onClick={() =>
                   setOpenTransactionModal({
                     open: true,
-                    idPainel: painel.id ?? "",
-                    name: painel.painel.nome,
+                    idPainel: String(painel.id) ?? "",
+                    name: painel.name,
                   })
                 }
                 display={"flex"}
@@ -362,7 +368,7 @@ export default function Financeiro() {
                   msOverflowStyle: "none",
                 }}
               >
-                {painel.ocorrencias && painel.ocorrencias?.length > 0
+                {/* {painel.ocorrencias && painel.ocorrencias?.length > 0
                   ? painel.ocorrencias.map((occ, index) => (
                       <Box
                         boxShadow="md"
@@ -403,7 +409,7 @@ export default function Financeiro() {
                         <Icon w="2%" as={FaTrash} />
                       </Box>
                     ))
-                  : null}
+                  : null} */}
               </Flex>
             </Stack>
 

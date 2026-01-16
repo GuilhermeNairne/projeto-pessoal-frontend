@@ -1,4 +1,6 @@
-export function formatarValorBR(valor: number | string) {
+export function formatarValorBR(valor: number | string | undefined) {
   const numero = typeof valor === "string" ? Number(valor) : valor;
-  return numero.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+  return valor === undefined
+    ? null
+    : numero?.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }

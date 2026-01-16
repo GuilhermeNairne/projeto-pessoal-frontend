@@ -12,3 +12,10 @@ export type PaineisType = {
     movimentacao: string;
   }[];
 }[];
+
+export type PanelsType = {
+  id: number;
+  user_id: number;
+  name: string;
+  initial_value: string;
+};

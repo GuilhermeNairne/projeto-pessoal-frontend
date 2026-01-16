@@ -1,16 +1,17 @@
-import { PaineisType } from "@/types/financeiro-types";
+import { PaineisType, PanelsType } from "@/types/financeiro-types";
 import { formatarValorBR } from "@/utils/convert-to-real";
 import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { PiMoneyWavyFill, PiPiggyBankFill } from "react-icons/pi";
 
 type Props = {
-  paineis: PaineisType
+  paineis: PanelsType[];
 };
 
 export function PainelContas({ paineis }: Props) {
   function calculaTotal() {
     return formatarValorBR(
-      paineis.reduce((total, item) => total + Number(item.painel.valor), 0)
+      paineis?.reduce((total, item) => total + Number(item.initial_value), 0) ??
+        0
     );
   }
 
@@ -30,14 +31,13 @@ export function PainelContas({ paineis }: Props) {
     linhas.push([]);
   }
 
-
   return (
     <Flex flexDir="column" gap={5} mt={"20px"}>
       {linhas.map((linha: any, index: any) => (
         <HStack key={index} gap={10}>
-          {linha.map((conta: any) => (
+          {linha.map((conta: PanelsType) => (
             <Box
-              key={conta.nome}
+              key={conta.id}
               display="flex"
               flexDir="column"
               bg="white"
@@ -50,12 +50,12 @@ export function PainelContas({ paineis }: Props) {
               <HStack gap={3}>
                 <Icon as={PiMoneyWavyFill} boxSize="8" color="green" />
                 <Text fontWeight="bold" fontSize="2xl">
-                  {conta.painel.nome}
+                  {conta.name}
                 </Text>
               </HStack>
 
               <Text mt="20px" fontSize="2xl">
-                R$ {formatarValorBR(conta.painel.valor)}
+                R$ {formatarValorBR(conta.initial_value)}
               </Text>
             </Box>
           ))}
