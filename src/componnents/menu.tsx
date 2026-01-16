@@ -1,3 +1,4 @@
+import { useAuth } from "react-oidc-context";
 import { usePathname } from "next/navigation";
 import { FaBook, FaSignOutAlt, FaMoon } from "react-icons/fa";
 
@@ -12,6 +13,7 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
+import { NextResponse } from "next/server";
 
 const menuOpcoes = [
   {
@@ -25,7 +27,22 @@ const menuOpcoes = [
 ];
 
 export function Menu() {
+  const auth = useAuth();
   const pathname = usePathname();
+  const res = NextResponse.json({ ok: true });
+
+  async function Logout() {
+    await fetch("/api/logout", { method: "GET" });
+
+    const clientId = "7mu3omfrp7utmr1niauqlghfvv";
+    const logoutUri = "http://localhost:3001/login";
+    const cognitoDomain =
+      "https://us-east-2vdy8onemf.auth.us-east-2.amazoncognito.com";
+
+    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
+      logoutUri
+    )}`;
+  }
 
   return (
     <Flex
@@ -109,7 +126,7 @@ export function Menu() {
       <Flex flexDir={"column"}>
         <Box w={"full"} h={"1px"} bg={"menu_selecionado"} />
 
-        <HStack gap={4} mt={"25px"} ml={"10px"}>
+        <HStack gap={4} mt={"25px"} ml={"10px"} onClick={() => Logout()}>
           <Icon as={FaSignOutAlt} boxSize={"6"} color={"white"} />
           <Text fontWeight={"semi-bold"} color={"white"} fontSize={"lg"}>
             Sair
