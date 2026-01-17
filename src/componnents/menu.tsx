@@ -1,4 +1,4 @@
-import { useAuth } from "react-oidc-context";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { FaBook, FaSignOutAlt, FaMoon } from "react-icons/fa";
 
@@ -13,7 +13,6 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
-import { NextResponse } from "next/server";
 
 const menuOpcoes = [
   {
@@ -27,9 +26,19 @@ const menuOpcoes = [
 ];
 
 export function Menu() {
-  const auth = useAuth();
+  const [name, setName] = useState<string | null>(null);
+  const [picture, setPicture] = useState<string | null>(null);
   const pathname = usePathname();
-  const res = NextResponse.json({ ok: true });
+  const defaultPicture =
+    "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg";
+
+  useEffect(() => {
+    const name = localStorage.getItem("userName");
+    const picture = localStorage.getItem("picture");
+
+    setName(name);
+    setPicture(picture);
+  }, []);
 
   async function Logout() {
     await fetch("/api/logout", { method: "GET" });
@@ -67,11 +76,11 @@ export function Menu() {
           <Image
             w={"70px"}
             h={"70px"}
-            src="/foto_perfil.png"
+            src={picture ?? defaultPicture}
             borderRadius={"100%"}
           />
           <Text color={"white"} fontWeight={"bold"} fontSize={"18px"}>
-            GUILHERME
+            {name}
           </Text>
         </Box>
 

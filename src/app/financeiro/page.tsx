@@ -1,12 +1,26 @@
 "use client";
 
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { Menu } from "@/componnents/menu";
+import { SketchPicker } from "react-color";
+import { usePanels } from "@/hooks/usePanels";
+import { GrTransaction } from "react-icons/gr";
+import { VictoryPie, VictoryTheme } from "victory";
+import { IoIosAddCircleOutline } from "react-icons/io";
 import { Filtros } from "@/componnents/financeiro/filtros";
+import { PainelContas } from "@/componnents/financeiro/painel-contas";
 import { ModalCategorias } from "@/componnents/financeiro/modal-categorias";
 import { ModalNovoPainel } from "@/componnents/financeiro/modal-novo-painel";
+import { PopUpDeleteCategory } from "@/componnents/financeiro/pop-up-delete-category";
 import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registrar-movimento";
-import { PainelContas } from "@/componnents/financeiro/painel-contas";
-import { Menu } from "@/componnents/menu";
-import { PaineisType } from "@/types/financeiro-types";
+import {
+  FaCheck,
+  FaChevronDown,
+  FaChevronUp,
+  FaPlus,
+  FaTrash,
+} from "react-icons/fa";
 import {
   Box,
   Center,
@@ -18,25 +32,6 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { GrTransaction } from "react-icons/gr";
-import { IoIosAddCircleOutline } from "react-icons/io";
-import { VictoryPie, VictoryTheme } from "victory";
-import { SketchPicker } from "react-color";
-
-import {
-  FaArrowAltCircleDown,
-  FaArrowAltCircleUp,
-  FaCheck,
-  FaChevronDown,
-  FaChevronUp,
-  FaPlus,
-  FaTrash,
-} from "react-icons/fa";
-import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
-import { PopUpDeleteCategory } from "@/componnents/financeiro/pop-up-delete-category";
-import { usePanels } from "@/hooks/usePanels";
-import { useQuery } from "react-query";
 
 export type CategoryType = {
   x: string;

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useAuth } from "react-oidc-context";
 import { useRouter } from "next/navigation";
+import { useAuth } from "react-oidc-context";
 import { Flex, Text } from "@chakra-ui/react";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { DefaultButton } from "@/componnents/default-button";
@@ -19,7 +19,7 @@ export default function Login() {
     if (auth.isAuthenticated) {
       router.replace("/financeiro");
     }
-  }, [auth.isAuthenticated, router]);
+  }, [auth.isAuthenticated]);
 
   return (
     <Flex
