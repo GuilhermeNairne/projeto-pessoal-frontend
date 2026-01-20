@@ -5,10 +5,6 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { AuthProvider } from "react-oidc-context";
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryClient, QueryClientProvider } from "react-query";
-import {
-  CognitoIdentityProviderClient,
-  GetUserCommand,
-} from "@aws-sdk/client-cognito-identity-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,19 +24,7 @@ const cognitoAuthConfig = {
   scope: "aws.cognito.signin.user.admin profile email openid phone",
   onSigninCallback: async (user: any) => {
     try {
-      const client = new CognitoIdentityProviderClient({ region: "us-east-2" });
-
-      const command = new GetUserCommand({ AccessToken: user.access_token });
-      const response = await client.send(command);
-
-      const attrs = Object.fromEntries(
-        response?.UserAttributes?.map((a) => [a.Name, a.Value]) || []
-      );
-
-      if (attrs.name) localStorage.setItem("userName", attrs.name);
-      if (attrs.picture) localStorage.setItem("picture", attrs.picture || "");
-
-      const token = user.id_token || user.access_token;
+      const token = user.access_token;
       if (token) {
         document.cookie = `idToken=${token}; path=/; secure; sameSite=lax;`;
       }

@@ -13,6 +13,8 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { useQuery } from "react-query";
 
 const menuOpcoes = [
   {
@@ -26,19 +28,22 @@ const menuOpcoes = [
 ];
 
 export function Menu() {
-  const [name, setName] = useState<string | null>(null);
-  const [picture, setPicture] = useState<string | null>(null);
+  const { getUserInfo } = useUserInfo();
+
   const pathname = usePathname();
   const defaultPicture =
     "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg";
 
-  useEffect(() => {
-    const name = localStorage.getItem("userName");
-    const picture = localStorage.getItem("picture");
+  const { data } = useQuery({
+    queryKey: ["user-info"],
+    queryFn: async () => getUserInfo(),
+  });
 
-    setName(name);
-    setPicture(picture);
-  }, []);
+  useEffect(() => {
+    if (data?.data.name) localStorage.setItem("userName", data?.data.name);
+    if (data?.data.picture)
+      localStorage.setItem("picture", data?.data.picture || "");
+  }, [data]);
 
   async function Logout() {
     await fetch("/api/logout", { method: "GET" });
@@ -49,7 +54,7 @@ export function Menu() {
       "https://us-east-2vdy8onemf.auth.us-east-2.amazoncognito.com";
 
     window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
-      logoutUri
+      logoutUri,
     )}`;
   }
 
@@ -76,11 +81,11 @@ export function Menu() {
           <Image
             w={"70px"}
             h={"70px"}
-            src={picture ?? defaultPicture}
+            src={data?.data.picture ?? defaultPicture}
             borderRadius={"100%"}
           />
           <Text color={"white"} fontWeight={"bold"} fontSize={"18px"}>
-            {name}
+            {data?.data.name}
           </Text>
         </Box>
 
