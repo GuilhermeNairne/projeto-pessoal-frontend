@@ -14,8 +14,8 @@ export type PaineisType = {
 }[];
 
 export type PanelsType = {
-  id: number;
-  user_id: number;
+  id?: number;
+  user_id: string;
   name: string;
   initial_value: string;
 };

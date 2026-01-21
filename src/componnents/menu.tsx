@@ -41,6 +41,7 @@ export function Menu() {
 
   useEffect(() => {
     if (data?.data.name) localStorage.setItem("userName", data?.data.name);
+    if (data?.data.userId) localStorage.setItem("userId", data?.data.userId);
     if (data?.data.picture)
       localStorage.setItem("picture", data?.data.picture || "");
   }, [data]);

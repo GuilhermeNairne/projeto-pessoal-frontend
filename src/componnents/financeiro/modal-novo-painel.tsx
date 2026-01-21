@@ -1,5 +1,6 @@
 import { useFormik } from "formik";
 import { FaSave } from "react-icons/fa";
+import { usePanels } from "@/hooks/usePanels";
 import { DefaultInput } from "../default-input";
 import { DefaultButton } from "../default-button";
 import {
@@ -11,27 +12,51 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  handleSave: (values: any) => void;
 };
 
-export function ModalNovoPainel({ isOpen, onClose, handleSave }: Props) {
+export function ModalNovoPainel({ isOpen, onClose }: Props) {
+  const toast = useToast();
+  const { createPanel } = usePanels();
+  const user_id = localStorage.getItem("userId");
   const { values, handleChange, resetForm } = useFormik({
     initialValues: {
-      nome: "",
-      valor: "",
+      name: "",
+      inicial_value: "",
     },
     onSubmit: (values) => {},
   });
 
-  function handleClick() {
-    handleSave(values);
-    onClose();
-    return resetForm();
+  async function handleClick() {
+    try {
+      const params = {
+        user_id: user_id ?? "",
+        name: values.name,
+        initial_value: values.inicial_value,
+      };
+
+      await createPanel(params);
+      onClose();
+      resetForm();
+      return toast({
+        title: "Painel criado com sucesso!",
+        status: "success",
+        position: "top",
+        isClosable: true,
+      });
+    } catch (error: any) {
+      toast({
+        title: error.response ?? "Painel criado com sucesso!",
+        status: "error",
+        position: "top",
+        isClosable: true,
+      });
+    }
   }
 
   return (
@@ -49,17 +74,17 @@ export function ModalNovoPainel({ isOpen, onClose, handleSave }: Props) {
             placeholder="Informe o nome do painel"
             position="cima"
             title="Nome"
-            value={values.nome}
-            onChange={handleChange("nome")}
+            value={values.name}
+            onChange={handleChange("name")}
           />
           <DefaultInput
             placeholder="Informe o valor da conta"
             position="cima"
             title="Valor"
-            value={values.valor}
+            value={values.inicial_value}
             mt="20px"
             type="number"
-            onChange={handleChange("valor")}
+            onChange={handleChange("inicial_value")}
           />
         </ModalBody>
 

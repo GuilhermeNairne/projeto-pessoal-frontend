@@ -61,7 +61,7 @@ export default function Financeiro() {
     name: "",
   });
 
-  const { data: panels } = useQuery({
+  const { data: panels, refetch } = useQuery({
     queryKey: ["panels"],
     queryFn: async () => listPanels(),
   });
@@ -78,8 +78,8 @@ export default function Financeiro() {
 
     setCategories((prev) =>
       prev.map((item) =>
-        item.x === categorySelected ? { ...item, color } : item
-      )
+        item.x === categorySelected ? { ...item, color } : item,
+      ),
     );
 
     setColorPalette(false);
@@ -95,7 +95,7 @@ export default function Financeiro() {
   function handleSaveCategoryName(index: number) {
     if (editing.index === index) {
       setCategories((prev) =>
-        prev.map((c, i) => (i === index ? { ...c, x: editing.name } : c))
+        prev.map((c, i) => (i === index ? { ...c, x: editing.name } : c)),
       );
 
       setEditing({ index: null, name: "" });
@@ -107,79 +107,6 @@ export default function Financeiro() {
 
     setCategoryToDelete("");
   }
-
-  function createPainel(values: { nome: string; valor: string }) {
-    // setPaineis((prev) => {
-    //   const ultimoId = prev.length > 0 ? prev[prev.length - 1].id : 0;
-    //   const novoId = ultimoId ? ultimoId + 1 : "1";
-    //   return [
-    //     ...prev,
-    //     {
-    //       id: novoId,
-    //       painel: values,
-    //       ocorrencias: [],
-    //     },
-    //   ];
-    // });
-  }
-
-  // function cadastrasMovimentacoes(values: {
-  //   nome: string;
-  //   valor: string;
-  //   data: string;
-  //   tipo: "Entrada" | "Saída";
-  //   categoria: string;
-  //   id: string;
-  // }) {
-  //   const valorMov = Number(values.valor.replace(/\./g, "").replace(",", "."));
-
-  //   if (values.tipo === "Saída") {
-  //     setCategories((prev) =>
-  //       prev.map((cat) =>
-  //         cat.x === values.categoria ? { ...cat, y: cat.y + valorMov } : cat
-  //       )
-  //     );
-  //   }
-
-  //   setPaineis((prev) =>
-  //     prev.map((painel) => {
-  //       if (painel.id === values.id) {
-  //         console.log("painel", painel.painel.valor);
-
-  //         const valorMov = Number(
-  //           values.valor.replace(/\./g, "").replace(",", ".")
-  //         );
-
-  //         const valorAtual = Number(painel.painel.valor);
-
-  //         const novoValor =
-  //           values.tipo === "Entrada"
-  //             ? valorAtual + valorMov
-  //             : valorAtual - valorMov;
-
-  //         return {
-  //           ...painel,
-  //           painel: {
-  //             ...painel.painel,
-  //             valor: novoValor.toString(),
-  //           },
-  //           ocorrencias: [
-  //             ...(painel.ocorrencias || []),
-  //             {
-  //               nome: values.nome,
-  //               valor: values.valor,
-  //               data: values.data,
-  //               tipo: values.tipo,
-  //               movimentacao: values.categoria,
-  //             },
-  //           ],
-  //         };
-  //       }
-
-  //       return painel;
-  //     })
-  //   );
-  // }
 
   return (
     <Flex
@@ -201,8 +128,9 @@ export default function Financeiro() {
 
       <ModalNovoPainel
         isOpen={openModalNovoPainel}
-        onClose={() => setOpenNovoPainel(false)}
-        handleSave={(values) => createPainel(values)}
+        onClose={() => {
+          (setOpenNovoPainel(false), refetch());
+        }}
       />
 
       <ModalRegistrarMovimento
@@ -520,8 +448,8 @@ export default function Financeiro() {
                         borderRadius={"5px"}
                         bg={category.color}
                         onClick={() => {
-                          setCategorySelected(category.x),
-                            setColorPalette(true);
+                          (setCategorySelected(category.x),
+                            setColorPalette(true));
                         }}
                       />
                       <Input
