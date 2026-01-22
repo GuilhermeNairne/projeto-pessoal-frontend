@@ -1,26 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
-import { SketchPicker } from "react-color";
 import { usePanels } from "@/hooks/usePanels";
 import { GrTransaction } from "react-icons/gr";
 import { VictoryPie, VictoryTheme } from "victory";
-import { IoIosAddCircleOutline } from "react-icons/io";
+import { useCategoies } from "@/hooks/useCategories";
+import { CategoriesType } from "@/types/financial-types";
 import { Filtros } from "@/componnents/financeiro/filtros";
+import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
+import { IoIosAddCircleOutline, IoMdClose } from "react-icons/io";
 import { PainelContas } from "@/componnents/financeiro/painel-contas";
-import { ModalCategorias } from "@/componnents/financeiro/modal-categorias";
 import { ModalNovoPainel } from "@/componnents/financeiro/modal-novo-painel";
 import { PopUpDeleteCategory } from "@/componnents/financeiro/pop-up-delete-category";
 import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registrar-movimento";
-import {
-  FaCheck,
-  FaChevronDown,
-  FaChevronUp,
-  FaPlus,
-  FaTrash,
-} from "react-icons/fa";
 import {
   Box,
   Center,
@@ -32,82 +25,72 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useCategoies } from "@/hooks/useCategories";
-import { CategoriesType } from "@/types/financial-types";
-
-export type CategoryType = {
-  x: string;
-  y: number;
-  color: string;
-};
+import { useState } from "react";
+import { SketchPicker } from "react-color";
+import {
+  FaArrowAltCircleDown,
+  FaArrowAltCircleUp,
+  FaCheck,
+  FaChevronDown,
+  FaChevronUp,
+  FaPlus,
+  FaTrash,
+} from "react-icons/fa";
 
 export default function Financeiro() {
   const { listPanels } = usePanels();
-  const { deleteCategory } = useCategoies();
   const user_id = localStorage.getItem("userId");
-  const [categorySelected, setCategorySelected] = useState<string | null>(null);
   const [openFiltros, setOpenFiltros] = useState(false);
   const [openModalNovoPainel, setOpenNovoPainel] = useState(false);
+  const [popUpDeleteCategory, setPopUpDeleteCategory] = useState(false);
+  const { deleteCategory, updateCategory, createCategory } = useCategoies();
+  const [categorySelected, setCategorySelected] = useState<{
+    id?: number;
+    name?: string;
+  }>({ id: undefined, name: "" });
   const [openTransactionModal, setOpenTransactionModal] = useState<{
     open: boolean;
     idPainel: string;
     name: string;
     categories: CategoriesType[];
   }>({ open: false, idPainel: "", name: "", categories: [] });
-  const [popUpDeleteCategory, setPopUpDeleteCategory] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<{
     name: string;
     id: number;
   } | null>(null);
-  const [openModalCategorias, setOpenModalCategorias] = useState(false);
-  const [collorPalette, setColorPalette] = useState(false);
-  const [editing, setEditing] = useState<{
-    index: number | null;
-    name: string;
-  }>({
-    index: null,
-    name: "",
-  });
+  // const [editing, setEditing] = useState<{
+  //   index: number | null;
+  //   name: string;
+  // }>({
+  //   index: null,
+  //   name: "",
+  // });
 
   const { data: panels, refetch: refetchPanel } = useQuery({
     queryKey: ["panels", user_id],
     queryFn: async () => listPanels(user_id ?? ""),
   });
 
-  // function handleChangeColor(color: string) {
-  //   if (!categorySelected) return;
+  async function handleEditCategory(params: { name?: string; color?: string }) {
+    if (!categorySelected) return;
 
-  //   setCategories((prev) =>
-  //     prev.map((item) =>
-  //       item.x === categorySelected ? { ...item, color } : item,
-  //     ),
-  //   );
-
-  //   setColorPalette(false);
-  // }
-
-  // function handleNewCategory() {
-  //   setCategories((prev) => [
-  //     ...prev,
-  //     { x: "nova categoria", y: 0, color: "#3c191dff" },
-  //   ]);
-  // }
-
-  // function handleSaveCategoryName(index: number) {
-  //   if (editing.index === index) {
-  //     setCategories((prev) =>
-  //       prev.map((c, i) => (i === index ? { ...c, x: editing.name } : c)),
-  //     );
-
-  //     setEditing({ index: null, name: "" });
-  //   }
-  // }
+    await updateCategory(categorySelected.id ?? 0, params);
+    refetchPanel();
+    setCategorySelected({ id: undefined, name: "" });
+  }
 
   async function handleDeleteCategory() {
     await deleteCategory(categoryToDelete?.id);
-
     setCategoryToDelete(null);
     refetchPanel();
+  }
+
+  async function handleNewCategory(panel_id: number) {
+    await createCategory({
+      name: "Nova categoria",
+      color: "#3c191dff",
+      panel_id,
+    });
   }
 
   return (
@@ -150,12 +133,6 @@ export default function Financeiro() {
         categorys={openTransactionModal.categories}
         handleSave={(values) => {}}
       />
-
-      {/* <ModalCategorias
-        isOpen={openModalCategorias}
-        onClose={() => setOpenModalCategorias(false)}
-        categorias={categories}
-      /> */}
 
       <Flex
         flexDir={"column"}
@@ -299,8 +276,8 @@ export default function Financeiro() {
                   msOverflowStyle: "none",
                 }}
               >
-                {/* {painel.ocorrencias && painel.ocorrencias?.length > 0
-                  ? painel.ocorrencias.map((occ, index) => (
+                {panel.movements && panel.movements?.length > 0
+                  ? panel.movements.map((occ, index) => (
                       <Box
                         boxShadow="md"
                         display="flex"
@@ -313,26 +290,28 @@ export default function Financeiro() {
                         py={"10px"}
                       >
                         <Text w="24%" color="black">
-                          {occ.nome}
+                          {occ.name}
                         </Text>
                         <Text w="17%" color="black">
-                          {occ.movimentacao}
+                          {occ.category_id}
                         </Text>
                         <Text w="12%" color="black">
-                          R$ {occ.valor}
+                          R$ {occ.value}
                         </Text>
                         <Text w="16%" color="black">
-                          {ConvertDataToBR(occ.data)}
+                          {ConvertDataToBR(occ.date)}
                         </Text>
 
                         <HStack w="28%">
                           <Icon
                             as={
-                              occ.tipo === "Entrada"
+                              occ.movement_type === "Entrada"
                                 ? FaArrowAltCircleUp
                                 : FaArrowAltCircleDown
                             }
-                            color={occ.tipo === "Entrada" ? "green" : "red"}
+                            color={
+                              occ.movement_type === "Entrada" ? "green" : "red"
+                            }
                             boxSize="5"
                           />
                         </HStack>
@@ -340,7 +319,7 @@ export default function Financeiro() {
                         <Icon w="2%" as={FaTrash} />
                       </Box>
                     ))
-                  : null} */}
+                  : null}
               </Flex>
             </Stack>
 
@@ -388,33 +367,50 @@ export default function Financeiro() {
                       msOverflowStyle: "none",
                     }}
                   >
-                    {/* {panel.categories ? panel.categories
-                      .filter((item) => item.y > 0)
-                      .map((item) => (
-                        <HStack key={item.x}>
-                          <Box
-                            borderRadius="5px"
-                            w="20px"
-                            h="20px"
-                            bg={item.color}
-                          />
-                          <Text fontSize="lg" fontWeight="bold">
-                            {item.x}
-                          </Text>
-                        </HStack>
-                      )) : null} */}
+                    {panel.categories
+                      ? panel.categories
+                          .filter((item) =>
+                            item.totalSpent ? item.totalSpent : 0 > 0,
+                          )
+                          .map((item) => (
+                            <HStack key={item.name}>
+                              <Box
+                                borderRadius="5px"
+                                w="20px"
+                                h="20px"
+                                bg={item.color}
+                              />
+                              <Text fontSize="lg" fontWeight="bold">
+                                {item.name}
+                              </Text>
+                            </HStack>
+                          ))
+                      : null}
                   </Stack>
                 </Box>
               </Box>
 
-              {/* {collorPalette ? (
-                <SketchPicker
-                  color={"#FF0000"}
-                  onChange={(c: any) => {
-                    handleChangeColor(c.hex);
-                  }}
-                />
-              ) : null} */}
+              {categorySelected.id ? (
+                <Box
+                  display={"flex"}
+                  flexDir={"column"}
+                  alignItems={"flex-end"}
+                >
+                  <Icon
+                    as={IoMdClose}
+                    mb={"15px"}
+                    onClick={() =>
+                      setCategorySelected({ id: undefined, name: "" })
+                    }
+                  />
+                  <SketchPicker
+                    color={"#FF0000"}
+                    onChange={(c: any) => {
+                      handleEditCategory({ color: String(c.hex) });
+                    }}
+                  />
+                </Box>
+              ) : null}
 
               <Box
                 display={"flex"}
@@ -455,23 +451,23 @@ export default function Financeiro() {
                         h={"25px"}
                         borderRadius={"5px"}
                         bg={category.color}
-                        onClick={() => {
-                          (setCategorySelected(category.name),
-                            setColorPalette(true));
-                        }}
+                        onClick={() => setCategorySelected({ id: category.id })}
                       />
                       <Input
                         fontSize="lg"
                         w="50%"
                         h="35px"
                         value={
-                          editing.index === index ? editing.name : category.name
+                          categorySelected.id === category.id
+                            ? categorySelected.name
+                            : category.name
                         }
                         onChange={(e) =>
-                          setEditing({
-                            index,
+                          setCategorySelected((prev) => ({
+                            ...prev,
+                            id: category.id,
                             name: e.target.value,
-                          })
+                          }))
                         }
                       />
 
@@ -479,7 +475,9 @@ export default function Financeiro() {
                         as={FaCheck}
                         ml="5px"
                         cursor="pointer"
-                        // onClick={() => handleSaveCategoryName(index)}
+                        onClick={() =>
+                          handleEditCategory({ name: categorySelected.name })
+                        }
                       />
                       <Icon
                         as={FaTrash}
@@ -498,7 +496,7 @@ export default function Financeiro() {
                 <HStack
                   mt={"20px"}
                   mr={"70px"}
-                  // onClick={handleNewCategory}
+                  onClick={() => handleNewCategory(panel.id ?? 0)}
                 >
                   <Icon as={FaPlus} />
                   <Text>Adicionar categoria</Text>

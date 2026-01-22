@@ -19,11 +19,21 @@ export type PanelsType = {
   name: string;
   initial_value: string;
   categories?: CategoriesType[];
+  movements?: MovementsType[];
 };
 
 export type CategoriesType = {
   name: string;
   color: string;
   id: number;
-  painel_id: number;
+  panel_id: number;
+  totalSpent?: number;
+};
+
+export type MovementsType = {
+  name: string;
+  value: number;
+  movement_type: string;
+  date: string;
+  category_id: string;
 };

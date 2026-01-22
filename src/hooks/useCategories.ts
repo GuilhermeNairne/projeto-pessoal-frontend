@@ -1,8 +1,8 @@
 import { api } from "@/services/api";
-import { PanelsType } from "@/types/financial-types";
+import { CategoriesType } from "@/types/financial-types";
 
 export function useCategoies() {
-  async function createCategory(params: PanelsType) {
+  async function createCategory(params: Omit<CategoriesType, "id">) {
     const result = await api.post("financial-category/create", params);
 
     return result;
@@ -14,5 +14,11 @@ export function useCategoies() {
     return result;
   }
 
-  return { createCategory, deleteCategory };
+  async function updateCategory(id: number, body: Partial<CategoriesType>) {
+    const result = await api.patch(`financial-category/update/${id}`, body);
+
+    return result;
+  }
+
+  return { createCategory, deleteCategory, updateCategory };
 }
