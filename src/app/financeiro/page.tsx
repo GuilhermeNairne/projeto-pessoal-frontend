@@ -32,6 +32,8 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useCategoies } from "@/hooks/useCategories";
+import { CategoriesType } from "@/types/financial-types";
 
 export type CategoryType = {
   x: string;
@@ -41,6 +43,8 @@ export type CategoryType = {
 
 export default function Financeiro() {
   const { listPanels } = usePanels();
+  const { deleteCategory } = useCategoies();
+  const user_id = localStorage.getItem("userId");
   const [categorySelected, setCategorySelected] = useState<string | null>(null);
   const [openFiltros, setOpenFiltros] = useState(false);
   const [openModalNovoPainel, setOpenNovoPainel] = useState(false);
@@ -48,9 +52,13 @@ export default function Financeiro() {
     open: boolean;
     idPainel: string;
     name: string;
-  }>({ open: false, idPainel: "", name: "" });
+    categories: CategoriesType[];
+  }>({ open: false, idPainel: "", name: "", categories: [] });
   const [popUpDeleteCategory, setPopUpDeleteCategory] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState("");
+  const [categoryToDelete, setCategoryToDelete] = useState<{
+    name: string;
+    id: number;
+  } | null>(null);
   const [openModalCategorias, setOpenModalCategorias] = useState(false);
   const [collorPalette, setColorPalette] = useState(false);
   const [editing, setEditing] = useState<{
@@ -61,51 +69,45 @@ export default function Financeiro() {
     name: "",
   });
 
-  const { data: panels, refetch } = useQuery({
-    queryKey: ["panels"],
-    queryFn: async () => listPanels(),
+  const { data: panels, refetch: refetchPanel } = useQuery({
+    queryKey: ["panels", user_id],
+    queryFn: async () => listPanels(user_id ?? ""),
   });
 
-  const [categories, setCategories] = useState<CategoryType[]>([
-    { x: "Mercado", y: 0, color: "#d50c20" },
-    { x: "Alimentação", y: 0, color: "#0cd513ff" },
-    { x: "Roupas", y: 0, color: "#0c2ad5ff" },
-    { x: "Academia", y: 0, color: "#111a4bff" },
-  ]);
+  // function handleChangeColor(color: string) {
+  //   if (!categorySelected) return;
 
-  function handleChangeColor(color: string) {
-    if (!categorySelected) return;
+  //   setCategories((prev) =>
+  //     prev.map((item) =>
+  //       item.x === categorySelected ? { ...item, color } : item,
+  //     ),
+  //   );
 
-    setCategories((prev) =>
-      prev.map((item) =>
-        item.x === categorySelected ? { ...item, color } : item,
-      ),
-    );
+  //   setColorPalette(false);
+  // }
 
-    setColorPalette(false);
-  }
+  // function handleNewCategory() {
+  //   setCategories((prev) => [
+  //     ...prev,
+  //     { x: "nova categoria", y: 0, color: "#3c191dff" },
+  //   ]);
+  // }
 
-  function handleNewCategory() {
-    setCategories((prev) => [
-      ...prev,
-      { x: "nova categoria", y: 0, color: "#3c191dff" },
-    ]);
-  }
+  // function handleSaveCategoryName(index: number) {
+  //   if (editing.index === index) {
+  //     setCategories((prev) =>
+  //       prev.map((c, i) => (i === index ? { ...c, x: editing.name } : c)),
+  //     );
 
-  function handleSaveCategoryName(index: number) {
-    if (editing.index === index) {
-      setCategories((prev) =>
-        prev.map((c, i) => (i === index ? { ...c, x: editing.name } : c)),
-      );
+  //     setEditing({ index: null, name: "" });
+  //   }
+  // }
 
-      setEditing({ index: null, name: "" });
-    }
-  }
+  async function handleDeleteCategory() {
+    await deleteCategory(categoryToDelete?.id);
 
-  function handleDeleteCategory() {
-    setCategories((prev) => prev.filter((cate) => cate.x !== categoryToDelete));
-
-    setCategoryToDelete("");
+    setCategoryToDelete(null);
+    refetchPanel();
   }
 
   return (
@@ -123,32 +125,37 @@ export default function Financeiro() {
         isOpen={popUpDeleteCategory}
         onClose={() => setPopUpDeleteCategory(false)}
         onConfirm={handleDeleteCategory}
-        categoryName={categoryToDelete}
+        categoryName={categoryToDelete?.name ?? ""}
       />
 
       <ModalNovoPainel
         isOpen={openModalNovoPainel}
         onClose={() => {
-          (setOpenNovoPainel(false), refetch());
+          (setOpenNovoPainel(false), refetchPanel());
         }}
       />
 
       <ModalRegistrarMovimento
         isOpen={openTransactionModal.open === true}
         onClose={() =>
-          setOpenTransactionModal({ open: false, idPainel: "", name: "" })
+          setOpenTransactionModal({
+            open: false,
+            idPainel: "",
+            name: "",
+            categories: [],
+          })
         }
         painel={openTransactionModal.name}
         id={openTransactionModal.idPainel}
-        categorys={categories}
+        categorys={openTransactionModal.categories}
         handleSave={(values) => {}}
       />
 
-      <ModalCategorias
+      {/* <ModalCategorias
         isOpen={openModalCategorias}
         onClose={() => setOpenModalCategorias(false)}
         categorias={categories}
-      />
+      /> */}
 
       <Flex
         flexDir={"column"}
@@ -189,7 +196,7 @@ export default function Financeiro() {
           </Center>
         ) : null}
 
-        {panels?.data.map((painel) => (
+        {panels?.data.map((panel) => (
           <Box
             display={"flex"}
             flexDir={"column"}
@@ -201,14 +208,15 @@ export default function Financeiro() {
           >
             <HStack display={"flex"} justifyContent={"space-between"}>
               <Text fontSize={"3xl"} fontWeight={"bold"}>
-                {painel.name}
+                {panel.name}
               </Text>
               <Box
                 onClick={() =>
                   setOpenTransactionModal({
                     open: true,
-                    idPainel: String(painel.id) ?? "",
-                    name: painel.name,
+                    idPainel: String(panel.id) ?? "",
+                    name: panel.name,
+                    categories: panel.categories ?? [],
                   })
                 }
                 display={"flex"}
@@ -354,7 +362,7 @@ export default function Financeiro() {
                     startAngle={90}
                     labels={({ datum }) => `R$ ${datum.y},00`}
                     endAngle={450}
-                    data={categories}
+                    data={panel.categories}
                     theme={VictoryTheme.clean}
                     style={{
                       labels: {
@@ -380,7 +388,7 @@ export default function Financeiro() {
                       msOverflowStyle: "none",
                     }}
                   >
-                    {categories
+                    {/* {panel.categories ? panel.categories
                       .filter((item) => item.y > 0)
                       .map((item) => (
                         <HStack key={item.x}>
@@ -394,19 +402,19 @@ export default function Financeiro() {
                             {item.x}
                           </Text>
                         </HStack>
-                      ))}
+                      )) : null} */}
                   </Stack>
                 </Box>
               </Box>
 
-              {collorPalette ? (
+              {/* {collorPalette ? (
                 <SketchPicker
                   color={"#FF0000"}
                   onChange={(c: any) => {
                     handleChangeColor(c.hex);
                   }}
                 />
-              ) : null}
+              ) : null} */}
 
               <Box
                 display={"flex"}
@@ -440,7 +448,7 @@ export default function Financeiro() {
                     scrollbarColor: "rgba(0,0,0,0.3) transparent",
                   }}
                 >
-                  {categories.map((category, index) => (
+                  {panel.categories?.map((category, index) => (
                     <HStack>
                       <Box
                         w={"25px"}
@@ -448,7 +456,7 @@ export default function Financeiro() {
                         borderRadius={"5px"}
                         bg={category.color}
                         onClick={() => {
-                          (setCategorySelected(category.x),
+                          (setCategorySelected(category.name),
                             setColorPalette(true));
                         }}
                       />
@@ -457,7 +465,7 @@ export default function Financeiro() {
                         w="50%"
                         h="35px"
                         value={
-                          editing.index === index ? editing.name : category.x
+                          editing.index === index ? editing.name : category.name
                         }
                         onChange={(e) =>
                           setEditing({
@@ -471,20 +479,27 @@ export default function Financeiro() {
                         as={FaCheck}
                         ml="5px"
                         cursor="pointer"
-                        onClick={() => handleSaveCategoryName(index)}
+                        // onClick={() => handleSaveCategoryName(index)}
                       />
                       <Icon
                         as={FaTrash}
                         ml={"5px"}
                         onClick={() => {
-                          setCategoryToDelete(category.x);
+                          setCategoryToDelete({
+                            name: category.name,
+                            id: category.id,
+                          });
                           setPopUpDeleteCategory(true);
                         }}
                       />
                     </HStack>
                   ))}
                 </Stack>
-                <HStack mt={"20px"} mr={"70px"} onClick={handleNewCategory}>
+                <HStack
+                  mt={"20px"}
+                  mr={"70px"}
+                  // onClick={handleNewCategory}
+                >
                   <Icon as={FaPlus} />
                   <Text>Adicionar categoria</Text>
                 </HStack>

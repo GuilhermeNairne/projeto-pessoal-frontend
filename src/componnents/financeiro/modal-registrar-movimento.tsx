@@ -17,12 +17,13 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { CategoryType } from "@/app/financeiro/page";
+import { CategoriesType } from "@/types/financial-types";
 
 type Props = {
   painel: string;
   isOpen: boolean;
   id: string;
-  categorys: CategoryType[];
+  categorys: CategoriesType[];
   onClose: () => void;
   handleSave: (values: any) => void;
 };
@@ -87,7 +88,7 @@ export function ModalRegistrarMovimento({
               onChange={handleChange("categoria")}
             >
               {categorys.map((categoria) => (
-                <option value={categoria.x}>{categoria.x}</option>
+                <option value={categoria.name}>{categoria.name}</option>
               ))}
             </Select>
           </Stack>

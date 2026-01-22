@@ -18,4 +18,12 @@ export type PanelsType = {
   user_id: string;
   name: string;
   initial_value: string;
+  categories?: CategoriesType[];
+};
+
+export type CategoriesType = {
+  name: string;
+  color: string;
+  id: number;
+  painel_id: number;
 };

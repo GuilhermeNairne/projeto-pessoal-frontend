@@ -73,17 +73,6 @@ export function ModalCategorias({ isOpen, onClose, categorias }: Props) {
                   <Icon as={FaTrash} ml={"5px"} />
                 </HStack>
               ))}
-
-              {/* <Link>
-                <HStack>
-                  <Text color={"menu_principal"}>Nova categoria</Text>
-                  <Icon
-                    color={"menu_principal"}
-                    boxSize={6}
-                    as={MdOutlineAddCircleOutline}
-                  />
-                </HStack>
-              </Link> */}
             </Stack>
 
             <Box mr={"30px"}>

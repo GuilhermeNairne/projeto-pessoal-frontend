@@ -1,9 +1,11 @@
 import { api } from "@/services/api";
-import { PanelsType } from "@/types/financeiro-types";
+import { PanelsType } from "@/types/financial-types";
 
 export function usePanels() {
-  async function listPanels() {
-    const result = await api.get<PanelsType[]>("/financial-panel/list");
+  async function listPanels(user_id: string) {
+    const result = await api.get<PanelsType[]>(
+      `/financial-panel/list/${user_id}`,
+    );
 
     return result;
   }

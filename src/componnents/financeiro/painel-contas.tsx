@@ -1,4 +1,4 @@
-import { PaineisType, PanelsType } from "@/types/financeiro-types";
+import { PaineisType, PanelsType } from "@/types/financial-types";
 import { formatarValorBR } from "@/utils/convert-to-real";
 import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { PiMoneyWavyFill, PiPiggyBankFill } from "react-icons/pi";
@@ -11,7 +11,7 @@ export function PainelContas({ paineis }: Props) {
   function calculaTotal() {
     return formatarValorBR(
       paineis?.reduce((total, item) => total + Number(item.initial_value), 0) ??
-        0
+        0,
     );
   }
 
