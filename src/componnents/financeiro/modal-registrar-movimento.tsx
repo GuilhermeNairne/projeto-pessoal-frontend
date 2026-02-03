@@ -16,7 +16,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { CategoryType } from "@/app/financeiro/page";
 import { CategoriesType } from "@/types/financial-types";
 
 type Props = {
@@ -25,7 +24,6 @@ type Props = {
   id: string;
   categorys: CategoriesType[];
   onClose: () => void;
-  handleSave: (values: any) => void;
 };
 
 export function ModalRegistrarMovimento({
@@ -34,7 +32,6 @@ export function ModalRegistrarMovimento({
   painel,
   id,
   categorys,
-  handleSave,
 }: Props) {
   const { values, handleChange, resetForm } = useFormik({
     initialValues: {
@@ -50,7 +47,7 @@ export function ModalRegistrarMovimento({
   });
 
   function handleClick() {
-    handleSave(values);
+    // handleSave(values);
     onClose();
     resetForm();
   }

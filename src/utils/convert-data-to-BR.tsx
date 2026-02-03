@@ -1,4 +1,5 @@
 export function ConvertDataToBR(iso: string) {
-  const [ano, mes, dia] = iso.split("-");
-  return `${dia}/${mes}/${ano}`;
+  const date = new Date(iso);
+
+  return date.toLocaleDateString("pt-BR");
 }

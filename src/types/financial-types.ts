@@ -1,18 +1,3 @@
-export type PaineisType = {
-  id?: string;
-  painel: {
-    nome: string;
-    valor: string;
-  };
-  ocorrencias?: {
-    nome: string;
-    valor: string;
-    data: string;
-    tipo: string;
-    movimentacao: string;
-  }[];
-}[];
-
 export type PanelsType = {
   id?: number;
   user_id: string;
@@ -36,4 +21,14 @@ export type MovementsType = {
   movement_type: string;
   date: string;
   category_id: string;
+  categories?: {
+    name: string;
+  };
 };
+
+export type ModalType =
+  | "filtros"
+  | "novoPainel"
+  | "deleteCategory"
+  | "transaction"
+  | null;

@@ -1,6 +1,6 @@
-import { PaineisType, PanelsType } from "@/types/financial-types";
+import { PanelsType } from "@/types/financial-types";
 import { formatarValorBR } from "@/utils/convert-to-real";
-import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { PiMoneyWavyFill, PiPiggyBankFill } from "react-icons/pi";
 
 type Props = {
@@ -33,58 +33,69 @@ export function PainelContas({ paineis }: Props) {
 
   return (
     <Flex flexDir="column" gap={5} mt={"20px"}>
-      {linhas.map((linha: any, index: any) => (
-        <HStack key={index} gap={10}>
-          {linha.map((conta: PanelsType) => (
-            <Box
-              key={conta.id}
-              display="flex"
-              flexDir="column"
-              bg="white"
-              p="15px"
-              borderRadius="8px"
-              w="300px"
-              h="130px"
-              boxShadow="lg"
-            >
-              <HStack gap={3}>
-                <Icon as={PiMoneyWavyFill} boxSize="8" color="green" />
-                <Text fontWeight="bold" fontSize="2xl">
-                  {conta.name}
+      {paineis?.length === 0 ? (
+        <Center mt={"200px"} display={"flex"} flexDir={"column"}>
+          <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
+            Você ainda não criou nenhum painel,
+          </Text>
+          <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
+            Clique no botão acima para adicionar um.
+          </Text>
+        </Center>
+      ) : (
+        linhas.map((linha: any, index: any) => (
+          <HStack key={index} gap={10}>
+            {linha.map((conta: PanelsType) => (
+              <Box
+                key={conta.id}
+                display="flex"
+                flexDir="column"
+                bg="white"
+                p="15px"
+                borderRadius="8px"
+                w="300px"
+                h="130px"
+                boxShadow="lg"
+              >
+                <HStack gap={3}>
+                  <Icon as={PiMoneyWavyFill} boxSize="8" color="green" />
+                  <Text fontWeight="bold" fontSize="2xl">
+                    {conta.name}
+                  </Text>
+                </HStack>
+
+                <Text mt="20px" fontSize="2xl">
+                  R$ {formatarValorBR(conta.initial_value)}
                 </Text>
-              </HStack>
+              </Box>
+            ))}
 
-              <Text mt="20px" fontSize="2xl">
-                R$ {formatarValorBR(conta.initial_value)}
-              </Text>
-            </Box>
-          ))}
+            {index === linhas.length - 1 && (
+              <Box
+                display="flex"
+                flexDir="column"
+                bg="menu_principal"
+                p="15px"
+                borderRadius="8px"
+                w="300px"
+                h="130px"
+                boxShadow="lg"
+              >
+                <HStack gap={3}>
+                  <Icon as={PiPiggyBankFill} boxSize="8" color="white" />
+                  <Text fontWeight="bold" fontSize="2xl" color="white">
+                    Total
+                  </Text>
+                </HStack>
 
-          {index === linhas.length - 1 && (
-            <Box
-              display="flex"
-              flexDir="column"
-              bg="menu_principal"
-              p="15px"
-              borderRadius="8px"
-              w="300px"
-              h="130px"
-              boxShadow="lg"
-            >
-              <HStack gap={3}>
-                <Icon as={PiPiggyBankFill} boxSize="8" color="white" />
-                <Text fontWeight="bold" fontSize="2xl" color="white">
-                  Total
+                <Text mt="20px" fontSize="2xl" color="white">
+                  R$ {calculaTotal()}
                 </Text>
-              </HStack>
-
-              <Text mt="20px" fontSize="2xl" color="white">
-                R$ {calculaTotal()}
-              </Text>
-            </Box>
-          )}
-        </HStack>
-      ))}
+              </Box>
+            )}
+          </HStack>
+        ))
+      )}
     </Flex>
   );
 }

@@ -82,7 +82,7 @@ export function Menu() {
           <Image
             w={"70px"}
             h={"70px"}
-            src={data?.data.picture ?? defaultPicture}
+            src={defaultPicture}
             borderRadius={"100%"}
           />
           <Text color={"white"} fontWeight={"bold"} fontSize={"18px"}>
