@@ -59,6 +59,7 @@ export default function Financeiro() {
 
       <ModalRegistrarMovimento
         isOpen={openTransactionModal.open === true}
+        refetch={() => refetchPanel()}
         onClose={() =>
           setOpenTransactionModal({
             open: false,
@@ -68,7 +69,7 @@ export default function Financeiro() {
           })
         }
         painel={openTransactionModal.name}
-        id={openTransactionModal.idPainel}
+        painel_id={openTransactionModal.idPainel}
         categorys={openTransactionModal.categories}
       />
 

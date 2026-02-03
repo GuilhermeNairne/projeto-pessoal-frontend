@@ -14,42 +14,66 @@ import {
   Select,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { CategoriesType } from "@/types/financial-types";
+import { useMovements } from "@/hooks/useMovements";
 
 type Props = {
   painel: string;
   isOpen: boolean;
-  id: string;
+  painel_id: string;
   categorys: CategoriesType[];
   onClose: () => void;
+  refetch: () => void;
 };
 
 export function ModalRegistrarMovimento({
   isOpen,
   onClose,
   painel,
-  id,
+  painel_id,
   categorys,
+  refetch,
 }: Props) {
+  const toast = useToast();
+  const { createMovement } = useMovements();
   const { values, handleChange, resetForm } = useFormik({
     initialValues: {
-      nome: "",
-      categoria: "",
-      valor: "",
-      tipo: "",
-      id: id,
-      data: brToIso(new Date().toLocaleDateString("pt-BR")),
+      name: "",
+      value: 0,
+      category_id: 0,
+      movement_type: "",
+      painel_id: Number(painel_id),
+      date: brToIso(new Date().toLocaleDateString("pt-BR")),
     },
     enableReinitialize: true,
     onSubmit: (values) => {},
   });
 
-  function handleClick() {
-    // handleSave(values);
-    onClose();
-    resetForm();
+  async function handleClick() {
+    try {
+      await createMovement(values);
+
+      toast({
+        title: "Movimentação registrada com sucesso!",
+        status: "success",
+        position: "top",
+        isClosable: true,
+      });
+
+      onClose();
+      refetch();
+      resetForm();
+    } catch (error) {
+      toast({
+        title: "Erro ao registrar movimentação",
+        status: "error",
+        position: "top",
+        isClosable: true,
+      });
+    }
   }
 
   function brToIso(brDate: string) {
@@ -72,8 +96,8 @@ export function ModalRegistrarMovimento({
             title="Nome da movimentação"
             position="cima"
             placeholder="Informe o nome da movimentação"
-            value={values.nome}
-            onChange={handleChange("nome")}
+            value={values.name}
+            onChange={handleChange("name")}
           />
 
           <Stack mt={"20px"}>
@@ -82,21 +106,24 @@ export function ModalRegistrarMovimento({
               placeholder="Selecione a categoria"
               borderColor={"gray.400"}
               borderRadius={"10px"}
-              onChange={handleChange("categoria")}
+              onChange={handleChange("category_id")}
             >
               {categorys.map((categoria) => (
-                <option value={categoria.name}>{categoria.name}</option>
+                <option value={categoria.id}>{categoria.name}</option>
               ))}
             </Select>
           </Stack>
 
           <Stack mt="20px">
             <Text fontWeight={"bold"}>Tipo da movimentação</Text>
-            <RadioGroup defaultValue="2" onChange={handleChange("tipo")}>
-              <Radio color="red" value="Entrada" mr={"20px"}>
+            <RadioGroup
+              defaultValue="2"
+              onChange={handleChange("movement_type")}
+            >
+              <Radio color="red" value="IN" mr={"20px"}>
                 Entrada
               </Radio>
-              <Radio color="red" value="Saída">
+              <Radio color="red" value="OUT">
                 Saída
               </Radio>
             </RadioGroup>
@@ -107,8 +134,8 @@ export function ModalRegistrarMovimento({
             placeholder="Informa o valor da movimentação"
             position="cima"
             mt="20px"
-            value={values.valor}
-            onChange={handleChange("valor")}
+            value={values.value === 0 ? "" : String(values.value)}
+            onChange={handleChange("value")}
           />
 
           <DefaultInput
@@ -117,8 +144,8 @@ export function ModalRegistrarMovimento({
             position="cima"
             mt="20px"
             type="date"
-            value={values.data}
-            onChange={handleChange("data")}
+            value={values.date}
+            onChange={handleChange("date")}
           />
         </ModalBody>
 

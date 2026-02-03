@@ -20,7 +20,8 @@ export type MovementsType = {
   value: number;
   movement_type: string;
   date: string;
-  category_id: string;
+  category_id: number;
+  painel_id?: number;
   categories?: {
     name: string;
   };

@@ -51,7 +51,7 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
       });
     } catch (error: any) {
       toast({
-        title: error.response ?? "Painel criado com sucesso!",
+        title: error.response ?? "Erro ao criar painel!",
         status: "error",
         position: "top",
         isClosable: true,
