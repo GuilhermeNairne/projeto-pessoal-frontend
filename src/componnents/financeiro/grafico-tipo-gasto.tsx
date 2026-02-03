@@ -7,6 +7,24 @@ type Props = {
 };
 
 export function GraficoTipoGasto({ panel }: Props) {
+  console.log("categories", panel.categories);
+
+  const chartData = panel.categories
+    ?.map((category) => {
+      const total = (panel.movements ?? [])
+        .filter(
+          (m) => m.movement_type === "OUT" && m.category_id === category.id,
+        )
+        .reduce((acc, m) => acc + Number(m.value), 0);
+
+      return {
+        x: category.name,
+        y: total,
+        color: category.color,
+      };
+    })
+    .filter((item) => item.y > 0);
+
   return (
     <Box display={"flex"} flexDir={"column"}>
       <HStack display={"flex"} justifyContent={"space-between"}>
@@ -18,9 +36,9 @@ export function GraficoTipoGasto({ panel }: Props) {
         <Box w={"100%"} display={"flex"} flexDir={"row"}>
           <VictoryPie
             startAngle={90}
-            labels={({ datum }) => `R$ ${datum.y},00`}
+            labels={({ datum }) => `R$ ${datum.y}`}
             endAngle={450}
-            data={panel.categories}
+            data={chartData}
             theme={VictoryTheme.clean}
             style={{
               labels: {
@@ -48,7 +66,7 @@ export function GraficoTipoGasto({ panel }: Props) {
           >
             {panel.categories
               ? panel.categories
-                  .filter((item) => (item.totalSpent ? item.totalSpent : 0 > 0))
+                  .filter((item) => (item.totalSpent ? item.totalSpent : 0))
                   .map((item) => (
                     <HStack key={item.name}>
                       <Box

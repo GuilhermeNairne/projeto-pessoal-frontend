@@ -1,6 +1,8 @@
-import { Box, Flex, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import { useState } from "react";
 import { Filtros } from "./filtros";
+import { PanelsType } from "@/types/financial-types";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
+import { Box, Flex, HStack, Icon, Stack, Text } from "@chakra-ui/react";
 import {
   FaArrowAltCircleDown,
   FaArrowAltCircleUp,
@@ -8,8 +10,6 @@ import {
   FaChevronUp,
   FaTrash,
 } from "react-icons/fa";
-import { useState } from "react";
-import { PanelsType } from "@/types/financial-types";
 
 type Props = {
   panel: PanelsType;
@@ -54,6 +54,7 @@ export function ComponenteMovimentos({ panel }: Props) {
           display={"flex"}
           flexDir={"row"}
           bg={"menu_principal"}
+          borderRadius={"5px"}
           w={"full"}
           h={"35px"}
           alignItems={"center"}
@@ -82,6 +83,7 @@ export function ComponenteMovimentos({ panel }: Props) {
           flexDir={"column"}
           gap={2}
           maxH={"250px"}
+          borderRadius={"5px"}
           overflowY="auto"
           sx={{
             "::-webkit-scrollbar": {
