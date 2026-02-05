@@ -30,7 +30,14 @@ export type MovementsType = {
 
 export type ModalType =
   | "filtros"
-  | "novoPainel"
+  | "newPanel"
   | "deleteCategory"
   | "transaction"
+  | "editPanel"
   | null;
+
+export type EditPanelType = {
+  panel: string;
+  value: string;
+  id: number;
+};

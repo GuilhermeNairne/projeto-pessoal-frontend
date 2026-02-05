@@ -6,7 +6,11 @@ import { Menu } from "@/componnents/menu";
 import { usePanels } from "@/hooks/usePanels";
 import { GrTransaction } from "react-icons/gr";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import { CategoriesType, ModalType } from "@/types/financial-types";
+import {
+  CategoriesType,
+  EditPanelType,
+  ModalType,
+} from "@/types/financial-types";
 import { PainelContas } from "@/componnents/financeiro/painel-contas";
 import { Box, Flex, HStack, Icon, Link, Text } from "@chakra-ui/react";
 import { ModalNovoPainel } from "@/componnents/financeiro/modal-novo-painel";
@@ -15,6 +19,7 @@ import { CategoriasComponente } from "@/componnents/financeiro/categorias-compon
 import { ComponenteMovimentos } from "@/componnents/financeiro/componente-movimentos";
 import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registrar-movimento";
 import { FaPencil } from "react-icons/fa6";
+import { EditPanelModal } from "@/componnents/financeiro/modal-edit-panel";
 
 const css = {
   "&::-webkit-scrollbar": {
@@ -27,6 +32,7 @@ const css = {
 export default function Financeiro() {
   const { listPanels } = usePanels();
   const user_id = localStorage.getItem("userId");
+  const [editPanelValues, setEditPanelValues] = useState<EditPanelType>();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [openTransactionModal, setOpenTransactionModal] = useState<{
     open: boolean;
@@ -40,6 +46,11 @@ export default function Financeiro() {
     queryFn: async () => listPanels(user_id ?? ""),
   });
 
+  function handleEditPanel({ id, panel, value }: EditPanelType) {
+    setEditPanelValues({ panel, value, id });
+    setActiveModal("editPanel");
+  }
+
   return (
     <Flex
       w={"100%"}
@@ -52,9 +63,20 @@ export default function Financeiro() {
       <Menu />
 
       <ModalNovoPainel
-        isOpen={activeModal === "novoPainel"}
+        isOpen={activeModal === "newPanel"}
         onClose={() => {
           (setActiveModal(null), refetchPanel());
+        }}
+      />
+
+      <EditPanelModal
+        isOpen={activeModal === "editPanel"}
+        onClose={() => setActiveModal(null)}
+        refetch={() => refetchPanel()}
+        panelValues={{
+          id: editPanelValues?.id ?? 0,
+          panel: editPanelValues?.panel ?? "",
+          value: editPanelValues?.value ?? "",
         }}
       />
 
@@ -87,7 +109,7 @@ export default function Financeiro() {
             flexDir={"row"}
             alignItems={"center"}
             gap={2}
-            onClick={() => setActiveModal("novoPainel")}
+            onClick={() => setActiveModal("newPanel")}
           >
             <Text fontSize={"lg"}>Novo painel</Text>
             <Icon as={IoIosAddCircleOutline} boxSize={"8"} />
@@ -111,7 +133,16 @@ export default function Financeiro() {
                 <Text fontSize={"3xl"} fontWeight={"bold"}>
                   {panel.name}
                 </Text>
-                <Icon as={FaPencil} />
+                <Icon
+                  as={FaPencil}
+                  onClick={() =>
+                    handleEditPanel({
+                      panel: panel.name,
+                      value: panel.initial_value,
+                      id: panel.id ?? 0,
+                    })
+                  }
+                />
               </HStack>
               <Box
                 onClick={() =>
