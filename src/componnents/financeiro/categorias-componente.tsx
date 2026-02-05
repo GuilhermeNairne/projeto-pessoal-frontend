@@ -154,54 +154,61 @@ export function CategoriasComponente({ panel, refetch }: Props) {
           overflowX="hidden"
           sx={css}
         >
-          {panel.categories?.map((category, index) => (
-            <HStack>
-              <Box
-                w={"25px"}
-                h={"25px"}
-                borderRadius={"5px"}
-                bg={category.color}
-                onClick={() => setCategorySelected({ id: category.id })}
-              />
-              <Input
-                fontSize="lg"
-                w="50%"
-                h="35px"
-                value={
-                  categorySelected?.id === category.id
-                    ? categorySelected?.name
-                    : category.name
-                }
-                onChange={(e) =>
-                  setCategorySelected((prev) => ({
-                    ...prev,
-                    id: category.id,
-                    name: e.target.value,
-                  }))
-                }
-              />
+          {panel.categories?.length === 0 ? (
+            <Stack alignItems={"center"} mr={"80px"}>
+              <Text>Nenhuma categoria cadastrada.</Text>
+              <Text>Clique no botão abaixo para adicionar.</Text>
+            </Stack>
+          ) : (
+            panel.categories?.map((category, index) => (
+              <HStack>
+                <Box
+                  w={"25px"}
+                  h={"25px"}
+                  borderRadius={"5px"}
+                  bg={category.color}
+                  onClick={() => setCategorySelected({ id: category.id })}
+                />
+                <Input
+                  fontSize="lg"
+                  w="50%"
+                  h="35px"
+                  value={
+                    categorySelected?.id === category.id
+                      ? categorySelected?.name
+                      : category.name
+                  }
+                  onChange={(e) =>
+                    setCategorySelected((prev) => ({
+                      ...prev,
+                      id: category.id,
+                      name: e.target.value,
+                    }))
+                  }
+                />
 
-              <Icon
-                as={FaCheck}
-                ml="5px"
-                cursor="pointer"
-                onClick={() =>
-                  handleEditCategory({ name: categorySelected?.name })
-                }
-              />
-              <Icon
-                as={FaTrash}
-                ml={"5px"}
-                onClick={() => {
-                  setCategoryToDelete({
-                    name: category.name,
-                    id: category.id,
-                  });
-                  onOpen();
-                }}
-              />
-            </HStack>
-          ))}
+                <Icon
+                  as={FaCheck}
+                  ml="5px"
+                  cursor="pointer"
+                  onClick={() =>
+                    handleEditCategory({ name: categorySelected?.name })
+                  }
+                />
+                <Icon
+                  as={FaTrash}
+                  ml={"5px"}
+                  onClick={() => {
+                    setCategoryToDelete({
+                      name: category.name,
+                      id: category.id,
+                    });
+                    onOpen();
+                  }}
+                />
+              </HStack>
+            ))
+          )}
         </Stack>
         <HStack
           mt={"20px"}
@@ -209,7 +216,7 @@ export function CategoriasComponente({ panel, refetch }: Props) {
           onClick={() => handleNewCategory(panel.id ?? 0)}
         >
           <Icon as={FaPlus} />
-          <Text>Adicionar categoria</Text>
+          <Text fontWeight={"bold"}>Adicionar categoria</Text>
         </HStack>
       </Box>
     </>

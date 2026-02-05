@@ -2,7 +2,15 @@ import { useState } from "react";
 import { Filtros } from "./filtros";
 import { PanelsType } from "@/types/financial-types";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
-import { Box, Flex, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  HStack,
+  Icon,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import {
   FaArrowAltCircleDown,
   FaArrowAltCircleUp,
@@ -10,13 +18,43 @@ import {
   FaChevronUp,
   FaTrash,
 } from "react-icons/fa";
+import { useMovements } from "@/hooks/useMovements";
 
 type Props = {
   panel: PanelsType;
+  refetch: () => void;
 };
 
-export function ComponenteMovimentos({ panel }: Props) {
+export function ComponenteMovimentos({ panel, refetch }: Props) {
+  const toast = useToast();
+  const { deleteMovement } = useMovements();
   const [activeModal, setActiveModal] = useState<"filtros" | null>(null);
+
+  async function handleDelete(
+    id: number,
+    panel_id: number,
+    movement_value: number,
+  ) {
+    try {
+      await deleteMovement(id, panel_id, movement_value);
+
+      refetch();
+
+      return toast({
+        title: "Movimentação deletada com sucesso!",
+        status: "success",
+        position: "top",
+        isClosable: true,
+      });
+    } catch (error) {
+      return toast({
+        title: "Erro ao deletar movimentação",
+        status: "error",
+        position: "top",
+        isClosable: true,
+      });
+    }
+  }
   return (
     <>
       <HStack
@@ -100,6 +138,7 @@ export function ComponenteMovimentos({ panel }: Props) {
                   display="flex"
                   flexDir="row"
                   bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
+                  borderRadius={"5px"}
                   w="full"
                   h="35px"
                   alignItems="center"
@@ -131,7 +170,13 @@ export function ComponenteMovimentos({ panel }: Props) {
                     />
                   </HStack>
 
-                  <Icon w="2%" as={FaTrash} />
+                  <Icon
+                    w="2%"
+                    as={FaTrash}
+                    onClick={() =>
+                      handleDelete(occ.id ?? 0, panel.id ?? 0, occ.value)
+                    }
+                  />
                 </Box>
               ))
             : null}

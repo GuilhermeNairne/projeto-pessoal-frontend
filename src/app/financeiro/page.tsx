@@ -14,6 +14,7 @@ import { GraficoTipoGasto } from "@/componnents/financeiro/grafico-tipo-gasto";
 import { CategoriasComponente } from "@/componnents/financeiro/categorias-componente";
 import { ComponenteMovimentos } from "@/componnents/financeiro/componente-movimentos";
 import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registrar-movimento";
+import { FaPencil } from "react-icons/fa6";
 
 const css = {
   "&::-webkit-scrollbar": {
@@ -106,9 +107,12 @@ export default function Financeiro() {
             borderRadius={"8px"}
           >
             <HStack display={"flex"} justifyContent={"space-between"}>
-              <Text fontSize={"3xl"} fontWeight={"bold"}>
-                {panel.name}
-              </Text>
+              <HStack gap={5}>
+                <Text fontSize={"3xl"} fontWeight={"bold"}>
+                  {panel.name}
+                </Text>
+                <Icon as={FaPencil} />
+              </HStack>
               <Box
                 onClick={() =>
                   setOpenTransactionModal({
@@ -128,7 +132,10 @@ export default function Financeiro() {
               </Box>
             </HStack>
 
-            <ComponenteMovimentos panel={panel} />
+            <ComponenteMovimentos
+              panel={panel}
+              refetch={() => refetchPanel()}
+            />
 
             <HStack
               w={"100%"}

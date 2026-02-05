@@ -9,11 +9,23 @@ export function useMovements() {
       value: Number(String(body.value).replace(/\./g, "").replace(",", ".")),
       date: new Date(`${body.date}T12:00:00`),
     };
-    console.log("body", bodyUpdated);
     const result = await api.post("financial-movement/create", bodyUpdated);
 
     return result;
   }
 
-  return { createMovement };
+  async function deleteMovement(
+    id: number,
+    panel_id: number,
+    movement_value: number,
+  ) {
+    const body = { panel_id: panel_id, movement_value: movement_value };
+    const result = await api.delete(`financial-movement/delete/${id}`, {
+      data: body,
+    });
+
+    return result;
+  }
+
+  return { createMovement, deleteMovement };
 }

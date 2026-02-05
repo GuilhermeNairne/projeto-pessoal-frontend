@@ -7,8 +7,6 @@ type Props = {
 };
 
 export function GraficoTipoGasto({ panel }: Props) {
-  console.log("categories", panel.categories);
-
   const chartData = panel.categories
     ?.map((category) => {
       const total = (panel.movements ?? [])
