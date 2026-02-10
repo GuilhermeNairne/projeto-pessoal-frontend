@@ -119,7 +119,7 @@ export function ComponenteMovimentos({ panel, refetch }: Props) {
         <Flex
           w={"full"}
           flexDir={"column"}
-          gap={2}
+          gap={3}
           maxH={"250px"}
           borderRadius={"5px"}
           overflowY="auto"
@@ -158,7 +158,7 @@ export function ComponenteMovimentos({ panel, refetch }: Props) {
                     {ConvertDataToBR(occ.date)}
                   </Text>
 
-                  <HStack w="28%">
+                  <HStack w="29%">
                     <Icon
                       as={
                         occ.movement_type === "IN"

@@ -135,6 +135,7 @@ export default function Financeiro() {
                 </Text>
                 <Icon
                   as={FaPencil}
+                  boxSize={5}
                   onClick={() =>
                     handleEditPanel({
                       panel: panel.name,

@@ -53,7 +53,7 @@ export function GraficoTipoGasto({ panel }: Props) {
             maxH={"200px"}
             overflowY={"auto"}
             overflowX="hidden"
-            w={"200px"}
+            w={"250px"}
             sx={{
               "::-webkit-scrollbar": {
                 display: "none",

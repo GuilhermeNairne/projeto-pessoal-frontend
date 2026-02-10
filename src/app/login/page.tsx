@@ -28,8 +28,6 @@ export default function Login() {
       justifyContent={"center"}
       alignItems={"center"}
     >
-      <Text>Login</Text>
-
       <DefaultButton
         icon={FaMoneyBillTrendUp}
         title="Logar"
