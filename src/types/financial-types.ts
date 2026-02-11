@@ -16,7 +16,7 @@ export type CategoriesType = {
 };
 
 export type MovementsType = {
-  id: number;
+  id?: number;
   name: string;
   value: number;
   movement_type: string;

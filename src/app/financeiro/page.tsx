@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
 import { usePanels } from "@/hooks/usePanels";
@@ -31,9 +31,9 @@ const css = {
 
 export default function Financeiro() {
   const { listPanels } = usePanels();
-  const user_id = localStorage.getItem("userId");
-  const [editPanelValues, setEditPanelValues] = useState<EditPanelType>();
+  const [userId, setUserId] = useState<string | null>(null);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [editPanelValues, setEditPanelValues] = useState<EditPanelType>();
   const [openTransactionModal, setOpenTransactionModal] = useState<{
     open: boolean;
     idPainel: string;
@@ -41,9 +41,14 @@ export default function Financeiro() {
     categories: CategoriesType[];
   }>({ open: false, idPainel: "", name: "", categories: [] });
 
+  useEffect(() => {
+    const id = localStorage.getItem("userId");
+    setUserId(id);
+  }, []);
+
   const { data: panels, refetch: refetchPanel } = useQuery({
-    queryKey: ["panels", user_id],
-    queryFn: async () => listPanels(user_id ?? ""),
+    queryKey: ["panels", userId],
+    queryFn: async () => listPanels(userId ?? ""),
   });
 
   function handleEditPanel({ id, panel, value }: EditPanelType) {
