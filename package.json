@@ -17,7 +17,7 @@
     "axios": "^1.13.2",
     "formik": "^2.4.9",
     "framer-motion": "^12.23.24",
-    "next": "16.0.3",
+    "next": "16.0.10",
     "oidc-client-ts": "^3.4.1",
     "react": "19.2.0",
     "react-color": "^2.19.3",
@@ -32,6 +32,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "baseline-browser-mapping": "^2.9.19",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
     "typescript": "^5"
