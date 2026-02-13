@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 const cognitoAuthConfig = {
   authority: "https://cognito-idp.us-east-2.amazonaws.com/us-east-2_vdY8oNeMf",
   client_id: "7mu3omfrp7utmr1niauqlghfvv",
-  redirect_uri: "http://localhost:3001/login",
+  redirect_uri: "https://projeto-pessoal-frontend.vercel.app/login",
   response_type: "code",
   scope: "aws.cognito.signin.user.admin profile email openid phone",
   onSigninCallback: async (user: any) => {
