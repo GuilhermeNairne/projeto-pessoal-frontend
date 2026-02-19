@@ -14,6 +14,7 @@ import {
   FaCalendar,
   FaDollarSign,
   FaRegEyeSlash,
+  FaUser,
 } from "react-icons/fa";
 
 import {
@@ -31,10 +32,9 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
+
 export default function Login() {
   const toast = useToast();
-  const router = useRouter();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const itens = [
@@ -166,13 +166,32 @@ export default function Login() {
           <Icon as={CiCircleCheck} boxSize={8} color={"white"} />
         </Box>
         <Text fontSize={"3xl"} fontWeight={"bold"} mt={2}>
-          Bem-vindo de volta
+          Bem-vindo a plataforma
         </Text>
         <Text fontSize={"lg"} color={"gray.400"}>
-          Faça login na sua conta
+          Faça seu primeiro acesso
         </Text>
 
         <Stack mt={20}>
+          <Text fontWeight={"bold"}>Nome completo</Text>
+          <InputGroup>
+            <InputLeftElement pointerEvents="none" mt={1}>
+              <Icon as={FaUser} boxSize={6} color="gray.400" />
+            </InputLeftElement>
+
+            <Input
+              pl="40px"
+              h="50px"
+              borderWidth={1}
+              boxShadow={"sm"}
+              borderColor="gray.300"
+              placeholder="seu nome completo"
+              onChange={() => handleChange("name")}
+            />
+          </InputGroup>
+        </Stack>
+
+        <Stack mt={7}>
           <Text fontWeight={"bold"}>E-mail</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
@@ -219,43 +238,42 @@ export default function Login() {
           </InputGroup>
         </Stack>
 
-        <Link>
-          <Text
-            textAlign={"right"}
-            mt={2}
-            fontSize={"sm"}
-            color={"menu_principal"}
-            fontWeight={"semibold"}
-            mb={10}
-          >
-            Esqueci a senha
-          </Text>
-        </Link>
+        <Stack mt={7} mb={20}>
+          <Text fontWeight={"bold"}>Repita sua Senha</Text>
+          <InputGroup>
+            <InputLeftElement pointerEvents="none" mt={1}>
+              <Icon as={RiLockPasswordLine} boxSize={6} color="gray.400" />
+            </InputLeftElement>
+            <InputRightElement mt={1}>
+              <Icon
+                as={showPassword ? FaRegEye : FaRegEyeSlash}
+                boxSize={5}
+                color="gray.400"
+                onClick={() => setShowPassword(!showPassword)}
+              />
+            </InputRightElement>
+
+            <Input
+              h="50px"
+              pl="40px"
+              borderWidth={1}
+              boxShadow={"sm"}
+              borderColor="gray.300"
+              placeholder="Informe sua senha novamente"
+              onChange={() => handleChange("password_repetead")}
+              type={showPassword ? "text" : "password"}
+            />
+          </InputGroup>
+        </Stack>
 
         <DefaultButton
           icon={GrLinkNext}
-          title="Logar"
+          title="Cadastrar-se"
           w="full"
           h="50px"
           onClick={handleLogin}
           bg="radial-gradient(circle, #0a1323 0%, var(--chakra-colors-menu_principal) 75%)"
         />
-
-        <HStack display={"flex"} justifyContent={"center"} mt={10}>
-          <Text fontSize={"lg"} textAlign={"center"} fontWeight={"thin"}>
-            Não tem uma conta?
-          </Text>
-          <Link onClick={() => router.push("/primeiro-acesso")}>
-            <Text
-              fontSize={"lg"}
-              textAlign={"center"}
-              color={"menu_principal"}
-              fontWeight={"bold"}
-            >
-              Cadastre-se
-            </Text>
-          </Link>
-        </HStack>
       </Flex>
     </Flex>
   );
