@@ -2,8 +2,8 @@ import { extendTheme } from "@chakra-ui/react";
 
 const myTheme = extendTheme({
   fonts: {
-    heading: "Rajdhani, sans-serif",
-    body: "Rajdhani, sans-serif",
+    heading: "Roboto, sans-serif",
+    body: "Roboto, sans-serif",
   },
   colors: {
     vermelho: "#d50c20",
@@ -20,7 +20,8 @@ const myTheme = extendTheme({
     cinza_920: "#909090",
     branco: "white",
     preto: "black",
-    menu_principal: "#000432",
+    // menu_principal: "#000432",
+    menu_principal: "#1e293b",
     menu_secundario: "#000647",
     menu_selecionado: "#393F8B",
   },
