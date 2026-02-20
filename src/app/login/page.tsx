@@ -2,19 +2,15 @@
 
 import { useState } from "react";
 import { useFormik } from "formik";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 import { GrLinkNext } from "react-icons/gr";
 import { CiCircleCheck } from "react-icons/ci";
-import { GiProgression } from "react-icons/gi";
 import { MdOutlineEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { FirstScreen } from "@/componnents/auth/first-screen";
 import { DefaultButton } from "@/componnents/default-button";
-
-import {
-  FaRegEye,
-  FaCalendar,
-  FaDollarSign,
-  FaRegEyeSlash,
-} from "react-icons/fa";
 
 import {
   Box,
@@ -30,44 +26,22 @@ import {
   useToast,
   Link,
 } from "@chakra-ui/react";
-import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
+
 export default function Login() {
   const toast = useToast();
   const router = useRouter();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const itens = [
-    {
-      bg: "#20365B",
-      icon: FaDollarSign,
-      iconColor: "#008BB2",
-      text: "Controle financeiro",
-      subtext: "Gerencie suas finanças com facilidade",
-    },
-    {
-      bg: "#2A325E",
-      icon: FaCalendar,
-      iconColor: "#5A72C3",
-      text: "Calendário de estudos",
-      subtext: "Organize sua rotina de aprendizado",
-    },
-    {
-      bg: "#333260",
-      icon: GiProgression,
-      iconColor: "#A78BFA",
-      text: "Acompanhe Progresso",
-      subtext: "Visualize sua evolução em tempo real",
-    },
-  ];
 
-  const { values, handleChange, resetForm } = useFormik({
+  const { values, handleChange, resetForm, handleSubmit } = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     enableReinitialize: true,
-    onSubmit: () => {},
+    onSubmit: () => {
+      handleLogin();
+    },
   });
 
   async function handleLogin() {
@@ -94,54 +68,7 @@ export default function Login() {
 
   return (
     <Flex flexDir={"row"} w={"full"} h={"full"}>
-      <Flex
-        w="40%"
-        h="full"
-        pb={12}
-        pl={28}
-        justifyContent={"center"}
-        flexDir={"column"}
-        bg="radial-gradient(circle, #0a1323 0%, var(--chakra-colors-menu_principal) 75%)"
-      >
-        <Text fontSize={"5xl"} fontWeight={"bold"} color={"white"}>
-          Organize hoje.
-        </Text>
-        <Text fontSize={"5xl"} fontWeight={"bold"} color={"#60a5fa"} mt={-2}>
-          Conquiste amanhã.
-        </Text>
-        <Text fontSize={"lg"} fontWeight={"light"} color={"gray.400"} mt={2}>
-          Controle financeiro e planejamento de estudos em um só lugar.
-        </Text>
-
-        <Stack mt={20}>
-          {itens.map((item) => (
-            <HStack mt={5} gap={5}>
-              <Box
-                w={"50px"}
-                h={"50px"}
-                bg={item.bg}
-                borderRadius={5}
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                _hover={{
-                  transform: "scale(1.03)",
-                }}
-              >
-                <Icon as={item.icon} boxSize={7} color={item.iconColor} />
-              </Box>
-              <Stack gap={0}>
-                <Text fontSize={"2xl"} fontWeight={"light"} color={"white"}>
-                  {item.text}
-                </Text>
-                <Text fontSize={"lg"} fontWeight={"light"} color={"gray.500"}>
-                  {item.subtext}
-                </Text>
-              </Stack>
-            </HStack>
-          ))}
-        </Stack>
-      </Flex>
+      <FirstScreen />
 
       <Flex
         w={"60%"}
@@ -185,8 +112,9 @@ export default function Login() {
               borderWidth={1}
               boxShadow={"sm"}
               borderColor="gray.300"
+              value={values.email}
               placeholder="seu@email.com"
-              onChange={() => handleChange("email")}
+              onChange={handleChange("email")}
             />
           </InputGroup>
         </Stack>
@@ -212,8 +140,9 @@ export default function Login() {
               borderWidth={1}
               boxShadow={"sm"}
               borderColor="gray.300"
+              value={values.password}
               placeholder="Informe sua senha"
-              onChange={() => handleChange("password")}
+              onChange={handleChange("password")}
               type={showPassword ? "text" : "password"}
             />
           </InputGroup>
@@ -237,7 +166,7 @@ export default function Login() {
           title="Logar"
           w="full"
           h="50px"
-          onClick={handleLogin}
+          onClick={handleSubmit}
           bg="radial-gradient(circle, #0a1323 0%, var(--chakra-colors-menu_principal) 75%)"
         />
 
