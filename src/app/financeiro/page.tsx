@@ -11,15 +11,15 @@ import {
   EditPanelType,
   ModalType,
 } from "@/types/financial-types";
-import { PainelContas } from "@/componnents/financeiro/painel-contas";
+import { PainelContas } from "@/componnents/financial/painel-contas";
 import { Box, Flex, HStack, Icon, Link, Text } from "@chakra-ui/react";
-import { ModalNovoPainel } from "@/componnents/financeiro/modal-novo-painel";
-import { GraficoTipoGasto } from "@/componnents/financeiro/grafico-tipo-gasto";
-import { CategoriasComponente } from "@/componnents/financeiro/categorias-componente";
-import { ComponenteMovimentos } from "@/componnents/financeiro/componente-movimentos";
-import { ModalRegistrarMovimento } from "@/componnents/financeiro/modal-registrar-movimento";
+import { ModalNovoPainel } from "@/componnents/financial/modal-novo-painel";
+import { GraficoTipoGasto } from "@/componnents/financial/grafico-tipo-gasto";
+import { CategoriasComponente } from "@/componnents/financial/categorias-componente";
+import { ComponenteMovimentos } from "@/componnents/financial/componente-movimentos";
+import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
 import { FaPencil } from "react-icons/fa6";
-import { EditPanelModal } from "@/componnents/financeiro/modal-edit-panel";
+import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
 
 const css = {
   "&::-webkit-scrollbar": {

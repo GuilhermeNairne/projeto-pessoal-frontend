@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useUserInfo } from "@/hooks/useUserInfo";
 import { useQuery } from "react-query";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 const menuOpcoes = [
   {
@@ -28,6 +29,8 @@ const menuOpcoes = [
 ];
 
 export function Menu() {
+  const { signOut } = useAuthContext();
+
   const { getUserInfo } = useUserInfo();
 
   const pathname = usePathname();
@@ -47,16 +50,7 @@ export function Menu() {
   }, [data]);
 
   async function Logout() {
-    await fetch("/api/logout", { method: "GET" });
-
-    const clientId = "7mu3omfrp7utmr1niauqlghfvv";
-    const logoutUri = "http://localhost:3001/login";
-    const cognitoDomain =
-      "https://us-east-2vdy8onemf.auth.us-east-2.amazoncognito.com";
-
-    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
-      logoutUri,
-    )}`;
+    await signOut();
   }
 
   return (

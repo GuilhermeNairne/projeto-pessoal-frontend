@@ -3,8 +3,10 @@ import { Button, Icon, Text } from "@chakra-ui/react";
 type Props = {
   icon: any;
   w?: string;
+  h?: string;
   bg?: string;
   title: string;
+  isLoading?: boolean;
   titleColor?: string;
   onClick?: () => void;
 };
@@ -13,19 +15,23 @@ export function DefaultButton({
   w,
   icon,
   title,
+  h,
   bg,
   titleColor,
+  isLoading,
   onClick,
 }: Props) {
   return (
     <Button
-      h={"40px"}
+      h={h ?? "40px"}
+      boxShadow={"md"}
       w={w ?? "250px"}
-      borderRadius={"10px"}
+      borderRadius={5}
       onClick={onClick}
+      isLoading={isLoading}
       bg={bg ?? "menu_principal"}
       _hover={{
-        bg: "menu_principal",
+        bg: bg,
         transform: "scale(1.03)",
       }}
       rightIcon={<Icon as={icon} boxSize={"6"} color={titleColor ?? "white"} />}

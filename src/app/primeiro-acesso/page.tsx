@@ -2,71 +2,74 @@
 
 import { useState } from "react";
 import { useFormik } from "formik";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import { GrLinkNext } from "react-icons/gr";
-import { CiCircleCheck } from "react-icons/ci";
 import { MdOutlineEmail } from "react-icons/md";
+import { LuClipboardList } from "react-icons/lu";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { FirstScreen } from "@/componnents/auth/first-screen";
 import { DefaultButton } from "@/componnents/default-button";
+
+import { FaRegEye, FaRegEyeSlash, FaUser } from "react-icons/fa";
 
 import {
   Box,
   Flex,
   Icon,
-  Text,
   Input,
-  Stack,
-  HStack,
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Stack,
+  Text,
   useToast,
-  Link,
 } from "@chakra-ui/react";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { registerSchema } from "@/schemas/auth.schema";
 
 export default function Login() {
   const toast = useToast();
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuthContext();
+  const { firstAccess } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
-  const { values, handleChange, resetForm, handleSubmit } = useFormik({
+  const { values, handleChange, resetForm, errors, handleSubmit } = useFormik({
     initialValues: {
+      name: "",
       email: "",
       password: "",
+      password_repetead: "",
     },
     enableReinitialize: true,
+    validationSchema: registerSchema,
     onSubmit: () => {
-      handleLogin();
+      handleFirstAccess();
     },
   });
 
-  async function handleLogin() {
+  async function handleFirstAccess() {
     try {
-      setIsLoading(true);
-      await signIn(values);
+      await firstAccess({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      });
 
-      router.push("/financeiro");
       toast({
         position: "top",
         isClosable: true,
         status: "success",
-        title: "Login realizado com sucesso!",
+        title: "Primeiro acesso realizado com sucesso!",
       });
-    } catch (error) {
+
+      resetForm();
+    } catch (error: any) {
+      console.log("error", error);
       toast({
         position: "top",
         status: "error",
         isClosable: true,
-        title: "Erro ao realizar login!",
+        title:
+          error.response.data.message ?? "Erro ao realizar primeiro acesso!",
       });
-    } finally {
-      resetForm();
-      setIsLoading(false);
     }
   }
 
@@ -94,13 +97,35 @@ export default function Login() {
             transform: "scale(1.03)",
           }}
         >
-          <Icon as={CiCircleCheck} boxSize={8} color={"white"} />
+          <Icon as={LuClipboardList} boxSize={8} color={"white"} />
         </Box>
         <Text fontSize={"3xl"} fontWeight={"bold"} mt={2}>
-          Bem-vindo de volta
+          Bem-vindo a plataforma
+        </Text>
+        <Text fontSize={"lg"} color={"gray.400"}>
+          Faça seu primeiro acesso
         </Text>
 
         <Stack mt={20}>
+          <Text fontWeight={"bold"}>Nome completo</Text>
+          <InputGroup>
+            <InputLeftElement pointerEvents="none" mt={1}>
+              <Icon as={FaUser} boxSize={6} color="gray.400" />
+            </InputLeftElement>
+
+            <Input
+              pl="40px"
+              h="50px"
+              borderWidth={1}
+              boxShadow={"sm"}
+              borderColor="gray.300"
+              placeholder="seu nome completo"
+              onChange={handleChange("name")}
+            />
+          </InputGroup>
+        </Stack>
+
+        <Stack mt={7}>
           <Text fontWeight={"bold"}>E-mail</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
@@ -113,11 +138,15 @@ export default function Login() {
               borderWidth={1}
               boxShadow={"sm"}
               borderColor="gray.300"
-              value={values.email}
               placeholder="seu@email.com"
               onChange={handleChange("email")}
             />
           </InputGroup>
+          {errors.email && (
+            <Text color={"red.600"} fontWeight={"bold"} fontSize={"sm"}>
+              {errors.email}
+            </Text>
+          )}
         </Stack>
 
         <Stack mt={7}>
@@ -141,52 +170,59 @@ export default function Login() {
               borderWidth={1}
               boxShadow={"sm"}
               borderColor="gray.300"
-              value={values.password}
               placeholder="Informe sua senha"
               onChange={handleChange("password")}
               type={showPassword ? "text" : "password"}
             />
           </InputGroup>
+          {errors.password && (
+            <Text color={"red.600"} fontWeight={"bold"} fontSize={"sm"}>
+              {errors.password}
+            </Text>
+          )}
         </Stack>
 
-        <Link>
-          <Text
-            textAlign={"right"}
-            mt={2}
-            fontSize={"sm"}
-            color={"menu_principal"}
-            fontWeight={"semibold"}
-            mb={10}
-          >
-            Esqueci a senha
-          </Text>
-        </Link>
+        <Stack mt={7} mb={20}>
+          <Text fontWeight={"bold"}>Repita sua Senha</Text>
+          <InputGroup>
+            <InputLeftElement pointerEvents="none" mt={1}>
+              <Icon as={RiLockPasswordLine} boxSize={6} color="gray.400" />
+            </InputLeftElement>
+            <InputRightElement mt={1}>
+              <Icon
+                as={showPassword ? FaRegEye : FaRegEyeSlash}
+                boxSize={5}
+                color="gray.400"
+                onClick={() => setShowPassword(!showPassword)}
+              />
+            </InputRightElement>
+
+            <Input
+              h="50px"
+              pl="40px"
+              borderWidth={1}
+              boxShadow={"sm"}
+              borderColor="gray.300"
+              placeholder="Informe sua senha novamente"
+              onBlur={handleChange("password_repetead")}
+              type={showPassword ? "text" : "password"}
+            />
+          </InputGroup>
+          {errors.password_repetead && (
+            <Text color={"red.600"} fontWeight={"bold"} fontSize={"sm"}>
+              {errors.password_repetead}
+            </Text>
+          )}
+        </Stack>
 
         <DefaultButton
           icon={GrLinkNext}
-          title="Logar"
+          title="Cadastrar-se"
           w="full"
-          isLoading={isLoading}
           h="50px"
           onClick={handleSubmit}
           bg="radial-gradient(circle, #0a1323 0%, var(--chakra-colors-menu_principal) 75%)"
         />
-
-        <HStack display={"flex"} justifyContent={"center"} mt={10}>
-          <Text fontSize={"lg"} textAlign={"center"} fontWeight={"thin"}>
-            Não tem uma conta?
-          </Text>
-          <Link onClick={() => router.push("/primeiro-acesso")}>
-            <Text
-              fontSize={"lg"}
-              textAlign={"center"}
-              color={"menu_principal"}
-              fontWeight={"bold"}
-            >
-              Cadastre-se
-            </Text>
-          </Link>
-        </HStack>
       </Flex>
     </Flex>
   );
