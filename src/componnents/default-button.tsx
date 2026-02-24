@@ -6,6 +6,7 @@ type Props = {
   h?: string;
   bg?: string;
   title: string;
+  isLoading?: boolean;
   titleColor?: string;
   onClick?: () => void;
 };
@@ -17,6 +18,7 @@ export function DefaultButton({
   h,
   bg,
   titleColor,
+  isLoading,
   onClick,
 }: Props) {
   return (
@@ -26,6 +28,7 @@ export function DefaultButton({
       w={w ?? "250px"}
       borderRadius={5}
       onClick={onClick}
+      isLoading={isLoading}
       bg={bg ?? "menu_principal"}
       _hover={{
         bg: bg,

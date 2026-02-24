@@ -2,9 +2,9 @@
 
 import { ChakraProvider } from "@chakra-ui/react";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AuthProvider } from "react-oidc-context";
 import { QueryClient, QueryClientProvider } from "react-query";
 import myTheme from "./mytheme";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

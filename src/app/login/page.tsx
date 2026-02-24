@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useFormik } from "formik";
-import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { GrLinkNext } from "react-icons/gr";
 import { CiCircleCheck } from "react-icons/ci";
@@ -26,11 +25,13 @@ import {
   useToast,
   Link,
 } from "@chakra-ui/react";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function Login() {
   const toast = useToast();
   const router = useRouter();
-  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { signIn } = useAuthContext();
   const [showPassword, setShowPassword] = useState(false);
 
   const { values, handleChange, resetForm, handleSubmit } = useFormik({
@@ -46,8 +47,10 @@ export default function Login() {
 
   async function handleLogin() {
     try {
-      await login(values);
+      setIsLoading(true);
+      await signIn(values);
 
+      router.push("/financeiro");
       toast({
         position: "top",
         isClosable: true,
@@ -63,6 +66,7 @@ export default function Login() {
       });
     } finally {
       resetForm();
+      setIsLoading(false);
     }
   }
 
@@ -94,9 +98,6 @@ export default function Login() {
         </Box>
         <Text fontSize={"3xl"} fontWeight={"bold"} mt={2}>
           Bem-vindo de volta
-        </Text>
-        <Text fontSize={"lg"} color={"gray.400"}>
-          Faça login na sua conta
         </Text>
 
         <Stack mt={20}>
@@ -165,6 +166,7 @@ export default function Login() {
           icon={GrLinkNext}
           title="Logar"
           w="full"
+          isLoading={isLoading}
           h="50px"
           onClick={handleSubmit}
           bg="radial-gradient(circle, #0a1323 0%, var(--chakra-colors-menu_principal) 75%)"

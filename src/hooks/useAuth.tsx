@@ -1,13 +1,14 @@
+import { SignInData } from "@/contexts/AuthContext";
 import { api } from "@/services/api";
 
 export function useAuth() {
-  async function login(values: { email: string; password: string }) {
+  async function login(values: SignInData) {
     const response = await api.post("auth/login", {
       email: values.email,
       password: values.password,
     });
 
-    return response;
+    return response.data;
   }
 
   async function firstAccess(values: {
