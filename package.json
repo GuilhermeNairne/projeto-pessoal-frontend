@@ -25,7 +25,8 @@
     "react-icons": "^5.5.0",
     "react-oidc-context": "^3.3.0",
     "react-query": "^3.39.3",
-    "victory": "^37.3.6"
+    "victory": "^37.3.6",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@types/node": "^20",
