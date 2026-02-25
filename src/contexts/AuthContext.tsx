@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "@/services/api";
 import { createContext, useContext, useEffect, useState } from "react";
 
