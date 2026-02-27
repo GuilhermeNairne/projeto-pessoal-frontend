@@ -7,8 +7,9 @@ export function useMovements() {
       ...body,
       category_id: Number(body.category_id),
       value: Number(String(body.value).replace(/\./g, "").replace(",", ".")),
-      date: new Date(`${body.date}T12:00:00`),
+      date: new Date(body.date),
     };
+    console.log("Values", bodyUpdated);
     const result = await api.post("financial-movement/create", bodyUpdated);
 
     return result;

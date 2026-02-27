@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { FaBook, FaSignOutAlt, FaMoon } from "react-icons/fa";
 
 import {
@@ -13,9 +13,6 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
-import { useUserInfo } from "@/hooks/useUserInfo";
-import { useQuery } from "react-query";
-import { useAuthContext } from "@/contexts/AuthContext";
 
 const menuOpcoes = [
   {
@@ -29,28 +26,14 @@ const menuOpcoes = [
 ];
 
 export function Menu() {
-  const { signOut } = useAuthContext();
-
-  const { getUserInfo } = useUserInfo();
+  const { signOut, user } = useAuthContext();
 
   const pathname = usePathname();
   const defaultPicture =
     "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg";
 
-  const { data } = useQuery({
-    queryKey: ["user-info"],
-    queryFn: async () => getUserInfo(),
-  });
-
-  useEffect(() => {
-    if (data?.data.name) localStorage.setItem("userName", data?.data.name);
-    if (data?.data.userId) localStorage.setItem("userId", data?.data.userId);
-    if (data?.data.picture)
-      localStorage.setItem("picture", data?.data.picture || "");
-  }, [data]);
-
-  async function Logout() {
-    await signOut();
+  function Logout() {
+    signOut();
   }
 
   return (
@@ -80,7 +63,7 @@ export function Menu() {
             borderRadius={"100%"}
           />
           <Text color={"white"} fontWeight={"bold"} fontSize={"18px"}>
-            {data?.data.name}
+            {user?.name}
           </Text>
         </Box>
 
@@ -133,7 +116,7 @@ export function Menu() {
       </Flex>
 
       <Flex flexDir={"column"}>
-        <Box w={"full"} h={"1px"} bg={"menu_selecionado"} />
+        <Box w={"full"} h={"1px"} bg={"white"} />
 
         <HStack gap={4} mt={"25px"} ml={"10px"} onClick={() => Logout()}>
           <Icon as={FaSignOutAlt} boxSize={"6"} color={"white"} />

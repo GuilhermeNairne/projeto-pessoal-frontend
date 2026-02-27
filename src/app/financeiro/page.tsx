@@ -20,6 +20,7 @@ import { ComponenteMovimentos } from "@/componnents/financial/componente-movimen
 import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
 import { FaPencil } from "react-icons/fa6";
 import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 const css = {
   "&::-webkit-scrollbar": {
@@ -30,8 +31,8 @@ const css = {
 };
 
 export default function Financeiro() {
+  const { user } = useAuthContext();
   const { listPanels } = usePanels();
-  const [userId, setUserId] = useState<string | null>(null);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [editPanelValues, setEditPanelValues] = useState<EditPanelType>();
   const [openTransactionModal, setOpenTransactionModal] = useState<{
@@ -41,14 +42,9 @@ export default function Financeiro() {
     categories: CategoriesType[];
   }>({ open: false, idPainel: "", name: "", categories: [] });
 
-  useEffect(() => {
-    const id = localStorage.getItem("userId");
-    setUserId(id);
-  }, []);
-
   const { data: panels, refetch: refetchPanel } = useQuery({
-    queryKey: ["panels", userId],
-    queryFn: async () => listPanels(userId ?? ""),
+    queryKey: ["panels", user?.id],
+    queryFn: async () => listPanels(user?.id ?? ""),
   });
 
   function handleEditPanel({ id, panel, value }: EditPanelType) {
@@ -150,7 +146,7 @@ export default function Financeiro() {
                   }
                 />
               </HStack>
-              <Box
+              <Link
                 onClick={() =>
                   setOpenTransactionModal({
                     open: true,
@@ -159,14 +155,17 @@ export default function Financeiro() {
                     categories: panel.categories ?? [],
                   })
                 }
-                display={"flex"}
-                flexDir={"row"}
-                alignItems={"center"}
-                gap={3}
               >
-                <Text fontSize={"lg"}>Registrar movimento</Text>
-                <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
-              </Box>
+                <Box
+                  display={"flex"}
+                  flexDir={"row"}
+                  alignItems={"center"}
+                  gap={3}
+                >
+                  <Text fontSize={"lg"}>Registrar movimento</Text>
+                  <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
+                </Box>
+              </Link>
             </HStack>
 
             <ComponenteMovimentos
