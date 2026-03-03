@@ -9,6 +9,7 @@ import {
   HStack,
   Icon,
   Image,
+  Link,
   Stack,
   Switch,
   Text,
@@ -118,13 +119,14 @@ export function Menu() {
       <Flex flexDir={"column"}>
         <Box w={"full"} h={"1px"} bg={"white"} />
 
-        <HStack gap={4} mt={"25px"} ml={"10px"} onClick={() => Logout()}>
+        <HStack gap={4} mt={"25px"} ml={"10px"}>
           <Icon as={FaSignOutAlt} boxSize={"6"} color={"white"} />
-          <Text fontWeight={"semi-bold"} color={"white"} fontSize={"lg"}>
-            Sair
-          </Text>
+          <Link onClick={() => Logout()}>
+            <Text fontWeight={"semi-bold"} color={"white"} fontSize={"lg"}>
+              Sair
+            </Text>
+          </Link>
         </HStack>
-
         <Box
           w={"100%"}
           h={"55px"}

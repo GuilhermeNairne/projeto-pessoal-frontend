@@ -2,6 +2,14 @@ import { api } from "@/services/api";
 import { MovementsType } from "@/types/financial-types";
 
 export function useMovements() {
+  async function listMovements(id_panel: string) {
+    const result = await api.get<MovementsType[]>(
+      `financial-movement/list/${id_panel}`,
+    );
+
+    return result;
+  }
+
   async function createMovement(body: MovementsType) {
     const bodyUpdated = {
       ...body,
@@ -9,7 +17,7 @@ export function useMovements() {
       value: Number(String(body.value).replace(/\./g, "").replace(",", ".")),
       date: new Date(body.date),
     };
-    console.log("Values", bodyUpdated);
+
     const result = await api.post("financial-movement/create", bodyUpdated);
 
     return result;
@@ -28,5 +36,5 @@ export function useMovements() {
     return result;
   }
 
-  return { createMovement, deleteMovement };
+  return { createMovement, deleteMovement, listMovements };
 }

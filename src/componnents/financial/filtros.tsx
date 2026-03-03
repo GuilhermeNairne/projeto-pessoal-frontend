@@ -3,6 +3,7 @@ import {
   Collapse,
   Flex,
   HStack,
+  Link,
   Radio,
   RadioGroup,
   Select,
@@ -29,12 +30,7 @@ export function Filtros({ open }: Props) {
       }}
       style={{ opacity: open ? 1 : 0 }}
     >
-      <Flex
-        bg={"cinza_hover"}
-        borderRadius={"10px"}
-        h={"190px"}
-        flexDir={"column"}
-      >
+      <Flex bg={"white"} borderRadius={"10px"} h={"190px"} flexDir={"column"}>
         <HStack
           p={"20px"}
           display={"flex"}
@@ -105,7 +101,9 @@ export function Filtros({ open }: Props) {
           alignItems={"center"}
           gap={5}
         >
-          <Text color={"menu_principal"}>Limpar todos os filtros</Text>
+          <Link>
+            <Text color={"menu_principal"}>Limpar todos os filtros</Text>
+          </Link>
           <DefaultButton icon={FaFilter} title="Filtrar" w="130px" />
         </Box>
       </Flex>

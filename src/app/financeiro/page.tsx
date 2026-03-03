@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
 import { usePanels } from "@/hooks/usePanels";
@@ -21,6 +21,7 @@ import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar
 import { FaPencil } from "react-icons/fa6";
 import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 const css = {
   "&::-webkit-scrollbar": {
@@ -31,6 +32,7 @@ const css = {
 };
 
 export default function Financeiro() {
+  const router = useRouter();
   const { user } = useAuthContext();
   const { listPanels } = usePanels();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
@@ -171,6 +173,9 @@ export default function Financeiro() {
             <ComponenteMovimentos
               panel={panel}
               refetch={() => refetchPanel()}
+              navigate={() =>
+                router.push(`/movimentacoes?id_panel=${panel.id}`)
+              }
             />
 
             <HStack
