@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Filtros } from "./filtros";
+import { useMovements } from "@/hooks/useMovements";
 import { PanelsType } from "@/types/financial-types";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import {
@@ -12,17 +11,13 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import { useState } from "react";
+import { FaList, FaTrash } from "react-icons/fa";
 import {
-  FaArrowAltCircleDown,
-  FaArrowAltCircleUp,
-  FaChevronDown,
-  FaChevronUp,
-  FaList,
-  FaListAlt,
-  FaTrash,
-} from "react-icons/fa";
-import { useMovements } from "@/hooks/useMovements";
-import { CiViewList } from "react-icons/ci";
+  IoChevronDownCircleOutline,
+  IoChevronUpCircleOutline,
+} from "react-icons/io5";
+import { Filtros } from "./filtros";
 
 type Props = {
   panel: PanelsType;
@@ -125,8 +120,8 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
             msOverflowStyle: "none",
           }}
         >
-          {panel.movements && panel.movements?.length > 0
-            ? panel.movements.map((occ, index) => (
+          {panel.movements && panel.movements.length > 0
+            ? panel.movements.slice(0, 5).map((occ, index) => (
                 <Box
                   boxShadow="md"
                   display="flex"
@@ -156,8 +151,8 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
                     <Icon
                       as={
                         occ.movement_type === "IN"
-                          ? FaArrowAltCircleUp
-                          : FaArrowAltCircleDown
+                          ? IoChevronUpCircleOutline
+                          : IoChevronDownCircleOutline
                       }
                       color={occ.movement_type === "IN" ? "green" : "red"}
                       boxSize="5"

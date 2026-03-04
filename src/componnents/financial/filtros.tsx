@@ -7,19 +7,20 @@ import {
   Radio,
   RadioGroup,
   Select,
-  SlideFade,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { DefaultInput } from "../default-input";
 import { DefaultButton } from "../default-button";
 import { FaFilter } from "react-icons/fa";
+import { CategoriesType } from "@/types/financial-types";
 
 type Props = {
   open: boolean;
+  categories?: CategoriesType[];
 };
 
-export function Filtros({ open }: Props) {
+export function Filtros({ open, categories }: Props) {
   return (
     <Collapse
       in={open}
@@ -38,10 +39,10 @@ export function Filtros({ open }: Props) {
           w={"100%"}
         >
           <DefaultInput
-            placeholder="Informe o nome do movimentos"
+            placeholder="Informe o nome do movimento"
             position="cima"
-            title="Nome"
-            w="150px"
+            title="Nome do movimento"
+            w="260px"
           />
           <Stack>
             <Text fontWeight={"bold"}>Ordenar por data</Text>
@@ -54,17 +55,7 @@ export function Filtros({ open }: Props) {
               </Radio>
             </RadioGroup>
           </Stack>
-          <Stack>
-            <Text fontWeight={"bold"}>Ordenar por valor</Text>
-            <RadioGroup defaultValue="2">
-              <Radio borderColor={"gray.400"} value="1" mr={"20px"}>
-                Maior valor
-              </Radio>
-              <Radio borderColor={"gray.400"} value="2">
-                Menor valor
-              </Radio>
-            </RadioGroup>
-          </Stack>
+
           <Stack>
             <Text fontWeight={"bold"}>Movimento</Text>
             <RadioGroup defaultValue="2">
@@ -78,17 +69,21 @@ export function Filtros({ open }: Props) {
           </Stack>
 
           <Stack>
-            <Text fontWeight={"bold"}>Tipo</Text>
+            <Text fontWeight={"bold"}>Categoria</Text>
             <Select
-              placeholder="Selecione o tipo"
-              w={"170px"}
+              placeholder="Selecione a categoria"
+              w={"250px"}
               bg={"white"}
               borderColor={"gray.400"}
               borderRadius={"10px"}
             >
-              <option value="1">Opção 1</option>
-              <option value="2">Opção 2</option>
-              <option value="3">Opção 3</option>
+              {/* {categories && categories.length > 0 ? (
+                categories.map((category) => (
+                  <option value={category.id}>{category.name} </option>
+                ))
+              ) : (
+                <option value="">""</option>
+              )} */}
             </Select>
           </Stack>
         </HStack>

@@ -1,36 +1,37 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
 import { useSearchParams } from "next/navigation";
 import { useMovements } from "@/hooks/useMovements";
 import { Filtros } from "@/componnents/financial/filtros";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
+import { FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
 import {
   Box,
+  Center,
   Flex,
   HStack,
   Icon,
-  Link,
+  Spinner,
   Stack,
   Text,
   useToast,
 } from "@chakra-ui/react";
+
 import {
-  FaArrowAltCircleDown,
-  FaArrowAltCircleUp,
-  FaChevronDown,
-  FaChevronUp,
-  FaList,
-  FaTrash,
-} from "react-icons/fa";
-import { useQuery } from "react-query";
+  IoChevronDownCircleOutline,
+  IoChevronUpCircleOutline,
+} from "react-icons/io5";
+import { usePanels } from "@/hooks/usePanels";
 
 export default function Movimentacoes() {
   const toast = useToast();
   const searchParams = useSearchParams();
   const id_panel = searchParams.get("id_panel");
   const { deleteMovement, listMovements } = useMovements();
+  const {} = usePanels();
   const [activeModal, setActiveModal] = useState<"filtros" | null>(null);
 
   const { data: movements, refetch } = useQuery({
@@ -105,7 +106,10 @@ export default function Movimentacoes() {
           </Box>
         </HStack>
 
-        <Filtros open={activeModal === "filtros"} />
+        {/* <Filtros
+          open={activeModal === "filtros"}
+          categories={panel?.data[0].categories}
+        /> */}
 
         <Stack mt={5}>
           <Box
@@ -151,59 +155,63 @@ export default function Movimentacoes() {
               msOverflowStyle: "none",
             }}
           >
-            {movements && movements.data.length > 0
-              ? movements.data.map((occ, index) => (
-                  <Box
-                    boxShadow="md"
-                    display="flex"
-                    flexDir="row"
-                    bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
-                    borderRadius={"5px"}
-                    w="full"
-                    h="35px"
-                    alignItems="center"
-                    px="15px"
-                    py={"10px"}
-                  >
-                    <Text w="23%" color="black">
-                      {occ.name}
-                    </Text>
-                    <Text w="18%" color="black">
-                      {occ.categories?.name}
-                    </Text>
-                    <Text w="12%" color="black">
-                      R$ {occ.value}
-                    </Text>
-                    <Text w="16%" color="black">
-                      {ConvertDataToBR(occ.date)}
-                    </Text>
+            {movements && movements.data.length > 0 ? (
+              movements.data.map((occ, index) => (
+                <Box
+                  boxShadow="md"
+                  display="flex"
+                  flexDir="row"
+                  bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
+                  borderRadius={"5px"}
+                  w="full"
+                  h="35px"
+                  alignItems="center"
+                  px="15px"
+                  py={"10px"}
+                >
+                  <Text w="23%" color="black">
+                    {occ.name}
+                  </Text>
+                  <Text w="18%" color="black">
+                    {occ.categories?.name}
+                  </Text>
+                  <Text w="12%" color="black">
+                    R$ {occ.value}
+                  </Text>
+                  <Text w="16%" color="black">
+                    {ConvertDataToBR(occ.date)}
+                  </Text>
 
-                    <HStack w="29%">
-                      <Icon
-                        as={
-                          occ.movement_type === "IN"
-                            ? FaArrowAltCircleUp
-                            : FaArrowAltCircleDown
-                        }
-                        color={occ.movement_type === "IN" ? "green" : "red"}
-                        boxSize="5"
-                      />
-                    </HStack>
-
+                  <HStack w="29%">
                     <Icon
-                      w="2%"
-                      as={FaTrash}
-                      onClick={() =>
-                        handleDelete(
-                          occ.id ?? 0,
-                          Number(id_panel) ?? 0,
-                          occ.value,
-                        )
+                      as={
+                        occ.movement_type === "IN"
+                          ? IoChevronUpCircleOutline
+                          : IoChevronDownCircleOutline
                       }
+                      color={occ.movement_type === "IN" ? "green" : "red"}
+                      boxSize="5"
                     />
-                  </Box>
-                ))
-              : null}
+                  </HStack>
+
+                  <Icon
+                    w="2%"
+                    as={FaTrash}
+                    onClick={() =>
+                      handleDelete(
+                        occ.id ?? 0,
+                        Number(id_panel) ?? 0,
+                        occ.value,
+                      )
+                    }
+                  />
+                </Box>
+              ))
+            ) : (
+              <Center mt={20}>
+                <Spinner size={"lg"} />
+              </Center>
+            )}
           </Flex>
         </Stack>
       </Flex>

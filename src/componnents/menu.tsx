@@ -1,4 +1,4 @@
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { FaBook, FaSignOutAlt, FaMoon } from "react-icons/fa";
 
@@ -27,6 +27,7 @@ const menuOpcoes = [
 ];
 
 export function Menu() {
+  const router = useRouter();
   const { signOut, user } = useAuthContext();
 
   const pathname = usePathname();
@@ -74,6 +75,7 @@ export function Menu() {
               display={"flex-start"}
               w={"100%"}
               h={"70px"}
+              onClick={() => router.push(`${item.nome.toLowerCase()}`)}
               bg={pathname === `/${item.nome.toLowerCase()}` ? "white" : "null"}
               alignItems={"center"}
               p={"10px"}

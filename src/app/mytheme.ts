@@ -20,10 +20,9 @@ const myTheme = extendTheme({
     cinza_920: "#909090",
     branco: "white",
     preto: "black",
-    // menu_principal: "#000432",
     menu_principal: "#1e293b",
     menu_secundario: "#000647",
-    menu_selecionado: "#393F8B",
+    menu_selecionado: "#797979",
   },
   breakpoints: {
     celular: "320px",

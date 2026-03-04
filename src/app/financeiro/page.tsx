@@ -1,27 +1,36 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "react-query";
+import { CategoriasComponente } from "@/componnents/financial/categorias-componente";
+import { ComponenteMovimentos } from "@/componnents/financial/componente-movimentos";
+import { GraficoTipoGasto } from "@/componnents/financial/grafico-tipo-gasto";
+import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
+import { ModalNovoPainel } from "@/componnents/financial/modal-novo-painel";
+import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
+import { PainelContas } from "@/componnents/financial/painel-contas";
 import { Menu } from "@/componnents/menu";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { usePanels } from "@/hooks/usePanels";
-import { GrTransaction } from "react-icons/gr";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import {
   CategoriesType,
   EditPanelType,
   ModalType,
 } from "@/types/financial-types";
-import { PainelContas } from "@/componnents/financial/painel-contas";
-import { Box, Flex, HStack, Icon, Link, Text } from "@chakra-ui/react";
-import { ModalNovoPainel } from "@/componnents/financial/modal-novo-painel";
-import { GraficoTipoGasto } from "@/componnents/financial/grafico-tipo-gasto";
-import { CategoriasComponente } from "@/componnents/financial/categorias-componente";
-import { ComponenteMovimentos } from "@/componnents/financial/componente-movimentos";
-import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
-import { FaPencil } from "react-icons/fa6";
-import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useQuery } from "react-query";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { FaPencil } from "react-icons/fa6";
+import { GrTransaction } from "react-icons/gr";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import {
+  Box,
+  Center,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 
 const css = {
   "&::-webkit-scrollbar": {
@@ -44,7 +53,11 @@ export default function Financeiro() {
     categories: CategoriesType[];
   }>({ open: false, idPainel: "", name: "", categories: [] });
 
-  const { data: panels, refetch: refetchPanel } = useQuery({
+  const {
+    data: panels,
+    refetch: refetchPanel,
+    isLoading,
+  } = useQuery({
     queryKey: ["panels", user?.id],
     queryFn: async () => listPanels(user?.id ?? ""),
   });
@@ -119,7 +132,7 @@ export default function Financeiro() {
           </Link>
         </HStack>
 
-        <PainelContas paineis={panels?.data ?? []} />
+        <PainelContas paineis={panels?.data ?? []} isLoading={isLoading} />
 
         {panels?.data.map((panel) => (
           <Box
