@@ -1,6 +1,6 @@
-import { FiltrosMovementsType } from "@/componnents/financial/filtros";
 import { api } from "@/services/api";
-import { MovementsType } from "@/types/financial-types";
+import { FiltrosMovementsType } from "@/componnents/financial/filtros";
+import { ExpensesByMonthType, MovementsType } from "@/types/financial-types";
 
 export function useMovements() {
   async function listMovements(
@@ -43,5 +43,16 @@ export function useMovements() {
     return result;
   }
 
-  return { createMovement, deleteMovement, listMovements };
+  async function listExpensesByMonth(panel_id: number, month: number) {
+    const result = await api.get<ExpensesByMonthType>(
+      `financial-movement/expenses/${panel_id}`,
+      {
+        params: { month: month },
+      },
+    );
+
+    return result;
+  }
+
+  return { createMovement, deleteMovement, listMovements, listExpensesByMonth };
 }

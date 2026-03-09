@@ -1,3 +1,4 @@
+import { FaList, FaTrash } from "react-icons/fa";
 import { useMovements } from "@/hooks/useMovements";
 import { PanelsType } from "@/types/financial-types";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
@@ -11,13 +12,10 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { FaList, FaTrash } from "react-icons/fa";
 import {
   IoChevronDownCircleOutline,
   IoChevronUpCircleOutline,
 } from "react-icons/io5";
-import { Filtros } from "./filtros";
 
 type Props = {
   panel: PanelsType;
@@ -28,7 +26,6 @@ type Props = {
 export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
   const toast = useToast();
   const { deleteMovement } = useMovements();
-  const [activeModal, setActiveModal] = useState<"filtros" | null>(null);
 
   async function handleDelete(
     id: number,

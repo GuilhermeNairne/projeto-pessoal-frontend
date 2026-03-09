@@ -24,6 +24,7 @@ import {
   IoChevronDownCircleOutline,
   IoChevronUpCircleOutline,
 } from "react-icons/io5";
+import { formatarValorBR } from "@/utils/convert-to-real";
 
 export default function Movimentacoes() {
   const toast = useToast();
@@ -181,7 +182,7 @@ export default function Movimentacoes() {
                     {occ.categories?.name}
                   </Text>
                   <Text w="12%" color="black">
-                    R$ {occ.value}
+                    R$ {formatarValorBR(occ.value)}
                   </Text>
                   <Text w="16%" color="black">
                     {ConvertDataToBR(occ.date)}

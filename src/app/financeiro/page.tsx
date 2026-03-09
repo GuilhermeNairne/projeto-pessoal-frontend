@@ -1,26 +1,27 @@
 "use client";
 
-import { CategoriasComponente } from "@/componnents/financial/categorias-componente";
-import { ComponenteMovimentos } from "@/componnents/financial/componente-movimentos";
-import { GraficoTipoGasto } from "@/componnents/financial/grafico-tipo-gasto";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { Menu } from "@/componnents/menu";
+import { FaPencil } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
+import { usePanels } from "@/hooks/usePanels";
+import { GrTransaction } from "react-icons/gr";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { PainelContas } from "@/componnents/financial/painel-contas";
 import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
 import { ModalNovoPainel } from "@/componnents/financial/modal-novo-painel";
+import { GraficoTipoGasto } from "@/componnents/financial/grafico-tipo-gasto";
+import { ComponenteMovimentos } from "@/componnents/financial/componente-movimentos";
+import { CategoriasComponente } from "@/componnents/financial/categorias-componente";
 import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
-import { PainelContas } from "@/componnents/financial/painel-contas";
-import { Menu } from "@/componnents/menu";
-import { useAuthContext } from "@/contexts/AuthContext";
-import { usePanels } from "@/hooks/usePanels";
 import {
   CategoriesType,
   EditPanelType,
   ModalType,
 } from "@/types/financial-types";
-import { useQuery } from "react-query";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { FaPencil } from "react-icons/fa6";
-import { GrTransaction } from "react-icons/gr";
-import { IoIosAddCircleOutline } from "react-icons/io";
+
 import {
   Box,
   Center,
@@ -198,7 +199,10 @@ export default function Financeiro() {
               justifyContent={"space-between"}
               alignItems={"flex-start"}
             >
-              <GraficoTipoGasto panel={panel} />
+              <GraficoTipoGasto
+                panel={panel}
+                month={new Date().getMonth() + 1}
+              />
 
               <CategoriasComponente
                 panel={panel}
