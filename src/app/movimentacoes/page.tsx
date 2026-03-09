@@ -5,9 +5,9 @@ import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
 import { useSearchParams } from "next/navigation";
 import { useMovements } from "@/hooks/useMovements";
-import { Filtros } from "@/componnents/financial/filtros";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import { FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
+import { Filtros, FiltrosMovementsType } from "@/componnents/financial/filtros";
 import {
   Box,
   Center,
@@ -24,19 +24,22 @@ import {
   IoChevronDownCircleOutline,
   IoChevronUpCircleOutline,
 } from "react-icons/io5";
-import { usePanels } from "@/hooks/usePanels";
 
 export default function Movimentacoes() {
   const toast = useToast();
   const searchParams = useSearchParams();
   const id_panel = searchParams.get("id_panel");
   const { deleteMovement, listMovements } = useMovements();
-  const {} = usePanels();
   const [activeModal, setActiveModal] = useState<"filtros" | null>(null);
+  const [filtros, setFiltros] = useState<FiltrosMovementsType | null>({});
 
-  const { data: movements, refetch } = useQuery({
+  const {
+    data: movements,
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ["movements", id_panel],
-    queryFn: async () => listMovements(id_panel ?? ""),
+    queryFn: async () => listMovements(id_panel ?? "", filtros),
   });
 
   async function handleDelete(
@@ -84,7 +87,7 @@ export default function Movimentacoes() {
           mt={"35px"}
           mb={activeModal ? 5 : 0}
         >
-          <Text fontSize={"lg"} fontWeight={"bold"}>
+          <Text fontSize={"2xl"} fontWeight={"bold"}>
             Entradas e saídas
           </Text>
           <Box
@@ -106,10 +109,12 @@ export default function Movimentacoes() {
           </Box>
         </HStack>
 
-        {/* <Filtros
+        <Filtros
+          id_panel={id_panel ?? ""}
+          refetch={() => refetch()}
           open={activeModal === "filtros"}
-          categories={panel?.data[0].categories}
-        /> */}
+          filtrosValues={(values) => setFiltros(values)}
+        />
 
         <Stack mt={5}>
           <Box
@@ -207,9 +212,15 @@ export default function Movimentacoes() {
                   />
                 </Box>
               ))
-            ) : (
+            ) : isLoading ? (
               <Center mt={20}>
                 <Spinner size={"lg"} />
+              </Center>
+            ) : (
+              <Center mt={20}>
+                <Text fontSize={"lg"} fontWeight={"bold"}>
+                  Nenhuma movimentação registrada!
+                </Text>
               </Center>
             )}
           </Flex>
