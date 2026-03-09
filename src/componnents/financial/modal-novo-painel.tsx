@@ -15,6 +15,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 type Props = {
   isOpen: boolean;
@@ -23,8 +24,8 @@ type Props = {
 
 export function ModalNovoPainel({ isOpen, onClose }: Props) {
   const toast = useToast();
+  const { user } = useAuthContext();
   const { createPanel } = usePanels();
-  const [userId, setUserId] = useState<string | null>(null);
   const { values, handleChange, resetForm } = useFormik({
     initialValues: {
       name: "",
@@ -33,15 +34,10 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
     onSubmit: (values) => {},
   });
 
-  useEffect(() => {
-    const id = localStorage.getItem("userId");
-    setUserId(id);
-  }, []);
-
   async function handleClick() {
     try {
       const params = {
-        user_id: userId ?? "",
+        user_id: user?.id ?? "",
         name: values.name,
         initial_value: values.inicial_value,
       };

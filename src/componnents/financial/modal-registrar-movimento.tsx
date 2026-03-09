@@ -19,6 +19,7 @@ import {
 import { useFormik } from "formik";
 import { CategoriesType } from "@/types/financial-types";
 import { useMovements } from "@/hooks/useMovements";
+import { useState } from "react";
 
 type Props = {
   painel: string;
@@ -39,6 +40,7 @@ export function ModalRegistrarMovimento({
 }: Props) {
   const toast = useToast();
   const { createMovement } = useMovements();
+  const [isLoading, setIsLoading] = useState(false);
   const { values, handleChange, resetForm } = useFormik({
     initialValues: {
       name: "",
@@ -54,6 +56,7 @@ export function ModalRegistrarMovimento({
 
   async function handleClick() {
     try {
+      setIsLoading(true);
       await createMovement(values);
 
       toast({
@@ -73,6 +76,8 @@ export function ModalRegistrarMovimento({
         position: "top",
         isClosable: true,
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -154,6 +159,7 @@ export function ModalRegistrarMovimento({
             icon={FaSave}
             title="Salvar"
             w="150px"
+            isLoading={isLoading}
             onClick={handleClick}
           />
         </ModalFooter>

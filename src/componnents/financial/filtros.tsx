@@ -3,22 +3,59 @@ import {
   Collapse,
   Flex,
   HStack,
+  Link,
   Radio,
   RadioGroup,
   Select,
-  SlideFade,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { DefaultInput } from "../default-input";
 import { DefaultButton } from "../default-button";
 import { FaFilter } from "react-icons/fa";
+import { CategoriesType } from "@/types/financial-types";
+import { useCategoies } from "@/hooks/useCategories";
+import { useQuery } from "react-query";
+import { useFormik } from "formik";
+
+export type FiltrosMovementsType = {
+  name?: string;
+  order_date?: string;
+  movement_type?: string;
+  category_id?: string;
+};
 
 type Props = {
   open: boolean;
+  id_panel?: string;
+  refetch: () => void;
+  filtrosValues: (values: FiltrosMovementsType) => void;
 };
 
-export function Filtros({ open }: Props) {
+export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
+  const { listCategories } = useCategoies();
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories", id_panel],
+    queryFn: async () => listCategories(id_panel ?? ""),
+  });
+
+  const { values, handleChange, resetForm, handleSubmit } = useFormik({
+    initialValues: {
+      name: "",
+      order_date: "DESC",
+      movement_type: "",
+      category_id: "",
+    },
+    enableReinitialize: true,
+    onSubmit: () => {
+      filtrosValues(values);
+      setTimeout(() => {
+        refetch();
+      }, 500);
+    },
+  });
+
   return (
     <Collapse
       in={open}
@@ -29,12 +66,7 @@ export function Filtros({ open }: Props) {
       }}
       style={{ opacity: open ? 1 : 0 }}
     >
-      <Flex
-        bg={"cinza_hover"}
-        borderRadius={"10px"}
-        h={"190px"}
-        flexDir={"column"}
-      >
+      <Flex bg={"white"} borderRadius={"10px"} h={"190px"} flexDir={"column"}>
         <HStack
           p={"20px"}
           display={"flex"}
@@ -42,57 +74,73 @@ export function Filtros({ open }: Props) {
           w={"100%"}
         >
           <DefaultInput
-            placeholder="Informe o nome do movimentos"
+            placeholder="Informe o nome do movimento"
             position="cima"
-            title="Nome"
-            w="150px"
+            title="Nome do movimento"
+            w="260px"
+            value={values.name}
+            onChange={handleChange("name")}
           />
           <Stack>
             <Text fontWeight={"bold"}>Ordenar por data</Text>
-            <RadioGroup defaultValue="2">
-              <Radio borderColor={"gray.400"} value="1" mr={"20px"}>
+            <RadioGroup defaultValue="all" value={values.order_date}>
+              <Radio
+                borderColor={"gray.400"}
+                value="DESC"
+                mr={"20px"}
+                onChange={handleChange("order_date")}
+              >
                 Mais recentes
               </Radio>
-              <Radio borderColor={"gray.400"} value="2">
+              <Radio
+                borderColor={"gray.400"}
+                value="ASC"
+                onChange={handleChange("order_date")}
+              >
                 Mais antigos
               </Radio>
             </RadioGroup>
           </Stack>
-          <Stack>
-            <Text fontWeight={"bold"}>Ordenar por valor</Text>
-            <RadioGroup defaultValue="2">
-              <Radio borderColor={"gray.400"} value="1" mr={"20px"}>
-                Maior valor
-              </Radio>
-              <Radio borderColor={"gray.400"} value="2">
-                Menor valor
-              </Radio>
-            </RadioGroup>
-          </Stack>
+
           <Stack>
             <Text fontWeight={"bold"}>Movimento</Text>
-            <RadioGroup defaultValue="2">
-              <Radio borderColor={"gray.400"} value="1" mr={"20px"}>
+            <RadioGroup defaultValue="ALL" value={values.movement_type}>
+              <Radio
+                borderColor={"gray.400"}
+                value="IN"
+                mr={"20px"}
+                onChange={handleChange("movement_type")}
+              >
                 Entrada
               </Radio>
-              <Radio borderColor={"gray.400"} value="2">
+              <Radio
+                borderColor={"gray.400"}
+                value="OUT"
+                onChange={handleChange("movement_type")}
+              >
                 Saída
               </Radio>
             </RadioGroup>
           </Stack>
 
           <Stack>
-            <Text fontWeight={"bold"}>Tipo</Text>
+            <Text fontWeight={"bold"}>Categoria</Text>
             <Select
-              placeholder="Selecione o tipo"
-              w={"170px"}
+              placeholder="Selecione a categoria"
+              w={"250px"}
               bg={"white"}
               borderColor={"gray.400"}
+              value={values.category_id}
               borderRadius={"10px"}
+              onChange={handleChange("category_id")}
             >
-              <option value="1">Opção 1</option>
-              <option value="2">Opção 2</option>
-              <option value="3">Opção 3</option>
+              {categories && categories.data.length > 0 ? (
+                categories.data.map((category) => (
+                  <option value={category.id}>{category.name} </option>
+                ))
+              ) : (
+                <option value="">""</option>
+              )}
             </Select>
           </Stack>
         </HStack>
@@ -105,8 +153,23 @@ export function Filtros({ open }: Props) {
           alignItems={"center"}
           gap={5}
         >
-          <Text color={"menu_principal"}>Limpar todos os filtros</Text>
-          <DefaultButton icon={FaFilter} title="Filtrar" w="130px" />
+          <Link
+            onClick={() => {
+              (resetForm(),
+                filtrosValues({}),
+                setTimeout(() => {
+                  refetch();
+                }, 500));
+            }}
+          >
+            <Text color={"menu_principal"}>Limpar todos os filtros</Text>
+          </Link>
+          <DefaultButton
+            icon={FaFilter}
+            title="Filtrar"
+            w="130px"
+            onClick={handleSubmit}
+          />
         </Box>
       </Flex>
     </Collapse>

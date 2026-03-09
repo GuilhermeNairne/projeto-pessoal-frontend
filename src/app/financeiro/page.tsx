@@ -1,25 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { CategoriasComponente } from "@/componnents/financial/categorias-componente";
+import { ComponenteMovimentos } from "@/componnents/financial/componente-movimentos";
+import { GraficoTipoGasto } from "@/componnents/financial/grafico-tipo-gasto";
+import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
+import { ModalNovoPainel } from "@/componnents/financial/modal-novo-painel";
+import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
+import { PainelContas } from "@/componnents/financial/painel-contas";
 import { Menu } from "@/componnents/menu";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { usePanels } from "@/hooks/usePanels";
-import { GrTransaction } from "react-icons/gr";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import {
   CategoriesType,
   EditPanelType,
   ModalType,
 } from "@/types/financial-types";
-import { PainelContas } from "@/componnents/financial/painel-contas";
-import { Box, Flex, HStack, Icon, Link, Text } from "@chakra-ui/react";
-import { ModalNovoPainel } from "@/componnents/financial/modal-novo-painel";
-import { GraficoTipoGasto } from "@/componnents/financial/grafico-tipo-gasto";
-import { CategoriasComponente } from "@/componnents/financial/categorias-componente";
-import { ComponenteMovimentos } from "@/componnents/financial/componente-movimentos";
-import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
+import { useQuery } from "react-query";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FaPencil } from "react-icons/fa6";
-import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
+import { GrTransaction } from "react-icons/gr";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import {
+  Box,
+  Center,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 
 const css = {
   "&::-webkit-scrollbar": {
@@ -30,8 +41,9 @@ const css = {
 };
 
 export default function Financeiro() {
+  const router = useRouter();
+  const { user } = useAuthContext();
   const { listPanels } = usePanels();
-  const [userId, setUserId] = useState<string | null>(null);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [editPanelValues, setEditPanelValues] = useState<EditPanelType>();
   const [openTransactionModal, setOpenTransactionModal] = useState<{
@@ -41,14 +53,13 @@ export default function Financeiro() {
     categories: CategoriesType[];
   }>({ open: false, idPainel: "", name: "", categories: [] });
 
-  useEffect(() => {
-    const id = localStorage.getItem("userId");
-    setUserId(id);
-  }, []);
-
-  const { data: panels, refetch: refetchPanel } = useQuery({
-    queryKey: ["panels", userId],
-    queryFn: async () => listPanels(userId ?? ""),
+  const {
+    data: panels,
+    refetch: refetchPanel,
+    isLoading,
+  } = useQuery({
+    queryKey: ["panels", user?.id],
+    queryFn: async () => listPanels(user?.id ?? ""),
   });
 
   function handleEditPanel({ id, panel, value }: EditPanelType) {
@@ -121,7 +132,7 @@ export default function Financeiro() {
           </Link>
         </HStack>
 
-        <PainelContas paineis={panels?.data ?? []} />
+        <PainelContas paineis={panels?.data ?? []} isLoading={isLoading} />
 
         {panels?.data.map((panel) => (
           <Box
@@ -150,7 +161,7 @@ export default function Financeiro() {
                   }
                 />
               </HStack>
-              <Box
+              <Link
                 onClick={() =>
                   setOpenTransactionModal({
                     open: true,
@@ -159,19 +170,25 @@ export default function Financeiro() {
                     categories: panel.categories ?? [],
                   })
                 }
-                display={"flex"}
-                flexDir={"row"}
-                alignItems={"center"}
-                gap={3}
               >
-                <Text fontSize={"lg"}>Registrar movimento</Text>
-                <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
-              </Box>
+                <Box
+                  display={"flex"}
+                  flexDir={"row"}
+                  alignItems={"center"}
+                  gap={3}
+                >
+                  <Text fontSize={"lg"}>Registrar movimento</Text>
+                  <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
+                </Box>
+              </Link>
             </HStack>
 
             <ComponenteMovimentos
               panel={panel}
               refetch={() => refetchPanel()}
+              navigate={() =>
+                router.push(`/movimentacoes?id_panel=${panel.id}`)
+              }
             />
 
             <HStack

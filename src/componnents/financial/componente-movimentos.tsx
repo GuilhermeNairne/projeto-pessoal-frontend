@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Filtros } from "./filtros";
+import { useMovements } from "@/hooks/useMovements";
 import { PanelsType } from "@/types/financial-types";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import {
@@ -7,25 +6,26 @@ import {
   Flex,
   HStack,
   Icon,
+  Link,
   Stack,
   Text,
   useToast,
 } from "@chakra-ui/react";
+import { useState } from "react";
+import { FaList, FaTrash } from "react-icons/fa";
 import {
-  FaArrowAltCircleDown,
-  FaArrowAltCircleUp,
-  FaChevronDown,
-  FaChevronUp,
-  FaTrash,
-} from "react-icons/fa";
-import { useMovements } from "@/hooks/useMovements";
+  IoChevronDownCircleOutline,
+  IoChevronUpCircleOutline,
+} from "react-icons/io5";
+import { Filtros } from "./filtros";
 
 type Props = {
   panel: PanelsType;
   refetch: () => void;
+  navigate: () => void;
 };
 
-export function ComponenteMovimentos({ panel, refetch }: Props) {
+export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
   const toast = useToast();
   const { deleteMovement } = useMovements();
   const [activeModal, setActiveModal] = useState<"filtros" | null>(null);
@@ -66,22 +66,11 @@ export function ComponenteMovimentos({ panel, refetch }: Props) {
         <Text fontSize={"lg"} fontWeight={"bold"}>
           Entradas e saídas
         </Text>
-        <Box
-          onClick={() =>
-            activeModal === "filtros"
-              ? setActiveModal(null)
-              : setActiveModal("filtros")
-          }
-          display={"flex"}
-          flexDir={"row"}
-          alignItems={"center"}
-          gap={3}
-        >
-          <Text fontSize={"lg"}>Filtrar por</Text>
-          <Icon
-            as={activeModal === "filtros" ? FaChevronUp : FaChevronDown}
-            boxSize={"5"}
-          />
+        <Box display={"flex"} flexDir={"row"} alignItems={"center"} gap={3}>
+          <Link onClick={() => navigate()}>
+            <Text fontSize={"lg"}>Ver todas movimentações</Text>
+          </Link>
+          <Icon as={FaList} boxSize={"5"} />
         </Box>
       </HStack>
 
@@ -131,8 +120,8 @@ export function ComponenteMovimentos({ panel, refetch }: Props) {
             msOverflowStyle: "none",
           }}
         >
-          {panel.movements && panel.movements?.length > 0
-            ? panel.movements.map((occ, index) => (
+          {panel.movements && panel.movements.length > 0
+            ? panel.movements.slice(0, 5).map((occ, index) => (
                 <Box
                   boxShadow="md"
                   display="flex"
@@ -162,8 +151,8 @@ export function ComponenteMovimentos({ panel, refetch }: Props) {
                     <Icon
                       as={
                         occ.movement_type === "IN"
-                          ? FaArrowAltCircleUp
-                          : FaArrowAltCircleDown
+                          ? IoChevronUpCircleOutline
+                          : IoChevronDownCircleOutline
                       }
                       color={occ.movement_type === "IN" ? "green" : "red"}
                       boxSize="5"

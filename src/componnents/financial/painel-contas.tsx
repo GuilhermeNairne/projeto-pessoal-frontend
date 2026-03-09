@@ -1,13 +1,22 @@
 import { PanelsType } from "@/types/financial-types";
 import { formatarValorBR } from "@/utils/convert-to-real";
-import { Box, Center, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Flex,
+  HStack,
+  Icon,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import { PiMoneyWavyFill, PiPiggyBankFill } from "react-icons/pi";
 
 type Props = {
   paineis: PanelsType[];
+  isLoading: boolean;
 };
 
-export function PainelContas({ paineis }: Props) {
+export function PainelContas({ paineis, isLoading }: Props) {
   function calculaTotal() {
     return formatarValorBR(
       paineis?.reduce((total, item) => total + Number(item.initial_value), 0) ??
@@ -33,7 +42,7 @@ export function PainelContas({ paineis }: Props) {
 
   return (
     <Flex flexDir="column" gap={5} mt={"20px"}>
-      {paineis?.length === 0 ? (
+      {paineis?.length === 0 && isLoading === false ? (
         <Center mt={"200px"} display={"flex"} flexDir={"column"}>
           <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
             Você ainda não criou nenhum painel,
@@ -41,6 +50,10 @@ export function PainelContas({ paineis }: Props) {
           <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
             Clique no botão acima para adicionar um.
           </Text>
+        </Center>
+      ) : isLoading ? (
+        <Center mt={50}>
+          <Spinner size={"lg"} />
         </Center>
       ) : (
         linhas.map((linha: any, index: any) => (

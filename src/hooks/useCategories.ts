@@ -20,5 +20,13 @@ export function useCategoies() {
     return result;
   }
 
-  return { createCategory, deleteCategory, updateCategory };
+  async function listCategories(id_panel: string) {
+    const result = await api.get<CategoriesType[]>("financial-category/list", {
+      params: { painel_id: id_panel },
+    });
+
+    return result;
+  }
+
+  return { createCategory, deleteCategory, updateCategory, listCategories };
 }

@@ -16,6 +16,7 @@ import {
   HStack,
   Icon,
   Input,
+  Link,
   Stack,
   Text,
   useDisclosure,
@@ -210,14 +211,16 @@ export function CategoriasComponente({ panel, refetch }: Props) {
             ))
           )}
         </Stack>
-        <HStack
-          mt={"20px"}
-          mr={"70px"}
+        <Link
           onClick={() => handleNewCategory(panel.id ?? 0)}
+          mt={"40px"}
+          mr={"70px"}
         >
-          <Icon as={FaPlus} />
-          <Text fontWeight={"bold"}>Adicionar categoria</Text>
-        </HStack>
+          <HStack>
+            <Text>Adicionar categoria</Text>
+            <Icon as={FaPlus} />
+          </HStack>
+        </Link>
       </Box>
     </>
   );

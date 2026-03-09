@@ -16,6 +16,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import { useState } from "react";
 
 type Props = {
   isOpen: boolean;
@@ -32,6 +33,7 @@ export function EditPanelModal({
 }: Props) {
   const toast = useToast();
   const { editPanel } = usePanels();
+  const [isLoading, setIsLoading] = useState(false);
   const { values, handleChange, resetForm } = useFormik({
     initialValues: {
       id: panelValues.id,
@@ -44,6 +46,7 @@ export function EditPanelModal({
 
   async function handleEdit() {
     try {
+      setIsLoading(true);
       await editPanel(values);
       onClose();
       refetch();
@@ -60,6 +63,8 @@ export function EditPanelModal({
         position: "top",
         isClosable: true,
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -97,6 +102,7 @@ export function EditPanelModal({
             icon={FaSave}
             title="Salvar"
             w="150px"
+            isLoading={isLoading}
             onClick={handleEdit}
           />
         </ModalFooter>
