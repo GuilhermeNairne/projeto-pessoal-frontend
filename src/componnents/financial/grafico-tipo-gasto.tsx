@@ -1,53 +1,64 @@
-import { PanelsType } from "@/types/financial-types";
-import { Box, HStack, Stack, Text } from "@chakra-ui/react";
+import { useQuery } from "react-query";
 import { VictoryPie, VictoryTheme } from "victory";
+import { useMovements } from "@/hooks/useMovements";
+import { PanelsType } from "@/types/financial-types";
+import { Box, HStack, Spinner, Stack, Text } from "@chakra-ui/react";
 
 type Props = {
   panel: PanelsType;
+  month: number;
 };
 
-export function GraficoTipoGasto({ panel }: Props) {
-  const chartData = panel.categories
-    ?.map((category) => {
-      const total = (panel.movements ?? [])
-        .filter(
-          (m) => m.movement_type === "OUT" && m.category_id === category.id,
-        )
-        .reduce((acc, m) => acc + Number(m.value), 0);
+export function GraficoTipoGasto({ panel, month }: Props) {
+  const { listExpensesByMonth } = useMovements();
+  const monthName = new Date().toLocaleString("pt-BR", { month: "long" });
 
-      return {
-        x: category.name,
-        y: total,
-        color: category.color,
-      };
-    })
-    .filter((item) => item.y > 0);
+  const {
+    data: chartData,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["expensesByMonth", panel, month],
+    queryFn: async () => listExpensesByMonth(Number(panel.id), month),
+  });
 
   return (
     <Box display={"flex"} flexDir={"column"}>
       <HStack display={"flex"} justifyContent={"space-between"}>
         <Text fontSize={"lg"} fontWeight={"bold"}>
-          Gráfico por tipo de gasto
+          Gráfico por tipo de gasto do mês de {monthName.toUpperCase()}
         </Text>
       </HStack>
       {panel.movements?.some((move) => move.movement_type === "OUT") ? (
         <Box w={"100%"} display={"flex"} flexDir={"row"}>
-          <VictoryPie
-            startAngle={90}
-            labels={({ datum }) => `R$ ${datum.y}`}
-            endAngle={450}
-            data={chartData}
-            theme={VictoryTheme.clean}
-            style={{
-              labels: {
-                fontWeight: "bold",
-              },
-              data: {
-                fill: ({ datum }) => datum.color,
-              },
-            }}
-          />
+          {isLoading ? (
+            <Spinner size={"lg"} />
+          ) : (
+            <Stack>
+              <VictoryPie
+                startAngle={90}
+                labels={({ datum }) => `R$ ${datum.y}`}
+                endAngle={450}
+                data={chartData?.data.data}
+                theme={VictoryTheme.clean}
+                style={{
+                  labels: {
+                    fontWeight: "bold",
+                  },
+                  data: {
+                    fill: ({ datum }) => datum.color,
+                  },
+                }}
+              />
 
+              <HStack>
+                <Text fontSize={"lg"}>Total gasto: </Text>
+                <Text fontSize={"lg"} fontWeight={"bold"}>
+                  R$ {chartData?.data.total}
+                </Text>
+              </HStack>
+            </Stack>
+          )}
           <Stack
             mt={"20px"}
             maxH={"200px"}

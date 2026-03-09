@@ -41,3 +41,14 @@ export type EditPanelType = {
   value: string;
   id: number;
 };
+
+export type ExpensesByMonthType = {
+  total: number;
+  data: [
+    {
+      x: string;
+      y: number;
+      color: string;
+    },
+  ];
+};
