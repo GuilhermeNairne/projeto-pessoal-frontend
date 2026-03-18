@@ -117,14 +117,14 @@ export default function Movimentacoes() {
           filtrosValues={(values) => setFiltros(values)}
         />
 
-        <Stack mt={5}>
+        <Stack mt={5} h={activeModal === "filtros" ? "65%" : undefined}>
           <Box
             display={"flex"}
             flexDir={"row"}
             bg={"menu_principal"}
             borderRadius={"5px"}
             w={"full"}
-            h={"35px"}
+            h={activeModal === "filtros" ? "50px" : "35px"}
             alignItems={"center"}
             px={"15px"}
           >
@@ -150,7 +150,7 @@ export default function Movimentacoes() {
             w={"full"}
             flexDir={"column"}
             gap={3}
-            h={"100%"}
+            h={activeModal === "filtros" ? undefined : "85%"}
             borderRadius={"5px"}
             overflowY="auto"
             sx={{

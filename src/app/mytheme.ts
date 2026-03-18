@@ -22,7 +22,7 @@ const myTheme = extendTheme({
     preto: "black",
     menu_principal: "#1e293b",
     menu_secundario: "#000647",
-    menu_selecionado: "#797979",
+    menu_selecionado: "#d5d5d577",
   },
   breakpoints: {
     celular: "320px",
