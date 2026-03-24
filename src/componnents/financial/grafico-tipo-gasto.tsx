@@ -26,7 +26,7 @@ export function GraficoTipoGasto({ panel, month }: Props) {
     <Box display={"flex"} flexDir={"column"}>
       <HStack display={"flex"} justifyContent={"space-between"}>
         <Text fontSize={"lg"} fontWeight={"bold"}>
-          Gráfico por tipo de gasto do mês de {monthName.toUpperCase()}
+          Gráfico de gastos do mês de {monthName.toUpperCase()}
         </Text>
       </HStack>
       {panel.movements?.some((move) => move.movement_type === "OUT") ? (
