@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import { EditPanelType, PanelsType } from "@/types/financial-types";
+import { EditPanelType, ListJuros, PanelsType } from "@/types/financial-types";
 
 export function usePanels() {
   async function listPanels(user_id: string) {
@@ -25,5 +25,13 @@ export function usePanels() {
     return result;
   }
 
-  return { listPanels, createPanel, editPanel };
+  async function getJuros(panel_id: number) {
+    const result = await api.get<ListJuros>(
+      `financial-panel/list-juros/${panel_id}`,
+    );
+
+    return result;
+  }
+
+  return { listPanels, createPanel, editPanel, getJuros };
 }

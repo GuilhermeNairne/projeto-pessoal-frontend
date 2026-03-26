@@ -52,3 +52,10 @@ export type ExpensesByMonthType = {
     },
   ];
 };
+
+export type ListJuros = [
+  {
+    month: string;
+    total: string;
+  },
+];
