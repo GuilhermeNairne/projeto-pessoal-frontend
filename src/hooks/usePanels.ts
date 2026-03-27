@@ -25,13 +25,5 @@ export function usePanels() {
     return result;
   }
 
-  async function getJuros(panel_id: number) {
-    const result = await api.get<ListJuros>(
-      `financial-panel/list-juros/${panel_id}`,
-    );
-
-    return result;
-  }
-
-  return { listPanels, createPanel, editPanel, getJuros };
+  return { listPanels, createPanel, editPanel };
 }

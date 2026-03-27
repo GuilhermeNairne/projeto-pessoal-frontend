@@ -142,8 +142,10 @@ export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
               onChange={handleChange("category_id")}
             >
               {categories && categories.data.length > 0 ? (
-                categories.data.map((category) => (
-                  <option value={category.id}>{category.name} </option>
+                categories.data.map((category, index) => (
+                  <option key={index} value={category.id}>
+                    {category.name}{" "}
+                  </option>
                 ))
               ) : (
                 <option value="">""</option>

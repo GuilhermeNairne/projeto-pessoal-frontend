@@ -54,8 +54,8 @@ export function ModalCategorias({ isOpen, onClose, categorias }: Props) {
               alignItems={"center"}
               ml={"60px"}
             >
-              {categorias.map((categoria) => (
-                <HStack>
+              {categorias.map((categoria, index) => (
+                <HStack key={index}>
                   <Box
                     w={"25px"}
                     h={"25px"}

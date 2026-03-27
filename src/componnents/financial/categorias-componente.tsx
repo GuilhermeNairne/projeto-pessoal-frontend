@@ -162,7 +162,7 @@ export function CategoriasComponente({ panel, refetch }: Props) {
             </Stack>
           ) : (
             panel.categories?.map((category, index) => (
-              <HStack>
+              <HStack key={index}>
                 <Box
                   w={"25px"}
                   h={"25px"}

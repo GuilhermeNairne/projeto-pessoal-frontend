@@ -136,8 +136,9 @@ export default function Financeiro() {
 
         <PainelContas paineis={panels?.data ?? []} isLoading={isLoading} />
 
-        {panels?.data.map((panel) => (
+        {panels?.data.map((panel, index) => (
           <Box
+            key={index}
             display={"flex"}
             flexDir={"column"}
             bg={"white"}
@@ -193,7 +194,7 @@ export default function Financeiro() {
               }
             />
 
-            <GraficoJuros />
+            <GraficoJuros juros={panel.juros} />
             <HStack
               w={"100%"}
               display={"flex"}
