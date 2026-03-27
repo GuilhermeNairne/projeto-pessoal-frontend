@@ -32,6 +32,7 @@ import {
   Spinner,
   Text,
 } from "@chakra-ui/react";
+import { GraficoJuros } from "@/componnents/financial/grafico-juros";
 
 const css = {
   "&::-webkit-scrollbar": {
@@ -135,8 +136,9 @@ export default function Financeiro() {
 
         <PainelContas paineis={panels?.data ?? []} isLoading={isLoading} />
 
-        {panels?.data.map((panel) => (
+        {panels?.data.map((panel, index) => (
           <Box
+            key={index}
             display={"flex"}
             flexDir={"column"}
             bg={"white"}
@@ -192,6 +194,7 @@ export default function Financeiro() {
               }
             />
 
+            <GraficoJuros juros={panel.juros} />
             <HStack
               w={"100%"}
               display={"flex"}

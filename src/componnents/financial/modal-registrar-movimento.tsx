@@ -113,8 +113,10 @@ export function ModalRegistrarMovimento({
               borderRadius={"10px"}
               onChange={handleChange("category_id")}
             >
-              {categorys.map((categoria) => (
-                <option value={categoria.id}>{categoria.name}</option>
+              {categorys.map((categoria, index) => (
+                <option key={index} value={categoria.id}>
+                  {categoria.name}
+                </option>
               ))}
             </Select>
           </Stack>

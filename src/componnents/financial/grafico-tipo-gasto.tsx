@@ -93,7 +93,7 @@ export function GraficoTipoGasto({ panel, month }: Props) {
           </Stack>
         </Box>
       ) : (
-        <Text mt={"10px"}>
+        <Text color={"gray.500"}>
           Não foi registrado nenhuma movimentação de gasto.
         </Text>
       )}

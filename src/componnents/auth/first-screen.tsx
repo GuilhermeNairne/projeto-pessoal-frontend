@@ -45,8 +45,8 @@ export function FirstScreen() {
       </Text>
 
       <Stack mt={20}>
-        {itens.map((item) => (
-          <HStack mt={5} gap={5}>
+        {itens.map((item, index) => (
+          <HStack mt={5} gap={5} key={index}>
             <Box
               w={"50px"}
               h={"50px"}

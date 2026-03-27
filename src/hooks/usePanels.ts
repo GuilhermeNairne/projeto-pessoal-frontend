@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import { EditPanelType, PanelsType } from "@/types/financial-types";
+import { EditPanelType, ListJuros, PanelsType } from "@/types/financial-types";
 
 export function usePanels() {
   async function listPanels(user_id: string) {

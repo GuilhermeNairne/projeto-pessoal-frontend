@@ -70,11 +70,12 @@ export function Menu() {
         </Box>
 
         <Stack mt={"50px"}>
-          {menuOpcoes.map((item) => (
+          {menuOpcoes.map((item, index) => (
             <Button
               display={"flex-start"}
               w={"100%"}
               h={"70px"}
+              key={index}
               onClick={() => router.push(`${item.nome.toLowerCase()}`)}
               bg={pathname === `/${item.nome.toLowerCase()}` ? "white" : "null"}
               alignItems={"center"}
