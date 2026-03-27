@@ -34,6 +34,14 @@ export type MovementsType = {
   };
 };
 
+export type MovementsPaginaionType = {
+  movements: MovementsType[];
+  pagination: {
+    totalPages: number;
+    page: number;
+  };
+};
+
 export type ModalType =
   | "filtros"
   | "newPanel"
