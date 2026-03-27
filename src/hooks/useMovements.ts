@@ -1,16 +1,21 @@
 import { api } from "@/services/api";
 import { FiltrosMovementsType } from "@/componnents/financial/filtros";
-import { ExpensesByMonthType, MovementsType } from "@/types/financial-types";
+import {
+  ExpensesByMonthType,
+  MovementsPaginaionType,
+  MovementsType,
+} from "@/types/financial-types";
 
 export function useMovements() {
   async function listMovements(
     id_panel: string,
     filtros: FiltrosMovementsType | null,
+    page: number,
   ) {
-    const result = await api.get<MovementsType[]>(
+    const result = await api.get<MovementsPaginaionType>(
       `financial-movement/list/${id_panel}`,
       {
-        params: filtros,
+        params: { ...filtros, page },
       },
     );
 

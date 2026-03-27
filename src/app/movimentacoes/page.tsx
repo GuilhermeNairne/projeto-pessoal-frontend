@@ -5,9 +5,16 @@ import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
 import { useSearchParams } from "next/navigation";
 import { useMovements } from "@/hooks/useMovements";
+import { formatarValorBR } from "@/utils/convert-to-real";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
-import { FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
 import { Filtros, FiltrosMovementsType } from "@/componnents/financial/filtros";
+import {
+  FaChevronDown,
+  FaChevronLeft,
+  FaChevronRight,
+  FaChevronUp,
+  FaTrash,
+} from "react-icons/fa";
 import {
   Box,
   Center,
@@ -24,24 +31,29 @@ import {
   IoChevronDownCircleOutline,
   IoChevronUpCircleOutline,
 } from "react-icons/io5";
-import { formatarValorBR } from "@/utils/convert-to-real";
 
 export default function Movimentacoes() {
   const toast = useToast();
   const searchParams = useSearchParams();
   const id_panel = searchParams.get("id_panel");
+  const [actualPage, setActualPage] = useState(1);
   const { deleteMovement, listMovements } = useMovements();
   const [activeModal, setActiveModal] = useState<"filtros" | null>(null);
   const [filtros, setFiltros] = useState<FiltrosMovementsType | null>({});
 
   const {
-    data: movements,
+    data: result,
     refetch,
     isLoading,
   } = useQuery({
-    queryKey: ["movements", id_panel],
-    queryFn: async () => listMovements(id_panel ?? "", filtros),
+    queryKey: ["movements", id_panel, actualPage],
+    queryFn: async () => listMovements(id_panel ?? "", filtros, actualPage),
   });
+
+  const pages = Array.from(
+    { length: result?.data.pagination.totalPages ?? 1 },
+    (_, i) => i + 1,
+  );
 
   async function handleDelete(
     id: number,
@@ -150,7 +162,7 @@ export default function Movimentacoes() {
             w={"full"}
             flexDir={"column"}
             gap={3}
-            h={activeModal === "filtros" ? undefined : "85%"}
+            h={activeModal === "filtros" ? undefined : "95%"}
             borderRadius={"5px"}
             overflowY="auto"
             sx={{
@@ -161,8 +173,8 @@ export default function Movimentacoes() {
               msOverflowStyle: "none",
             }}
           >
-            {movements && movements.data.length > 0 ? (
-              movements.data.map((occ, index) => (
+            {result && result.data.movements.length > 0 ? (
+              result.data.movements.map((occ, index) => (
                 <Box
                   boxShadow="md"
                   display="flex"
@@ -219,12 +231,75 @@ export default function Movimentacoes() {
               </Center>
             ) : (
               <Center mt={20}>
-                <Text fontSize={"lg"} fontWeight={"bold"}>
+                <Text fontSize={"lg"} fontWeight={"bold"} color={"gray.600"}>
                   Nenhuma movimentação registrada!
                 </Text>
               </Center>
             )}
           </Flex>
+
+          <HStack
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            mt={10}
+          >
+            <Box
+              borderRadius={4}
+              w={`25px`}
+              h={`25px`}
+              display={"flex"}
+              justifyContent={`center`}
+              alignItems={`center`}
+              onClick={() => setActualPage(Number(actualPage - 1))}
+              bg={
+                result?.data.pagination.page === 1
+                  ? "gray.500"
+                  : "menu_principal"
+              }
+            >
+              <Icon as={FaChevronLeft} color={`white`} />
+            </Box>
+            {pages.map((page, index) => (
+              <Stack>
+                <Box
+                  borderRadius={4}
+                  w={`25px`}
+                  h={`25px`}
+                  display={"flex"}
+                  justifyContent={`center`}
+                  alignItems={`center`}
+                  bg={"menu_principal"}
+                  onClick={() => setActualPage(page)}
+                  key={index}
+                >
+                  <Text fontWeight={`bold`} fontSize={`md`} color={`white`}>
+                    {page}
+                  </Text>
+                </Box>
+                {result?.data.pagination.page === page ? (
+                  <Box w={`25px`} bg={`menu_principal`} h={`2px`} />
+                ) : null}
+              </Stack>
+            ))}
+            <Box
+              borderRadius={4}
+              w={`25px`}
+              h={`25px`}
+              display={"flex"}
+              justifyContent={`center`}
+              alignItems={`center`}
+              onClick={() => setActualPage(Number(actualPage + 1))}
+              bg={
+                result?.data.pagination.totalPages ===
+                result?.data.pagination.page
+                  ? "gray.500"
+                  : "menu_principal"
+              }
+            >
+              <Icon as={FaChevronRight} color={`white`} />
+            </Box>
+          </HStack>
         </Stack>
       </Flex>
     </Flex>
