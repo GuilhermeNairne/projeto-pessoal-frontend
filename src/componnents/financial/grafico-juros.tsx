@@ -31,7 +31,10 @@ export function GraficoJuros({ juros }: Props) {
               />
               <Text fontWeight={"bold"}>
                 {new Date(mes.month)
-                  .toLocaleString("pt-BR", { month: "long" })
+                  .toLocaleString("pt-BR", {
+                    month: "long",
+                    timeZone: "UTC",
+                  })
                   .replace(/^./, (char) => char.toUpperCase())}
               </Text>
             </Stack>
