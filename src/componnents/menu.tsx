@@ -21,7 +21,7 @@ const menuOpcoes = [
     icon: FaSignOutAlt,
   },
   {
-    nome: "Estudos",
+    nome: "Atividades",
     icon: FaBook,
   },
 ];
@@ -40,7 +40,7 @@ export function Menu() {
 
   return (
     <Flex
-      w={"22%"}
+      w={"18%"}
       h={"100%"}
       bg={"menu_principal"}
       borderRadius={"20px"}
