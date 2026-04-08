@@ -4,29 +4,30 @@ import { FaBook } from "react-icons/fa";
 export function Quadros() {
   const quadros = [
     {
-      title: "PRIMEIRO TEXTO",
-      quantidade: "01",
+      title: "METAS CUMPRIDAS (H)",
+      quantidade: "20 HORAS",
+      color: "green.600",
+      icon: FaBook,
+    },
+    //Pendentes pegar do dia anterior para tras as tarefas que nao foram concluidas
+    {
+      title: "PENDENTES",
+      quantidade: "01 TAREFAS",
       color: "red.600",
       icon: FaBook,
     },
     {
-      title: "SEGUNDO TEXTO",
-      quantidade: "02",
+      title: "TAREFAS CADASTRADAS",
+      quantidade: "15 TAREFAS",
       color: "blue.600",
       icon: FaBook,
     },
-    {
-      title: "TERCEIRO TEXTO",
-      quantidade: "04",
-      color: "green.600",
-      icon: FaBook,
-    },
-    {
-      title: "QUARTO TEXTO",
-      quantidade: "04",
-      color: "orange.600",
-      icon: FaBook,
-    },
+    // {
+    //   title: "QUARTO TEXTO",
+    //   quantidade: "04",
+    //   color: "orange.600",
+    //   icon: FaBook,
+    // },
   ];
 
   return (
@@ -64,7 +65,7 @@ export function Quadros() {
             color={quadro.color}
             fontWeight={"bold"}
           >
-            {quadro.quantidade} atividades
+            {quadro.quantidade}
           </Text>
         </Box>
       ))}

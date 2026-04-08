@@ -1,8 +1,8 @@
 "use client";
 
-import { Menu } from "@/componnents/menu";
 import { Quadros } from "@/componnents/atividades/quadros";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Menu } from "@/componnents/menu";
+import { ScrollBarcss } from "@/utils/scroll-bar-css";
 import {
   Box,
   Flex,
@@ -12,14 +12,13 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
-import { ScrollBarcss } from "@/utils/scroll-bar-css";
+import { useMemo, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function Atividades() {
-  const now = new Date();
   const daysName = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
-  const [month, setMonth] = useState(now.getMonth());
-  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth());
+  const [year, setYear] = useState(new Date().getFullYear());
   const firstDayOfWeek = new Date(year, month, 1).getDay();
   const allDays = useMemo(() => {
     return getDaysInMonth(year, month - 1);
@@ -100,17 +99,23 @@ export default function Atividades() {
         <SimpleGrid
           justifyContent={"space-between"}
           columns={7}
+          spacing={1}
           borderColor={"gray.400"}
         >
           {paddedDays.map((day, index) => (
             <Box
-              key={index}
-              p={2}
-              display={"flex"}
-              alignItems={"flex-start"}
               h="150px"
-              borderColor={"gray.400"}
+              p={2}
+              key={index}
               borderWidth={1}
+              display={"flex"}
+              overflowY={`auto`}
+              borderColor={"gray.400"}
+              alignItems={"flex-start"}
+              _hover={{
+                bg: "gray.100",
+                cursor: "pointer",
+              }}
             >
               <Box
                 w={6}

@@ -15,14 +15,14 @@ export function FirstScreen() {
       bg: "#2A325E",
       icon: FaCalendar,
       iconColor: "#5A72C3",
-      text: "Calendário de estudos",
+      text: "Calendário de atividades",
       subtext: "Organize sua rotina de aprendizado",
     },
     {
       bg: "#333260",
       icon: GiProgression,
       iconColor: "#A78BFA",
-      text: "Acompanhe Progresso",
+      text: "Acompanhe seu progresso",
       subtext: "Visualize sua evolução em tempo real",
     },
   ];

@@ -21,7 +21,7 @@ const menuOpcoes = [
     icon: FaSignOutAlt,
   },
   {
-    nome: "Atividades",
+    nome: "Calendario",
     icon: FaBook,
   },
 ];
