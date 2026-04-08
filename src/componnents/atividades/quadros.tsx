@@ -37,6 +37,7 @@ export function Quadros() {
           w={250}
           h={"120px"}
           borderRadius={8}
+          // borderWidth={1}
           boxShadow={"md"}
           bg={"white"}
         >
