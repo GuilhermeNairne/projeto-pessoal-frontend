@@ -40,7 +40,7 @@ export function Menu() {
 
   return (
     <Flex
-      w={"18%"}
+      w={"20%"}
       h={"100%"}
       bg={"menu_principal"}
       borderRadius={"20px"}

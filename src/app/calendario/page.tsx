@@ -12,10 +12,12 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function Atividades() {
+  const router = useRouter();
   const daysName = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
@@ -51,6 +53,12 @@ export default function Atividades() {
         setMonth(month - 1);
       }
     }
+  }
+
+  function navigateTarefas(day: string) {
+    const date = new Date(year, month, Number(day));
+
+    router.push(`/calendario/tarefas?date=${date.toISOString()}`);
   }
 
   return (
@@ -108,7 +116,9 @@ export default function Atividades() {
               p={2}
               key={index}
               borderWidth={1}
+              borderRadius={3}
               display={"flex"}
+              onClick={() => navigateTarefas(day.getDate())}
               overflowY={`auto`}
               borderColor={"gray.400"}
               alignItems={"flex-start"}
