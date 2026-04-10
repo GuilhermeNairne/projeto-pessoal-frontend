@@ -76,7 +76,7 @@ export function Menu() {
               w={"100%"}
               h={"70px"}
               key={index}
-              onClick={() => router.push(`${item.nome.toLowerCase()}`)}
+              onClick={() => router.push(`/${item.nome.toLowerCase()}`)}
               bg={pathname === `/${item.nome.toLowerCase()}` ? "white" : "null"}
               alignItems={"center"}
               p={"10px"}
