@@ -1,5 +1,7 @@
 "use client";
 
+import { CardTarefa } from "@/componnents/atividades/card-tarefa";
+import { DefaultButton } from "@/componnents/default-button";
 import { Menu } from "@/componnents/menu";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
 import {
@@ -14,8 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import { CiClock2 } from "react-icons/ci";
-import { FaClock } from "react-icons/fa";
-import { LuClipboardCheck } from "react-icons/lu";
+import { MdOutlinePlaylistAdd } from "react-icons/md";
 
 export default function Tarefas() {
   const searchParams = useSearchParams();
@@ -39,8 +40,6 @@ export default function Tarefas() {
     return Math.ceil((dayOfMonth + firstDayWeekDay) / 7);
   }
 
-  console.log(getWeekOfMonth(new Date(String(dateParam))));
-
   return (
     <Flex
       w={"100%"}
@@ -53,9 +52,17 @@ export default function Tarefas() {
       <Menu />
 
       <Stack mt={5} px={10} w={`full`} overflow={"auto"} css={ScrollBarcss}>
-        <Text color={"menu_principal"} fontSize={`2xl`} fontWeight={`bold`}>
-          Semana {getWeekOfMonth(new Date(String(dateParam)))} de Abril
-        </Text>
+        <HStack mr={3} justifyContent={`space-between`}>
+          <Text color={"menu_principal"} fontSize={`2xl`} fontWeight={`bold`}>
+            {getWeekOfMonth(new Date(String(dateParam)))}° semana de Abril
+          </Text>
+
+          <DefaultButton
+            icon={MdOutlinePlaylistAdd}
+            title="Adicionar tarefa"
+            w="180px"
+          />
+        </HStack>
 
         <SimpleGrid
           justifyContent={"space-between"}
@@ -120,51 +127,19 @@ export default function Tarefas() {
 
                 <Box w={"full"} h={"2px"} bg={"#dedede"} mt={5} />
 
-                <Flex
-                  w={`90%`}
-                  p={3}
-                  mt={5}
-                  alignSelf={"center"}
-                  bg={"#eef1f8"}
-                  borderWidth={1}
-                  borderLeftWidth={2}
-                  flexDir={`column`}
-                  borderRadius={3}
-                  borderLeftColor={"menu_principal"}
-                >
-                  <Box
-                    display={`flex`}
-                    flexDir={`row`}
-                    justifyContent={`space-between`}
-                  >
-                    <HStack>
-                      <Icon
-                        as={LuClipboardCheck}
-                        boxSize={5}
-                        sx={{ strokeWidth: 2 }}
-                      />
-                      <Text fontWeight={`bold`}>Tarefa</Text>
-                    </HStack>
-                    <Checkbox
-                      colorScheme="gray"
-                      size="lg"
-                      borderColor={`gray.400`}
-                      sx={{
-                        "& .chakra-checkbox__control": {
-                          borderRadius: "5px",
-                        },
-                      }}
-                    />
-                  </Box>
-
-                  <Text fontWeight={"bold"} mt={3} color={"blue.500"}>
-                    Resolva o 43° Exame de Ordem e, após, assista a aula de
-                    resolução
-                  </Text>
-
-                  <Text mt={5} fontWeight={"bold"}>
-                    5 horas
-                  </Text>
+                <Flex overflowY={"auto"} flexDir={`column`} css={ScrollBarcss}>
+                  <CardTarefa
+                    descricao="Resolva o 43° Exame de Ordem e, após, assista a aula de resolução"
+                    titulo="Prova OAB"
+                    tempo="5"
+                    status="pendente"
+                  />
+                  <CardTarefa
+                    descricao="Resolva o 43° Exame de Ordem e, após, assista a aula de resolução"
+                    titulo="Prova OAB"
+                    tempo="5"
+                    status="realizado"
+                  />
                 </Flex>
               </Box>
             );
