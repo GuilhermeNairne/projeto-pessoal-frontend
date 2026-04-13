@@ -5,7 +5,7 @@ import { DefaultButton } from "@/componnents/default-button";
 import { Menu } from "@/componnents/menu";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
 import { ptBR } from "date-fns/locale";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { CiClock2 } from "react-icons/ci";
@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 
 export default function Tarefas() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const dateParam = searchParams.get("date");
   const baseDate = dateParam ? new Date(dateParam) : new Date();
@@ -82,6 +83,7 @@ export default function Tarefas() {
           <DayPicker
             mode={undefined}
             showOutsideDays
+            onDayClick={() => router.push("/calendario")}
             formatters={{
               formatCaption: (date) => {
                 const text = date.toLocaleDateString("pt-BR", {
