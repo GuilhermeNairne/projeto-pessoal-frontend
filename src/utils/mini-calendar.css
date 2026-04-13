@@ -1,16 +1,9 @@
-.rdp {
-  --rdp-cell-size: 36px;
-  --rdp-accent-color: #3b82f6;
-  --rdp-background-color: #e0f2fe;
-  margin: 0;
-  font-family: system-ui, sans-serif;
-}
 
 .rdp-month {
   background: white;
   border-radius: 12px;
   padding: 16px;
-  width: 350px;
+  width: 330px;
   height: 400px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }

@@ -1,16 +1,16 @@
 "use client";
 
-import { CardTarefa } from "@/componnents/atividades/card-tarefa";
-import { DefaultButton } from "@/componnents/default-button";
-import { Menu } from "@/componnents/menu";
-import { ScrollBarcss } from "@/utils/scroll-bar-css";
 import { ptBR } from "date-fns/locale";
-import { useRouter, useSearchParams } from "next/navigation";
-import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { CiClock2 } from "react-icons/ci";
-import { MdOutlinePlaylistAdd } from "react-icons/md";
 import "../../../utils/mini-calendar.css";
+import { Menu } from "@/componnents/menu";
+import { DayPicker } from "react-day-picker";
+import { MdOutlinePlaylistAdd } from "react-icons/md";
+import { ScrollBarcss } from "@/utils/scroll-bar-css";
+import { useRouter, useSearchParams } from "next/navigation";
+import { DefaultButton } from "@/componnents/default-button";
+import { CardTarefa } from "@/componnents/atividades/card-tarefa";
 
 import {
   Box,
@@ -20,12 +20,15 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
+import { TarefaModal } from "@/componnents/atividades/tarefa-modal";
 
 export default function Tarefas() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dateParam = searchParams.get("date");
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const baseDate = dateParam ? new Date(dateParam) : new Date();
   const startOfWeek = new Date(baseDate);
   startOfWeek.setDate(baseDate.getDate() - baseDate.getDay());
@@ -60,6 +63,8 @@ export default function Tarefas() {
     >
       <Menu />
 
+      <TarefaModal isOpen={isOpen} onClose={onClose} acao="editar" />
+
       <Stack mt={5} px={10} w={`full`} overflow={"auto"} css={ScrollBarcss}>
         <HStack mr={3} justifyContent={`space-between`}>
           <Text color={"menu_principal"} fontSize={`2xl`} fontWeight={`bold`}>
@@ -70,6 +75,7 @@ export default function Tarefas() {
             icon={MdOutlinePlaylistAdd}
             title="Adicionar tarefa"
             w="180px"
+            onClick={() => onOpen()}
           />
         </HStack>
 
