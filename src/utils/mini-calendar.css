@@ -1,0 +1,75 @@
+.rdp {
+  --rdp-cell-size: 36px;
+  --rdp-accent-color: #3b82f6;
+  --rdp-background-color: #e0f2fe;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+.rdp-month {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  width: 350px;
+  height: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Header (Month + arrows) */
+.rdp-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.rdp-caption_label {
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Weekdays */
+.rdp-head_cell {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.rdp-day_today {
+  background-color: #22c55e;
+  color: white;
+  border-radius: 999px;
+}
+
+/* Days */
+.rdp-day {
+  border-radius: 999px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+
+.rdp-day:hover {
+  background-color: #283c64;
+  color: white;
+}
+
+/* Remove default outline */
+.rdp-day:focus {
+  outline: none;
+}
+
+/* Navigation buttons */
+.rdp-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+  color: #c54022;
+}
+
+.rdp-button:hover {
+  background: #f3f4f6;
+  border-radius: 6px;
+}

@@ -4,9 +4,16 @@ import { CardTarefa } from "@/componnents/atividades/card-tarefa";
 import { DefaultButton } from "@/componnents/default-button";
 import { Menu } from "@/componnents/menu";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
+import { ptBR } from "date-fns/locale";
+import { useSearchParams } from "next/navigation";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import { CiClock2 } from "react-icons/ci";
+import { MdOutlinePlaylistAdd } from "react-icons/md";
+import "../../../utils/mini-calendar.css";
+
 import {
   Box,
-  Checkbox,
   Flex,
   HStack,
   Icon,
@@ -14,9 +21,6 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useSearchParams } from "next/navigation";
-import { CiClock2 } from "react-icons/ci";
-import { MdOutlinePlaylistAdd } from "react-icons/md";
 
 export default function Tarefas() {
   const searchParams = useSearchParams();
@@ -38,6 +42,10 @@ export default function Tarefas() {
     const firstDayWeekDay = firstDay.getDay();
 
     return Math.ceil((dayOfMonth + firstDayWeekDay) / 7);
+  }
+
+  function capitalize(text: string) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
   }
 
   return (
@@ -71,6 +79,20 @@ export default function Tarefas() {
           spacing={10}
           borderColor={"gray.400"}
         >
+          <DayPicker
+            mode={undefined}
+            showOutsideDays
+            formatters={{
+              formatCaption: (date) => {
+                const text = date.toLocaleDateString("pt-BR", {
+                  month: "long",
+                  year: "numeric",
+                });
+                return capitalize(text);
+              },
+            }}
+            locale={ptBR}
+          />
           {weekDays.map((day, index) => {
             return (
               <Box
