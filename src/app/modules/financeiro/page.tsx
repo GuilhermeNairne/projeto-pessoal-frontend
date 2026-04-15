@@ -183,7 +183,9 @@ export default function Financeiro() {
               panel={panel}
               refetch={() => refetchPanel()}
               navigate={() =>
-                router.push(`/movimentacoes?id_panel=${panel.id}`)
+                router.push(
+                  `/modules/financeiro/movimentacoes?id_panel=${panel.id}`,
+                )
               }
             />
 

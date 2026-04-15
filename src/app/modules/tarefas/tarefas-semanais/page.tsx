@@ -3,7 +3,7 @@
 import { ptBR } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
 import { CiClock2 } from "react-icons/ci";
-import "../../../utils/mini-calendar.css";
+import "../../../../utils/mini-calendar.css";
 import { Menu } from "@/componnents/menu";
 import { DayPicker } from "react-day-picker";
 import { MdOutlinePlaylistAdd } from "react-icons/md";
@@ -24,7 +24,7 @@ import {
 } from "@chakra-ui/react";
 import { TarefaModal } from "@/componnents/atividades/tarefa-modal";
 
-export default function Tarefas() {
+export default function TarefasSemanais() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dateParam = searchParams.get("date");

@@ -50,7 +50,7 @@ export default function Login() {
       setIsLoading(true);
       await signIn(values);
 
-      router.push("/financeiro");
+      router.push("/modules/financeiro");
       toast({
         position: "top",
         isClosable: true,

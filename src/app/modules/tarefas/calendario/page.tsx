@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-export default function Atividades() {
+export default function Calendario() {
   const router = useRouter();
   const daysName = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
   const [month, setMonth] = useState(new Date().getMonth());
@@ -58,7 +58,9 @@ export default function Atividades() {
   function navigateTarefas(day: string) {
     const date = new Date(year, month, Number(day));
 
-    router.push(`/calendario/tarefas?date=${date.toISOString()}`);
+    router.push(
+      `/modules/tarefas/tarefas-semanais/?date=${date.toISOString()}`,
+    );
   }
 
   return (
