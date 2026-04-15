@@ -27,25 +27,38 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
+import { MdOutlineAttachMoney } from "react-icons/md";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
+
+const defaultPicture =
+  "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg";
+
 const menuOpcoes = [
   {
     nome: "Financeiro",
-    icon: FaSignOutAlt,
-    tipo: "simples",
+    icon: MdOutlineAttachMoney,
+
+    opcoes: [
+      {
+        pagina: "Contas financeiras",
+        rota: "modules/financeiro",
+        icon: FaMoneyBillTrendUp,
+      },
+    ],
   },
   {
     nome: "Tarefas",
     icon: FaBook,
-    tipo: "dropdown",
+
     opcoes: [
       {
         pagina: "Calendario",
-        rota: "calendario",
+        rota: "modules/tarefas/calendario",
         icon: FaCalendarAlt,
       },
       {
         pagina: "Categorias e Acomp.",
-        rota: "categorias-acompanhamento",
+        rota: "modules/tarefa/categorias-acompanhamento",
         icon: FaChartBar,
       },
     ],
@@ -54,11 +67,8 @@ const menuOpcoes = [
 
 export function Menu() {
   const router = useRouter();
-  const { signOut, user } = useAuthContext();
-
   const pathname = usePathname();
-  const defaultPicture =
-    "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg";
+  const { signOut, user } = useAuthContext();
 
   function Logout() {
     signOut();
@@ -96,152 +106,70 @@ export function Menu() {
         </Box>
 
         <Stack mt={"50px"}>
-          {menuOpcoes.map((item, index) =>
-            item.tipo === "simples" ? (
-              <Button
-                display={"flex-start"}
-                w={"100%"}
-                h={"70px"}
-                key={index}
-                onClick={() =>
-                  router.push(`/modules/${item.nome.toLowerCase()}`)
-                }
-                bg={
-                  pathname === `/modules/${item.nome.toLowerCase()}`
-                    ? "white"
-                    : "null"
-                }
-                alignItems={"center"}
-                p={"10px"}
-                _hover={{
-                  bg:
-                    pathname === `/modules/${item.nome.toLowerCase()}`
-                      ? "null"
-                      : "menu_selecionado",
-                }}
-                borderRadius={"10px"}
-              >
-                <HStack gap={4}>
-                  <Icon
-                    as={item.icon}
-                    boxSize={"8"}
-                    color={
-                      pathname === `/modules/${item.nome.toLowerCase()}`
-                        ? "menu_principal"
-                        : "white"
-                    }
-                  />
-                  <Text
-                    color={
-                      pathname === `/modules/${item.nome.toLowerCase()}`
-                        ? "menu_principal"
-                        : "white"
-                    }
-                    fontWeight={
-                      pathname === `/modules/${item.nome.toLowerCase()}`
-                        ? "bold"
-                        : "light"
-                    }
-                    fontSize={"lg"}
-                  >
-                    {item.nome}
-                  </Text>
-                </HStack>
-              </Button>
-            ) : (
-              <Accordion allowToggle>
-                <AccordionItem border={"none"} mt={5}>
+          <Accordion allowToggle>
+            {menuOpcoes.map((item) => {
+              const isOnPage = pathname.includes(item.nome.toLocaleLowerCase());
+
+              return (
+                <AccordionItem border="none" mb={3}>
                   <AccordionButton
+                    h={`70px`}
+                    bg={isOnPage ? `white` : undefined}
+                    borderRadius={4}
                     p={2}
                     _hover={{
-                      borderColor: "menu_principal",
                       borderRadius: 4,
                       fontWeight: "bold",
                     }}
                   >
                     <Box
-                      flex={"1"}
-                      textAlign={"left"}
+                      flex="1"
+                      textAlign="left"
                       display={"flex"}
                       flexDir={"row"}
                       alignItems={"center"}
                       gap={4}
                     >
-                      <Icon as={item.icon} boxSize={8} color={"white"} />
-                      <Text color={"white"} fontSize={"lg"}>
+                      <Icon
+                        as={item.icon}
+                        boxSize={8}
+                        color={isOnPage ? "menu_principal" : `white`}
+                      />
+                      <Text
+                        color={isOnPage ? "menu_principal" : "white"}
+                        fontSize={"lg"}
+                        fontWeight={"semi-bold"}
+                      >
                         {item.nome}
                       </Text>
                     </Box>
-                    <AccordionIcon color={"white"} />
+                    <AccordionIcon
+                      color={isOnPage ? "menu_principal" : `white`}
+                    />
                   </AccordionButton>
                   <AccordionPanel pb={2}>
-                    <VStack align={"stretch"}>
-                      {item.opcoes?.map((modulo) => (
+                    <VStack align="stretch">
+                      {item.opcoes.map((modulo) => (
                         <Button
-                          display={"flex-start"}
-                          w={"100%"}
-                          h={"50px"}
-                          mt={3}
-                          key={index}
-                          onClick={() =>
-                            router.push(
-                              `/modules/${item.nome.toLocaleLowerCase()}/${modulo.rota.toLowerCase()}`,
-                            )
-                          }
-                          bg={
-                            pathname ===
-                            `/modules/${item.nome.toLocaleLowerCase()}/${modulo.rota.toLowerCase()}`
-                              ? "white"
-                              : "null"
-                          }
-                          alignItems={"center"}
-                          p={"10px"}
-                          _hover={{
-                            bg:
-                              pathname ===
-                              `/modules/${item.nome.toLocaleLowerCase()}/${modulo.rota.toLowerCase()}`
-                                ? "null"
-                                : "menu_selecionado",
+                          variant="ghost"
+                          justifyContent="flex-start"
+                          color="gray.200"
+                          fontWeight={`light`}
+                          fontSize={"md"}
+                          _hover={{ color: "white", fontWeight: "bold" }}
+                          onClick={() => {
+                            router.push(`/${modulo.rota}`);
                           }}
-                          borderRadius={"10px"}
                         >
-                          <HStack gap={4}>
-                            <Icon
-                              as={modulo.icon}
-                              boxSize={"6"}
-                              color={
-                                pathname ===
-                                `/modules/${item.nome.toLocaleLowerCase()}/${modulo.rota.toLowerCase()}`
-                                  ? "menu_principal"
-                                  : "white"
-                              }
-                            />
-                            <Text
-                              color={
-                                pathname ===
-                                `/modules/${item.nome.toLocaleLowerCase()}/${modulo.rota.toLowerCase()}`
-                                  ? "menu_principal"
-                                  : "white"
-                              }
-                              fontWeight={
-                                pathname ===
-                                `/modules/${item.nome.toLocaleLowerCase()}/${modulo.rota.toLowerCase()}`
-                                  ? "bold"
-                                  : "light"
-                              }
-                              fontSize={"md"}
-                            >
-                              {modulo.pagina}
-                            </Text>
-                          </HStack>
+                          {modulo.pagina}
                         </Button>
                       ))}
                     </VStack>
                   </AccordionPanel>
                 </AccordionItem>
-              </Accordion>
-            ),
-          )}
+              );
+            })}
+          </Accordion>
         </Stack>
       </Flex>
 
