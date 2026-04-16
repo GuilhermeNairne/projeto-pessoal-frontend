@@ -1,74 +1,108 @@
+import { ListCardsTarefasType } from "@/hooks/useTarefas";
 import { Box, HStack, Icon, Stack, Text } from "@chakra-ui/react";
-import { FaBook } from "react-icons/fa";
+import { FaBook, FaCheck } from "react-icons/fa";
+import { MdOutlinePendingActions } from "react-icons/md";
+import { TiClipboard } from "react-icons/ti";
 
-export function Quadros() {
-  const quadros = [
-    {
-      title: "METAS CUMPRIDAS (H)",
-      quantidade: "20 HORAS",
-      color: "green.600",
-      icon: FaBook,
-    },
-    //Pendentes pegar do dia anterior para tras as tarefas que nao foram concluidas
-    {
-      title: "PENDENTES",
-      quantidade: "01 TAREFAS",
-      color: "red.600",
-      icon: FaBook,
-    },
-    {
-      title: "TAREFAS CADASTRADAS",
-      quantidade: "15 TAREFAS",
-      color: "blue.600",
-      icon: FaBook,
-    },
-    // {
-    //   title: "QUARTO TEXTO",
-    //   quantidade: "04",
-    //   color: "orange.600",
-    //   icon: FaBook,
-    // },
-  ];
+export function Quadros(values: ListCardsTarefasType) {
+  const minutesToHours = (minutes: number) => {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `${h}H ${m}M`;
+  };
 
   return (
     <HStack gap={10} display={"flex"}>
-      {quadros.map((quadro) => (
-        <Box
-          p={3}
-          w={250}
-          h={"120px"}
-          borderRadius={8}
-          // borderWidth={1}
-          boxShadow={"md"}
-          bg={"white"}
-        >
-          <HStack>
-            <Box
-              w={8}
-              h={8}
-              bg={quadro.color}
-              borderRadius={5}
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              <Icon as={quadro.icon} boxSize={5} color={"white"} />
-            </Box>
-            <Text fontSize={"sm"} color={"gray.500"} fontWeight={"light"}>
-              {quadro.title}
-            </Text>
-          </HStack>
-
-          <Text
-            mt={10}
-            fontSize={"lg"}
-            color={quadro.color}
-            fontWeight={"bold"}
+      <Box
+        p={3}
+        w={250}
+        h={"120px"}
+        borderRadius={8}
+        boxShadow={"md"}
+        bg={"white"}
+      >
+        <HStack>
+          <Box
+            w={8}
+            h={8}
+            bg={`green.600`}
+            borderRadius={5}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
           >
-            {quadro.quantidade}
+            <Icon as={FaCheck} boxSize={5} color={"white"} />
+          </Box>
+          <Text fontSize={"sm"} color={"gray.500"} fontWeight={"light"}>
+            METAS CUMPRIDAS (H)
           </Text>
-        </Box>
-      ))}
+        </HStack>
+
+        <Text mt={10} fontSize={"lg"} color={`green.600`} fontWeight={"bold"}>
+          {minutesToHours(values.totalMinutosConcluidos)} CONCLUÍDAS
+        </Text>
+      </Box>
+
+      <Box
+        p={3}
+        w={250}
+        h={"120px"}
+        borderRadius={8}
+        boxShadow={"md"}
+        bg={"white"}
+      >
+        <HStack>
+          <Box
+            w={8}
+            h={8}
+            bg={`red.600`}
+            borderRadius={5}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <Icon as={MdOutlinePendingActions} boxSize={6} color={"white"} />
+          </Box>
+          <Text fontSize={"sm"} color={"gray.500"} fontWeight={"light"}>
+            PENDENTES
+          </Text>
+        </HStack>
+
+        <Text mt={10} fontSize={"lg"} color={`red.600`} fontWeight={"bold"}>
+          {values.totalPendente}{" "}
+          {values.totalPendente === 1 ? "TAREFA" : "TAREFAS"}
+        </Text>
+      </Box>
+
+      <Box
+        p={3}
+        w={250}
+        h={"120px"}
+        borderRadius={8}
+        boxShadow={"md"}
+        bg={"white"}
+      >
+        <HStack>
+          <Box
+            w={8}
+            h={8}
+            bg={`blue.600`}
+            borderRadius={5}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <Icon as={TiClipboard} boxSize={6} color={"white"} />
+          </Box>
+          <Text fontSize={"sm"} color={"gray.500"} fontWeight={"light"}>
+            TAREFAS CADASTRADAS
+          </Text>
+        </HStack>
+
+        <Text mt={10} fontSize={"lg"} color={`blue.600`} fontWeight={"bold"}>
+          {values.totalMes} {values.totalMes === 1 ? "TAREFA" : "TAREFAS"}
+        </Text>
+      </Box>
     </HStack>
   );
 }
