@@ -11,6 +11,7 @@ export type ListTarefasReturnType = {
   descricao: string;
   tempo: number;
   data: string;
+  status: string;
   categoria: {
     nome: string;
     cor: string;
@@ -23,6 +24,7 @@ type ListTarefasSemanaType = Record<
     tarefas: ListTarefasReturnType[];
     tempoRestante: number;
     totalTarefas: number;
+    totalConcluidas: number;
   }
 >;
 

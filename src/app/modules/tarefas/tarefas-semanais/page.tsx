@@ -105,7 +105,7 @@ export default function TarefasSemanais() {
           <DayPicker
             mode={undefined}
             showOutsideDays
-            onDayClick={() => router.push("/calendario")}
+            onDayClick={() => router.push("/modules/tarefas/calendario")}
             formatters={{
               formatCaption: (date) => {
                 const text = date.toLocaleDateString("pt-BR", {
@@ -119,7 +119,10 @@ export default function TarefasSemanais() {
           />
           {weekDays.map((day, index) => {
             const tarefaDoDia = tarefas?.data[String(day.getUTCDate())];
-            console.log(`tarefaDoDia`, tarefaDoDia);
+            const totalTarefas = tarefaDoDia?.totalTarefas ?? 0;
+            const totalConcluidas = tarefaDoDia?.totalConcluidas ?? 0;
+            const porcentagem =
+              totalTarefas > 0 ? (totalConcluidas / totalTarefas) * 100 : 0;
             return (
               <Box
                 py={3}
@@ -172,25 +175,32 @@ export default function TarefasSemanais() {
                     borderRadius="full"
                     borderWidth={`2px`}
                     borderColor={`#1e293b`}
-                    bg="conic-gradient(#1e293b 75%, transparent 25%)"
+                    bg={`conic-gradient(#1e293b ${porcentagem}%, transparent ${porcentagem}%)`}
                   />
                 </Flex>
 
                 <Box w={"full"} h={"2px"} bg={"#dedede"} mt={5} />
 
-                <Flex overflowY={"auto"} flexDir={`column`} css={ScrollBarcss}>
-                  <CardTarefa
-                    descricao="Resolva o 43° Exame de Ordem e, após, assista a aula de resolução"
-                    titulo="Prova OAB"
-                    tempo="5"
-                    status="pendente"
-                  />
-                  <CardTarefa
-                    descricao="Resolva o 43° Exame de Ordem e, após, assista a aula de resolução"
-                    titulo="Prova OAB"
-                    tempo="5"
-                    status="realizado"
-                  />
+                <Flex
+                  overflowY={"auto"}
+                  flexDir={`column`}
+                  css={ScrollBarcss}
+                  w={`full`}
+                >
+                  {tarefaDoDia && tarefaDoDia?.tarefas.length > 0 ? (
+                    tarefaDoDia?.tarefas.map((tarefa) => (
+                      <CardTarefa
+                        descricao={tarefa.descricao}
+                        titulo={tarefa.nome}
+                        tempo={String(tarefa.tempo)}
+                        status={tarefa.status}
+                      />
+                    ))
+                  ) : (
+                    <Text textAlign={`center`} fontWeight={`bold`} mt={20}>
+                      Nenhuma tarefa cadastrada
+                    </Text>
+                  )}
                 </Flex>
               </Box>
             );

@@ -6,7 +6,7 @@ type Props = {
   titulo: string;
   descricao: string;
   tempo: string;
-  status: "pendente" | "realizado";
+  status: string;
 };
 
 export function CardTarefa({ descricao, status, tempo, titulo }: Props) {
@@ -16,24 +16,24 @@ export function CardTarefa({ descricao, status, tempo, titulo }: Props) {
       p={3}
       mt={5}
       alignSelf={"center"}
-      bg={status === "realizado" ? "cinza_200" : "#eef1f8"}
+      bg={status === "Concluido" ? "cinza_200" : "#eef1f8"}
       borderWidth={1}
       borderLeftWidth={2}
       flexDir={`column`}
       borderRadius={3}
-      borderLeftColor={status === "realizado" ? "cinza_600" : "menu_principal"}
+      borderLeftColor={status === "Concluida" ? "cinza_600" : "menu_principal"}
     >
       <Box display={`flex`} flexDir={`row`} justifyContent={`space-between`}>
         <HStack>
           <Icon
             as={LuClipboardCheck}
-            color={status === "realizado" ? "cinza_600" : "black"}
+            color={status === "Concluida" ? "cinza_600" : "black"}
             boxSize={5}
             sx={{ strokeWidth: 2 }}
           />
           <Text
             fontWeight={`bold`}
-            color={status === "realizado" ? "cinza_600" : "black"}
+            color={status === "Concluida" ? "cinza_600" : "black"}
           >
             {titulo}
           </Text>
@@ -42,7 +42,7 @@ export function CardTarefa({ descricao, status, tempo, titulo }: Props) {
         <Checkbox
           colorScheme="gray"
           size="lg"
-          isChecked={status === "realizado"}
+          isChecked={status === "Concluida"}
           borderColor={`gray.400`}
           sx={{
             "& .chakra-checkbox__control": {
@@ -55,7 +55,7 @@ export function CardTarefa({ descricao, status, tempo, titulo }: Props) {
       <Text
         fontWeight={"bold"}
         mt={3}
-        color={status === "realizado" ? "cinza_600" : "blue.500"}
+        color={status === "Concluida" ? "cinza_600" : "blue.500"}
       >
         {descricao}
       </Text>
@@ -64,12 +64,12 @@ export function CardTarefa({ descricao, status, tempo, titulo }: Props) {
         <Icon
           as={CiClock2}
           sx={{ strokeWidth: 1 }}
-          color={status === "realizado" ? "cinza_600" : "black"}
+          color={status === "Concluida" ? "cinza_600" : "black"}
         />
         <Text
           // mt={5}
           // fontWeight={"bold"}
-          color={status === "realizado" ? "cinza_600" : "black"}
+          color={status === "Concluida" ? "cinza_600" : "black"}
         >
           {tempo} horas
         </Text>
