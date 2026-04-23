@@ -23,20 +23,36 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { TarefaModal } from "@/componnents/atividades/tarefa-modal";
+import { ListTarefasReturnType, useTarefas } from "@/hooks/useTarefas";
+import { useQuery } from "react-query";
+import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 
 export default function TarefasSemanais() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { listTarefaPorDia } = useTarefas();
   const dateParam = searchParams.get("date");
   const { isOpen, onClose, onOpen } = useDisclosure();
   const baseDate = dateParam ? new Date(dateParam) : new Date();
   const startOfWeek = new Date(baseDate);
   startOfWeek.setDate(baseDate.getDate() - baseDate.getDay());
 
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+
   const weekDays = Array.from({ length: 7 }).map((_, index) => {
     const d = new Date(startOfWeek);
     d.setDate(startOfWeek.getDate() + index);
     return d;
+  });
+
+  const { data: tarefas } = useQuery({
+    queryKey: ["tarefas-semana", startOfWeek, endOfWeek],
+    queryFn: async () =>
+      listTarefaPorDia(
+        ConvertDataToBR(String(startOfWeek)),
+        ConvertDataToBR(String(endOfWeek)),
+      ),
   });
 
   function getWeekOfMonth(date: Date) {
@@ -102,6 +118,8 @@ export default function TarefasSemanais() {
             locale={ptBR}
           />
           {weekDays.map((day, index) => {
+            const tarefaDoDia = tarefas?.data[String(day.getUTCDate())];
+            console.log(`tarefaDoDia`, tarefaDoDia);
             return (
               <Box
                 py={3}
@@ -141,7 +159,10 @@ export default function TarefasSemanais() {
 
                     <HStack alignItems={"center"}>
                       <Icon as={CiClock2} sx={{ strokeWidth: 1 }} />
-                      <Text fontSize={`sm`}>1h0m | 2 atividades</Text>
+                      <Text fontSize={`sm`}>
+                        {tarefaDoDia?.tempoRestante ?? "0h0m"} restante |{" "}
+                        {tarefaDoDia?.totalTarefas ?? 0} atividades
+                      </Text>
                     </HStack>
                   </Stack>
 

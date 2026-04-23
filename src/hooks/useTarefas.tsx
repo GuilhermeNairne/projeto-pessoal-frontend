@@ -1,5 +1,4 @@
 import { api } from "@/services/api";
-import { list } from "@chakra-ui/react";
 
 type ListTarefasType = {
   user_id: string;
@@ -7,7 +6,7 @@ type ListTarefasType = {
   year: number;
 };
 
-type ListTarefasReturnType = {
+export type ListTarefasReturnType = {
   nome: string;
   descricao: string;
   tempo: number;
@@ -17,6 +16,15 @@ type ListTarefasReturnType = {
     cor: string;
   };
 };
+
+type ListTarefasSemanaType = Record<
+  string,
+  {
+    tarefas: ListTarefasReturnType[];
+    tempoRestante: number;
+    totalTarefas: number;
+  }
+>;
 
 export type ListCardsTarefasType = {
   totalPendente: number;
@@ -41,5 +49,13 @@ export function useTarefas() {
     return result;
   }
 
-  return { listTarefas, listCardsTarefas };
+  async function listTarefaPorDia(primeiroDia: string, ultimoDia: string) {
+    const result = await api.get<ListTarefasSemanaType>("/tarefas/semana", {
+      params: { primeiroDia, ultimoDia },
+    });
+
+    return result;
+  }
+
+  return { listTarefaPorDia, listTarefas, listCardsTarefas };
 }
