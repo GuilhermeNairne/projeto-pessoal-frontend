@@ -10,12 +10,22 @@ export type ListTarefasReturnType = {
   nome: string;
   descricao: string;
   tempo: number;
+  categoriaId: number;
   data: string;
   status: string;
   categoria: {
     nome: string;
     cor: string;
   };
+};
+
+type createTarefaType = {
+  nome: string;
+  descricao: string;
+  tempo: string;
+  data: string;
+  userId: string;
+  categoriaId: number;
 };
 
 type ListTarefasSemanaType = Record<
@@ -27,6 +37,13 @@ type ListTarefasSemanaType = Record<
     totalConcluidas: number;
   }
 >;
+
+type listCategoriesType = {
+  id: number;
+  nome: string;
+  cor: string;
+  user_id: string;
+};
 
 export type ListCardsTarefasType = {
   totalPendente: number;
@@ -59,5 +76,32 @@ export function useTarefas() {
     return result;
   }
 
-  return { listTarefaPorDia, listTarefas, listCardsTarefas };
+  async function createTarefa(body: createTarefaType) {
+    const [horas, minutos] = String(body.tempo).split(":").map(Number);
+    const tempoEmMinutos = horas * 60 + minutos;
+
+    const result = await api.post("/tarefas", {
+      ...body,
+      categoriaId: Number(body.categoriaId),
+      tempo: Number(tempoEmMinutos),
+    });
+
+    return result;
+  }
+
+  async function listCategorias(user_id: string) {
+    const result = await api.get<listCategoriesType[]>(
+      `tarefas/list-categorias/${user_id}`,
+    );
+
+    return result;
+  }
+
+  return {
+    listTarefaPorDia,
+    listTarefas,
+    listCardsTarefas,
+    createTarefa,
+    listCategorias,
+  };
 }

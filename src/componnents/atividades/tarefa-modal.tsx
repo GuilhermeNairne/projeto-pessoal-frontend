@@ -9,6 +9,7 @@ import {
   Select,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { DefaultButton } from "../default-button";
 import { FaSave, FaTrash } from "react-icons/fa";
@@ -16,26 +17,75 @@ import { DefaultInput } from "../default-input";
 import { DefatultTextarea } from "../financial/default-textarea";
 import { useFormik } from "formik";
 import { brToIso } from "@/utils/brToIso";
+import { ListTarefasReturnType, useTarefas } from "@/hooks/useTarefas";
+import { useQuery } from "react-query";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { useState } from "react";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  acao: "editar" | "criar";
+  tarefa?: ListTarefasReturnType;
 };
 
-export function TarefaModal({ isOpen, onClose, acao }: Props) {
+export function TarefaModal({ isOpen, onClose, tarefa }: Props) {
+  const toast = useToast();
+  const { user } = useAuthContext();
+  const tempoMinutos = tarefa?.tempo ?? 0;
+  const horas = Math.floor(tempoMinutos / 60);
+  const minutos = tempoMinutos % 60;
+  const [isLoading, setIsLoading] = useState(false);
+  const { listCategorias, createTarefa } = useTarefas();
+
+  const { data: categorias } = useQuery({
+    queryKey: [`categorias`, user?.id],
+    queryFn: async () => listCategorias(user?.id ?? ""),
+  });
+
   const { values, handleChange, resetForm, handleSubmit } = useFormik({
     initialValues: {
-      tarefa: "",
-
-      tempo: "",
-      descricao: "",
-      categoria: "",
-      data: brToIso(new Date().toLocaleDateString("pt-BR")),
+      nome: tarefa?.nome ?? "",
+      tempo: tarefa?.tempo
+        ? `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}`
+        : "",
+      descricao: tarefa?.descricao ?? "",
+      categoriaId: Number(tarefa?.categoriaId) ?? 0,
+      data: tarefa?.data
+        ? brToIso(new Date(tarefa?.data).toLocaleDateString("pt-BR"))
+        : brToIso(new Date().toLocaleDateString("pt-BR")),
+      userId: user?.id ?? "",
     },
     enableReinitialize: true,
-    onSubmit: () => {},
+    onSubmit: () => {
+      handleCreateTarefa();
+    },
   });
+
+  async function handleCreateTarefa() {
+    try {
+      setIsLoading(true);
+      await createTarefa(values);
+
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "success",
+        title: "Tarefa cadastrada com sucesso!",
+      });
+
+      onClose();
+      resetForm();
+    } catch (error: any) {
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "error",
+        title: "Erro ao cadastrar tarefa!",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -43,7 +93,7 @@ export function TarefaModal({ isOpen, onClose, acao }: Props) {
       <ModalContent>
         <ModalHeader display={"flex"}>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
-            {acao === "criar" ? "Adicionar tarefa" : "Editar tarefa"}
+            {tarefa ? "Adicionar tarefa" : "Editar tarefa"}
           </Text>
         </ModalHeader>
         <ModalCloseButton />
@@ -52,8 +102,8 @@ export function TarefaModal({ isOpen, onClose, acao }: Props) {
             placeholder="Informe o nome da tarefa"
             position="cima"
             title="Tarefa"
-            value={values.tarefa}
-            onChange={handleChange("tarefa")}
+            value={values.nome}
+            onChange={handleChange("nome")}
           />
           <DefatultTextarea
             placeholder="Informe a descrição da tarefa"
@@ -79,22 +129,22 @@ export function TarefaModal({ isOpen, onClose, acao }: Props) {
             <Select
               placeholder="Selecione a categoria"
               w={"full"}
-              textColor={"gray.500"}
+              textColor={"black"}
               bg={"white"}
               borderColor={"gray.400"}
-              value={values.categoria}
+              value={values.categoriaId}
               borderRadius={"10px"}
-              onChange={handleChange("categoria")}
+              onChange={handleChange("categoriaId")}
             >
-              {/* {categories && categories.data.length > 0 ? (
-                categories.data.map((category, index) => (
+              {categorias && categorias.data.length > 0 ? (
+                categorias.data.map((category, index) => (
                   <option key={index} value={category.id}>
-                    {category.name}{" "}
+                    {category.nome}{" "}
                   </option>
                 ))
               ) : (
                 <option value="">""</option>
-              )} */}
+              )}
             </Select>
           </Stack>
 
@@ -109,15 +159,22 @@ export function TarefaModal({ isOpen, onClose, acao }: Props) {
           />
         </ModalBody>
         <ModalFooter gap={5} mt={"30px"} display={"flex"}>
-          {acao === "editar" && (
+          {tarefa && (
             <DefaultButton
               icon={FaTrash}
               title="Excluir"
               bg="red.800"
               w="150px"
+              isLoading={isLoading}
             />
           )}
-          <DefaultButton icon={FaSave} title="Salvar" w="150px" />
+          <DefaultButton
+            icon={FaSave}
+            title="Salvar"
+            w="150px"
+            isLoading={isLoading}
+            onClick={() => handleSubmit()}
+          />
         </ModalFooter>
       </ModalContent>
     </Modal>

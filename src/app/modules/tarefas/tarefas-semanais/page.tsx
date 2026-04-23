@@ -26,6 +26,7 @@ import { TarefaModal } from "@/componnents/atividades/tarefa-modal";
 import { ListTarefasReturnType, useTarefas } from "@/hooks/useTarefas";
 import { useQuery } from "react-query";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
+import { useState } from "react";
 
 export default function TarefasSemanais() {
   const router = useRouter();
@@ -33,6 +34,8 @@ export default function TarefasSemanais() {
   const { listTarefaPorDia } = useTarefas();
   const dateParam = searchParams.get("date");
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const [tarefaSelecionada, setTarefaSelecionada] =
+    useState<ListTarefasReturnType | null>();
   const baseDate = dateParam ? new Date(dateParam) : new Date();
   const startOfWeek = new Date(baseDate);
   startOfWeek.setDate(baseDate.getDate() - baseDate.getDay());
@@ -79,7 +82,13 @@ export default function TarefasSemanais() {
     >
       <Menu />
 
-      <TarefaModal isOpen={isOpen} onClose={onClose} acao="editar" />
+      <TarefaModal
+        isOpen={isOpen}
+        onClose={() => {
+          (onClose(), setTarefaSelecionada(null));
+        }}
+        tarefa={tarefaSelecionada ?? ({} as ListTarefasReturnType)}
+      />
 
       <Stack mt={5} px={10} w={`full`} overflow={"auto"} css={ScrollBarcss}>
         <HStack mr={3} justifyContent={`space-between`}>
@@ -191,6 +200,9 @@ export default function TarefasSemanais() {
                     tarefaDoDia?.tarefas.map((tarefa) => (
                       <CardTarefa
                         descricao={tarefa.descricao}
+                        onClick={() => {
+                          (setTarefaSelecionada(tarefa), onOpen());
+                        }}
                         titulo={tarefa.nome}
                         tempo={String(tarefa.tempo)}
                         status={tarefa.status}
