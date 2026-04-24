@@ -10,8 +10,9 @@ export type ListTarefasReturnType = {
   nome: string;
   id: number;
   descricao: string;
-  tempo: number;
+  tempo: string;
   categoriaId: number;
+  userId: string;
   data: string;
   status: string;
   categoria: {
@@ -97,7 +98,9 @@ export function useTarefas() {
     const result = await api.patch(`/tarefas/${id_tarefa}`, {
       ...body,
       data: new Date(body.data),
-      tempo: Number(tempoEmMinutos),
+      tempo: body.tempo.includes(":")
+        ? Number(tempoEmMinutos)
+        : Number(body.tempo),
     });
 
     return result;

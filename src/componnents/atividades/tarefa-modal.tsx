@@ -33,8 +33,8 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
   const toast = useToast();
   const { user } = useAuthContext();
   const tempoMinutos = tarefa?.tempo ?? 0;
-  const horas = Math.floor(tempoMinutos / 60);
-  const minutos = tempoMinutos % 60;
+  const horas = Math.floor(Number(tempoMinutos) / 60);
+  const minutos = Number(tempoMinutos) % 60;
   const [isLoading, setIsLoading] = useState(false);
   const { listCategorias, createTarefa, editTarefa, deleteTarefa } =
     useTarefas();
@@ -59,7 +59,7 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
     },
     enableReinitialize: true,
     onSubmit: () => {
-      tarefa ? handleEditTarefa() : handleCreateTarefa();
+      tarefa?.id ? handleEditTarefa() : handleCreateTarefa();
     },
   });
 
@@ -149,7 +149,7 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
       <ModalContent>
         <ModalHeader display={"flex"}>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
-            {!tarefa ? "Adicionar tarefa" : "Editar tarefa"}
+            {!tarefa?.id ? "Adicionar tarefa" : "Editar tarefa"}
           </Text>
         </ModalHeader>
         <ModalCloseButton />

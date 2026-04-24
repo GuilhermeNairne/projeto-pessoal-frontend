@@ -1,10 +1,15 @@
 "use client";
 
-import { Quadros } from "@/componnents/atividades/quadros";
+import { useQuery } from "react-query";
+import { useMemo, useState } from "react";
 import { Menu } from "@/componnents/menu";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 import { useTarefas } from "@/hooks/useTarefas";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { Quadros } from "@/componnents/atividades/quadros";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
 import {
   Box,
   Flex,
@@ -14,11 +19,6 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { ta } from "date-fns/locale";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { useQuery } from "react-query";
 
 export default function Calendario() {
   const router = useRouter();
@@ -218,7 +218,7 @@ export default function Calendario() {
                       />
                       <Stack gap={0}>
                         <Text fontWeight={`bold`}>{tarefa.nome}</Text>
-                        <Text>{tarefa.categoria.nome}</Text>
+                        <Text mt={1}>{tarefa.categoria.nome}</Text>
                       </Stack>
                     </HStack>
                   </Box>

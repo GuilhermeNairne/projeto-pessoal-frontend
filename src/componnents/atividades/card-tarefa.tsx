@@ -1,60 +1,87 @@
 import { LuClipboardCheck } from "react-icons/lu";
-import { Box, Checkbox, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Checkbox,
+  Flex,
+  HStack,
+  Icon,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { CiClock2 } from "react-icons/ci";
+import { FaPencil } from "react-icons/fa6";
+import { ListTarefasReturnType, useTarefas } from "@/hooks/useTarefas";
+import { da } from "date-fns/locale";
 
 type Props = {
-  tempo: string;
-  titulo: string;
-  status: string;
-  descricao: string;
   onClick: () => void;
+  refetch: () => void;
+  dadosTarefa: ListTarefasReturnType;
 };
 
-export function CardTarefa({
-  descricao,
-  status,
-  tempo,
-  titulo,
-  onClick,
-}: Props) {
-  const horas = Math.floor(Number(tempo) / 60);
-  const minutos = Number(tempo) % 60;
+export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
+  const toast = useToast();
+  const { editTarefa } = useTarefas();
+  const horas = Math.floor(Number(dadosTarefa.tempo) / 60);
+  const minutos = Number(dadosTarefa.tempo) % 60;
   const tempoFormatado = `${String(horas).padStart(2, "0")}h${String(minutos).padStart(2, "0")}m`;
+
+  async function handleEditaTarefa() {
+    try {
+      const body = {
+        ...dadosTarefa,
+        tempo: String(dadosTarefa.tempo),
+        status: dadosTarefa.status === "Concluida" ? "Pendente" : "Concluida",
+      };
+      await editTarefa(dadosTarefa.id, body);
+
+      refetch();
+    } catch (error) {
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "error",
+        title: "Erro ao editar status da tarefa!",
+      });
+    }
+  }
 
   return (
     <Flex
       p={3}
       mt={5}
       w={`90%`}
-      onClick={() => onClick()}
       borderWidth={1}
       borderRadius={3}
       flexDir={`column`}
       borderLeftWidth={2}
       alignSelf={"center"}
-      bg={status === "Concluido" ? "cinza_200" : "#eef1f8"}
-      borderLeftColor={status === "Concluida" ? "cinza_600" : "menu_principal"}
+      bg={dadosTarefa.status === "Concluido" ? "cinza_200" : "#eef1f8"}
+      borderLeftColor={
+        dadosTarefa.status === "Concluida" ? "cinza_600" : "menu_principal"
+      }
     >
       <Box display={`flex`} flexDir={`row`} justifyContent={`space-between`}>
         <HStack>
           <Icon
             as={LuClipboardCheck}
-            color={status === "Concluida" ? "cinza_600" : "black"}
+            color={dadosTarefa.status === "Concluida" ? "cinza_600" : "black"}
             boxSize={5}
             sx={{ strokeWidth: 2 }}
           />
           <Text
             fontWeight={`bold`}
-            color={status === "Concluida" ? "cinza_600" : "black"}
+            color={dadosTarefa.status === "Concluida" ? "cinza_600" : "black"}
           >
-            {titulo}
+            {dadosTarefa.nome}
           </Text>
         </HStack>
 
         <Checkbox
           colorScheme="gray"
           size="lg"
-          isChecked={status === "Concluida"}
+          onChange={() => handleEditaTarefa()}
+          isChecked={dadosTarefa.status === "Concluida"}
           borderColor={`gray.400`}
           sx={{
             "& .chakra-checkbox__control": {
@@ -67,20 +94,26 @@ export function CardTarefa({
       <Text
         fontWeight={"bold"}
         mt={3}
-        color={status === "Concluida" ? "cinza_600" : "blue.500"}
+        color={dadosTarefa.status === "Concluida" ? "cinza_600" : "blue.500"}
       >
-        {descricao}
+        {dadosTarefa.descricao}
       </Text>
 
-      <HStack mt={5} alignItems={`center`}>
-        <Icon
-          as={CiClock2}
-          sx={{ strokeWidth: 1 }}
-          color={status === "Concluida" ? "cinza_600" : "black"}
-        />
-        <Text color={status === "Concluida" ? "cinza_600" : "black"}>
-          {tempoFormatado} horas
-        </Text>
+      <HStack mt={5} justifyContent={`space-between`} alignItems={`center`}>
+        <Flex alignItems={`center`} gap={1}>
+          <Icon
+            as={CiClock2}
+            sx={{ strokeWidth: 1 }}
+            color={dadosTarefa.status === "Concluida" ? "cinza_600" : "black"}
+          />
+          <Text
+            color={dadosTarefa.status === "Concluida" ? "cinza_600" : "black"}
+          >
+            {tempoFormatado} horas
+          </Text>
+        </Flex>
+
+        <Icon as={FaPencil} onClick={() => onClick()} />
       </HStack>
     </Flex>
   );

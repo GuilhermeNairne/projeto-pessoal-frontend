@@ -27,6 +27,7 @@ import { ListTarefasReturnType, useTarefas } from "@/hooks/useTarefas";
 import { useQuery } from "react-query";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import { useState } from "react";
+import { FaCheck } from "react-icons/fa";
 
 export default function TarefasSemanais() {
   const router = useRouter();
@@ -179,14 +180,18 @@ export default function TarefasSemanais() {
                     </HStack>
                   </Stack>
 
-                  <Box
-                    w={8}
-                    h={8}
-                    borderRadius="full"
-                    borderWidth={`2px`}
-                    borderColor={`#1e293b`}
-                    bg={`conic-gradient(#1e293b ${porcentagem}%, transparent ${porcentagem}%)`}
-                  />
+                  {tarefaDoDia?.totalConcluidas === totalTarefas ? (
+                    <Icon as={FaCheck} color={`green.600`} mt={3} boxSize={6} />
+                  ) : (
+                    <Box
+                      w={8}
+                      h={8}
+                      borderRadius="full"
+                      borderWidth={`2px`}
+                      borderColor={`#1e293b`}
+                      bg={`conic-gradient(#1e293b ${porcentagem}%, transparent ${porcentagem}%)`}
+                    />
+                  )}
                 </Flex>
 
                 <Box w={"full"} h={"2px"} bg={"#dedede"} mt={5} />
@@ -200,13 +205,11 @@ export default function TarefasSemanais() {
                   {tarefaDoDia && tarefaDoDia?.tarefas.length > 0 ? (
                     tarefaDoDia?.tarefas.map((tarefa) => (
                       <CardTarefa
-                        descricao={tarefa.descricao}
+                        dadosTarefa={tarefa}
+                        refetch={() => refetch()}
                         onClick={() => {
                           (setTarefaSelecionada(tarefa), onOpen());
                         }}
-                        titulo={tarefa.nome}
-                        tempo={String(tarefa.tempo)}
-                        status={tarefa.status}
                       />
                     ))
                   ) : (
