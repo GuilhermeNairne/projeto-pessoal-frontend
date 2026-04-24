@@ -58,7 +58,7 @@ const menuOpcoes = [
       },
       {
         pagina: "Categorias e Acomp.",
-        rota: "modules/tarefa/categorias-acompanhamento",
+        rota: "modules/tarefas/categorias",
         icon: FaChartBar,
       },
     ],
@@ -76,7 +76,9 @@ export function Menu() {
 
   return (
     <Flex
-      w={"20%"}
+      w={"16%"}
+      maxW={"16%"}
+      minW={"16%"}
       h={"100%"}
       bg={"menu_principal"}
       borderRadius={"20px"}

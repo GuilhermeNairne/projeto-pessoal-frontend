@@ -45,6 +45,7 @@ type listCategoriesType = {
   nome: string;
   cor: string;
   user_id: string;
+  tarefasPendentes: number;
 };
 
 export type ListCardsTarefasType = {
