@@ -49,7 +49,7 @@ export default function TarefasSemanais() {
     return d;
   });
 
-  const { data: tarefas } = useQuery({
+  const { data: tarefas, refetch } = useQuery({
     queryKey: ["tarefas-semana", startOfWeek, endOfWeek],
     queryFn: async () =>
       listTarefaPorDia(
@@ -84,6 +84,7 @@ export default function TarefasSemanais() {
 
       <TarefaModal
         isOpen={isOpen}
+        reload={() => refetch()}
         onClose={() => {
           (onClose(), setTarefaSelecionada(null));
         }}

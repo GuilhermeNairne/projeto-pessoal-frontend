@@ -8,6 +8,7 @@ type ListTarefasType = {
 
 export type ListTarefasReturnType = {
   nome: string;
+  id: number;
   descricao: string;
   tempo: number;
   categoriaId: number;
@@ -89,6 +90,25 @@ export function useTarefas() {
     return result;
   }
 
+  async function editTarefa(id_tarefa: number, body: createTarefaType) {
+    const [horas, minutos] = String(body.tempo).split(":").map(Number);
+    const tempoEmMinutos = horas * 60 + minutos;
+
+    const result = await api.patch(`/tarefas/${id_tarefa}`, {
+      ...body,
+      data: new Date(body.data),
+      tempo: Number(tempoEmMinutos),
+    });
+
+    return result;
+  }
+
+  async function deleteTarefa(id: number) {
+    const result = await api.delete(`/tarefas/${id}`);
+
+    return result;
+  }
+
   async function listCategorias(user_id: string) {
     const result = await api.get<listCategoriesType[]>(
       `tarefas/list-categorias/${user_id}`,
@@ -98,10 +118,12 @@ export function useTarefas() {
   }
 
   return {
-    listTarefaPorDia,
+    editTarefa,
     listTarefas,
-    listCardsTarefas,
     createTarefa,
+    deleteTarefa,
     listCategorias,
+    listCardsTarefas,
+    listTarefaPorDia,
   };
 }

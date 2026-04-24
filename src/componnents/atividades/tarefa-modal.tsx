@@ -26,16 +26,18 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   tarefa?: ListTarefasReturnType;
+  reload: () => void;
 };
 
-export function TarefaModal({ isOpen, onClose, tarefa }: Props) {
+export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
   const toast = useToast();
   const { user } = useAuthContext();
   const tempoMinutos = tarefa?.tempo ?? 0;
   const horas = Math.floor(tempoMinutos / 60);
   const minutos = tempoMinutos % 60;
   const [isLoading, setIsLoading] = useState(false);
-  const { listCategorias, createTarefa } = useTarefas();
+  const { listCategorias, createTarefa, editTarefa, deleteTarefa } =
+    useTarefas();
 
   const { data: categorias } = useQuery({
     queryKey: [`categorias`, user?.id],
@@ -51,16 +53,69 @@ export function TarefaModal({ isOpen, onClose, tarefa }: Props) {
       descricao: tarefa?.descricao ?? "",
       categoriaId: Number(tarefa?.categoriaId) ?? 0,
       data: tarefa?.data
-        ? brToIso(new Date(tarefa?.data).toLocaleDateString("pt-BR"))
+        ? tarefa.data.split("T")[0]
         : brToIso(new Date().toLocaleDateString("pt-BR")),
       userId: user?.id ?? "",
     },
     enableReinitialize: true,
     onSubmit: () => {
-      handleCreateTarefa();
+      tarefa ? handleEditTarefa() : handleCreateTarefa();
     },
   });
 
+  async function handleEditTarefa() {
+    try {
+      setIsLoading(true);
+      await editTarefa(tarefa?.id ?? 0, values);
+
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "success",
+        title: "Tarefa alterada com sucesso!",
+      });
+
+      onClose();
+      reload();
+      resetForm();
+    } catch (error: any) {
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "error",
+        title: "Erro ao editar tarefa!",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeleteTarafe() {
+    try {
+      setIsLoading(true);
+      await deleteTarefa(tarefa?.id ?? 0);
+
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "success",
+        title: "Tarefa deletada com sucesso!",
+      });
+
+      onClose();
+      reload();
+      resetForm();
+    } catch (error: any) {
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "error",
+        title: "Erro ao deletar tarefa!",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
   async function handleCreateTarefa() {
     try {
       setIsLoading(true);
@@ -74,6 +129,7 @@ export function TarefaModal({ isOpen, onClose, tarefa }: Props) {
       });
 
       onClose();
+      reload();
       resetForm();
     } catch (error: any) {
       toast({
@@ -93,7 +149,7 @@ export function TarefaModal({ isOpen, onClose, tarefa }: Props) {
       <ModalContent>
         <ModalHeader display={"flex"}>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
-            {tarefa ? "Adicionar tarefa" : "Editar tarefa"}
+            {!tarefa ? "Adicionar tarefa" : "Editar tarefa"}
           </Text>
         </ModalHeader>
         <ModalCloseButton />
@@ -164,6 +220,7 @@ export function TarefaModal({ isOpen, onClose, tarefa }: Props) {
               icon={FaTrash}
               title="Excluir"
               bg="red.800"
+              onClick={() => handleDeleteTarafe()}
               w="150px"
               isLoading={isLoading}
             />
