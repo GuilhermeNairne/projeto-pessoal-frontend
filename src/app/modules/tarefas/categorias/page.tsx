@@ -1,19 +1,34 @@
 "use client";
 
-import { Box, Flex, HStack, Icon, Link, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { Menu } from "@/componnents/menu";
-import { useTarefas } from "@/hooks/useTarefas";
+import { listCategoriesType, useTarefas } from "@/hooks/useTarefas";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useQuery } from "react-query";
 import { FaPencil } from "react-icons/fa6";
 import { DefaultButton } from "@/componnents/default-button";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { CategoriaModal } from "@/componnents/atividades/categoria-modal";
+import { useState } from "react";
 
 export default function Categorias() {
   const { user } = useAuthContext();
   const { listCategorias } = useTarefas();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState<
+    listCategoriesType | undefined
+  >(undefined);
 
-  const { data: categorias } = useQuery({
+  const { data: categorias, refetch } = useQuery({
     queryKey: [`categorias`, user?.id],
     queryFn: () => listCategorias(user?.id ?? ""),
   });
@@ -29,6 +44,13 @@ export default function Categorias() {
     >
       <Menu />
 
+      <CategoriaModal
+        isOpen={isOpen}
+        onClose={onClose}
+        reload={refetch}
+        categoria={categoriaSelecionada}
+      />
+
       <Box w={`80%`}>
         <HStack justifyContent={"flex-end"} mt={"10px"}>
           <Link
@@ -36,7 +58,9 @@ export default function Categorias() {
             flexDir={"row"}
             alignItems={"center"}
             gap={2}
-            // onClick={() => setActiveModal("newPanel")}
+            onClick={() => {
+              (setCategoriaSelecionada(undefined), onOpen());
+            }}
           >
             <Text fontSize={"lg"}>Nova categoria</Text>
             <Icon as={IoIosAddCircleOutline} boxSize={"8"} />
@@ -79,7 +103,13 @@ export default function Categorias() {
                 {categoria.tarefasPendentes}
               </Text>
 
-              <Icon as={FaPencil} alignItems={`flex-end`} />
+              <Icon
+                as={FaPencil}
+                alignItems={`flex-end`}
+                onClick={() => {
+                  (setCategoriaSelecionada(categoria), onOpen());
+                }}
+              />
             </HStack>
           ))}
         </Stack>

@@ -40,12 +40,12 @@ type ListTarefasSemanaType = Record<
   }
 >;
 
-type listCategoriesType = {
-  id: number;
+export type listCategoriesType = {
+  id?: number;
   nome: string;
   cor: string;
   user_id: string;
-  tarefasPendentes: number;
+  tarefasPendentes?: number;
 };
 
 export type ListCardsTarefasType = {
@@ -121,12 +121,38 @@ export function useTarefas() {
     return result;
   }
 
+  async function createCategoria(body: listCategoriesType) {
+    const result = await api.post("/tarefas/create-categoria", body);
+
+    return result;
+  }
+
+  async function deleteCategoria(id_categoria: number) {
+    const result = await api.delete(
+      `/tarefas/delete-categoria/${id_categoria}`,
+    );
+
+    return result;
+  }
+
+  async function editCategoria(id_categoria: number, body: listCategoriesType) {
+    const result = await api.patch(
+      `/tarefas/patch-categoria/${id_categoria}`,
+      body,
+    );
+
+    return result;
+  }
+
   return {
     editTarefa,
     listTarefas,
     createTarefa,
     deleteTarefa,
+    editCategoria,
     listCategorias,
+    deleteCategoria,
+    createCategoria,
     listCardsTarefas,
     listTarefaPorDia,
   };

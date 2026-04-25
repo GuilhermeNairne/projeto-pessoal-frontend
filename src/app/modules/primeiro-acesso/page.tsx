@@ -25,9 +25,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { registerSchema } from "@/schemas/auth.schema";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const toast = useToast();
+  const router = useRouter();
   const { firstAccess } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -61,8 +63,8 @@ export default function Login() {
       });
 
       resetForm();
+      router.push("/modules/financeiro");
     } catch (error: any) {
-      console.log("error", error);
       toast({
         position: "top",
         status: "error",
