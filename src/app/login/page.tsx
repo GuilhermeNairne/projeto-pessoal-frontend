@@ -50,7 +50,7 @@ export default function Login() {
       setIsLoading(true);
       await signIn(values);
 
-      router.push("/financeiro");
+      router.push("/modules/financeiro");
       toast({
         position: "top",
         isClosable: true,
@@ -176,7 +176,7 @@ export default function Login() {
           <Text fontSize={"lg"} textAlign={"center"} fontWeight={"thin"}>
             Não tem uma conta?
           </Text>
-          <Link onClick={() => router.push("/primeiro-acesso")}>
+          <Link onClick={() => router.push("/modules/primeiro-acesso")}>
             <Text
               fontSize={"lg"}
               textAlign={"center"}

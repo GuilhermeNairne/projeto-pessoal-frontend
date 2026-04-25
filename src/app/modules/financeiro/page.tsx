@@ -33,14 +33,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { GraficoJuros } from "@/componnents/financial/grafico-juros";
-
-const css = {
-  "&::-webkit-scrollbar": {
-    display: "none",
-  },
-  "-ms-overflow-style": "none",
-  "scrollbar-width": "none",
-};
+import { ScrollBarcss } from "@/utils/scroll-bar-css";
 
 export default function Financeiro() {
   const router = useRouter();
@@ -119,7 +112,7 @@ export default function Financeiro() {
         w={"full"}
         mr={"18px"}
         overflow={"auto"}
-        css={css}
+        css={ScrollBarcss}
       >
         <HStack justifyContent={"flex-end"} mt={"10px"} mr={"10px"}>
           <Link
@@ -190,7 +183,9 @@ export default function Financeiro() {
               panel={panel}
               refetch={() => refetchPanel()}
               navigate={() =>
-                router.push(`/movimentacoes?id_panel=${panel.id}`)
+                router.push(
+                  `/modules/financeiro/movimentacoes?id_panel=${panel.id}`,
+                )
               }
             />
 

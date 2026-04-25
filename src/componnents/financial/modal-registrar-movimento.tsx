@@ -20,6 +20,7 @@ import { useFormik } from "formik";
 import { CategoriesType } from "@/types/financial-types";
 import { useMovements } from "@/hooks/useMovements";
 import { useState } from "react";
+import { brToIso } from "@/utils/brToIso";
 
 type Props = {
   painel: string;
@@ -79,11 +80,6 @@ export function ModalRegistrarMovimento({
     } finally {
       setIsLoading(false);
     }
-  }
-
-  function brToIso(brDate: string) {
-    const [dia, mes, ano] = brDate.split("/");
-    return `${ano}-${mes}-${dia}`;
   }
 
   return (

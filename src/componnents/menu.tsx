@@ -1,8 +1,19 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { FaBook, FaSignOutAlt, FaMoon } from "react-icons/fa";
+import {
+  FaBook,
+  FaSignOutAlt,
+  FaMoon,
+  FaCalendarAlt,
+  FaChartBar,
+} from "react-icons/fa";
 
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Button,
   Flex,
@@ -13,26 +24,51 @@ import {
   Stack,
   Switch,
   Text,
+  VStack,
 } from "@chakra-ui/react";
+
+import { MdOutlineAttachMoney } from "react-icons/md";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
+
+const defaultPicture =
+  "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg";
 
 const menuOpcoes = [
   {
     nome: "Financeiro",
-    icon: FaSignOutAlt,
+    icon: MdOutlineAttachMoney,
+
+    opcoes: [
+      {
+        pagina: "Contas financeiras",
+        rota: "modules/financeiro",
+        icon: FaMoneyBillTrendUp,
+      },
+    ],
   },
   {
-    nome: "Estudos",
+    nome: "Tarefas",
     icon: FaBook,
+
+    opcoes: [
+      {
+        pagina: "Calendario",
+        rota: "modules/tarefas/calendario",
+        icon: FaCalendarAlt,
+      },
+      {
+        pagina: "Categorias e Acomp.",
+        rota: "modules/tarefas/categorias",
+        icon: FaChartBar,
+      },
+    ],
   },
 ];
 
 export function Menu() {
   const router = useRouter();
-  const { signOut, user } = useAuthContext();
-
   const pathname = usePathname();
-  const defaultPicture =
-    "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg";
+  const { signOut, user } = useAuthContext();
 
   function Logout() {
     signOut();
@@ -40,7 +76,9 @@ export function Menu() {
 
   return (
     <Flex
-      w={"22%"}
+      w={"16%"}
+      maxW={"16%"}
+      minW={"16%"}
       h={"100%"}
       bg={"menu_principal"}
       borderRadius={"20px"}
@@ -70,52 +108,70 @@ export function Menu() {
         </Box>
 
         <Stack mt={"50px"}>
-          {menuOpcoes.map((item, index) => (
-            <Button
-              display={"flex-start"}
-              w={"100%"}
-              h={"70px"}
-              key={index}
-              onClick={() => router.push(`${item.nome.toLowerCase()}`)}
-              bg={pathname === `/${item.nome.toLowerCase()}` ? "white" : "null"}
-              alignItems={"center"}
-              p={"10px"}
-              _hover={{
-                bg:
-                  pathname === `/${item.nome.toLowerCase()}`
-                    ? "null"
-                    : "menu_selecionado",
-              }}
-              borderRadius={"10px"}
-            >
-              <HStack gap={4}>
-                <Icon
-                  as={item.icon}
-                  boxSize={"8"}
-                  color={
-                    pathname === `/${item.nome.toLowerCase()}`
-                      ? "menu_principal"
-                      : "white"
-                  }
-                />
-                <Text
-                  color={
-                    pathname === `/${item.nome.toLowerCase()}`
-                      ? "menu_principal"
-                      : "white"
-                  }
-                  fontWeight={
-                    pathname === `/${item.nome.toLowerCase()}`
-                      ? "bold"
-                      : "light"
-                  }
-                  fontSize={"lg"}
-                >
-                  {item.nome}
-                </Text>
-              </HStack>
-            </Button>
-          ))}
+          <Accordion allowToggle>
+            {menuOpcoes.map((item) => {
+              const isOnPage = pathname.includes(item.nome.toLocaleLowerCase());
+
+              return (
+                <AccordionItem border="none" mb={3}>
+                  <AccordionButton
+                    h={`70px`}
+                    bg={isOnPage ? `white` : undefined}
+                    borderRadius={4}
+                    p={2}
+                    _hover={{
+                      borderRadius: 4,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    <Box
+                      flex="1"
+                      textAlign="left"
+                      display={"flex"}
+                      flexDir={"row"}
+                      alignItems={"center"}
+                      gap={4}
+                    >
+                      <Icon
+                        as={item.icon}
+                        boxSize={8}
+                        color={isOnPage ? "menu_principal" : `white`}
+                      />
+                      <Text
+                        color={isOnPage ? "menu_principal" : "white"}
+                        fontSize={"lg"}
+                        fontWeight={"semi-bold"}
+                      >
+                        {item.nome}
+                      </Text>
+                    </Box>
+                    <AccordionIcon
+                      color={isOnPage ? "menu_principal" : `white`}
+                    />
+                  </AccordionButton>
+                  <AccordionPanel pb={2}>
+                    <VStack align="stretch">
+                      {item.opcoes.map((modulo) => (
+                        <Button
+                          variant="ghost"
+                          justifyContent="flex-start"
+                          color="gray.200"
+                          fontWeight={`light`}
+                          fontSize={"md"}
+                          _hover={{ color: "white", fontWeight: "bold" }}
+                          onClick={() => {
+                            router.push(`/${modulo.rota}`);
+                          }}
+                        >
+                          {modulo.pagina}
+                        </Button>
+                      ))}
+                    </VStack>
+                  </AccordionPanel>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
         </Stack>
       </Flex>
 

@@ -25,8 +25,9 @@ export function DefaultButton({
     <Button
       h={h ?? "40px"}
       boxShadow={"md"}
-      w={w ?? "250px"}
+      w={w ?? "200px"}
       borderRadius={5}
+      gap={1}
       onClick={onClick}
       isLoading={isLoading}
       bg={bg ?? "menu_principal"}
@@ -34,7 +35,7 @@ export function DefaultButton({
         bg: bg,
         transform: "scale(1.03)",
       }}
-      rightIcon={<Icon as={icon} boxSize={"6"} color={titleColor ?? "white"} />}
+      rightIcon={<Icon as={icon} boxSize={"5"} color={titleColor ?? "white"} />}
     >
       <Text fontWeight={"bold"} fontSize={"lg"} color={titleColor ?? "white"}>
         {title}
