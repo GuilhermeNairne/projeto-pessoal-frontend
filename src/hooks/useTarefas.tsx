@@ -121,6 +121,14 @@ export function useTarefas() {
     return result;
   }
 
+  async function graficoCategorias(user_id: string) {
+    const result = await api.get<
+      { nome: string; total: number; cor: string }[]
+    >(`/tarefas/grafico-categorias/${user_id}`);
+
+    return result;
+  }
+
   async function createCategoria(body: listCategoriesType) {
     const result = await api.post("/tarefas/create-categoria", body);
 
@@ -155,5 +163,6 @@ export function useTarefas() {
     createCategoria,
     listCardsTarefas,
     listTarefaPorDia,
+    graficoCategorias,
   };
 }
