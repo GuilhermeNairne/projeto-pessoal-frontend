@@ -39,7 +39,7 @@ export function CategoriaModal({ isOpen, onClose, reload, categoria }: Props) {
       initialValues: {
         user_id: user?.id ?? "",
         nome: categoria?.nome ?? "",
-        cor: categoria?.cor ?? "",
+        cor: categoria?.cor ?? "#830e0e",
       },
       enableReinitialize: true,
       onSubmit: () => {

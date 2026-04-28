@@ -210,7 +210,7 @@ export default function Calendario() {
                   >
                     <HStack gap={3} alignItems={`flex-start`}>
                       <Box
-                        w={3}
+                        w={4}
                         mt={2}
                         h={3}
                         borderRadius={`100%`}

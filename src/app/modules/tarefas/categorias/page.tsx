@@ -19,11 +19,12 @@ import { DefaultButton } from "@/componnents/default-button";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { CategoriaModal } from "@/componnents/atividades/categoria-modal";
 import { useState } from "react";
+import { VictoryBar, VictoryChart, VictoryTheme } from "victory";
 
 export default function Categorias() {
   const { user } = useAuthContext();
-  const { listCategorias } = useTarefas();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { listCategorias, graficoCategorias } = useTarefas();
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<
     listCategoriesType | undefined
   >(undefined);
@@ -31,6 +32,11 @@ export default function Categorias() {
   const { data: categorias, refetch } = useQuery({
     queryKey: [`categorias`, user?.id],
     queryFn: () => listCategorias(user?.id ?? ""),
+  });
+
+  const { data: grafico } = useQuery({
+    queryKey: [`grafico`, user?.id],
+    queryFn: () => graficoCategorias(user?.id ?? ""),
   });
 
   return (
@@ -113,6 +119,36 @@ export default function Categorias() {
             </HStack>
           ))}
         </Stack>
+
+        <Text mt={100} fontSize={"lg"} fontWeight={"bold"}>
+          Quantidade de tarefas concluídas por categoria
+        </Text>
+
+        <Box
+          w={`30%`}
+          h={`300px`}
+          alignItems={`flex-start`}
+          display={`flex`}
+          justifyContent={`flex-start`}
+        >
+          <VictoryChart domainPadding={25} theme={VictoryTheme.clean}>
+            <VictoryBar
+              categories={{
+                x: grafico?.data.map((item) => item.nome) ?? [],
+              }}
+              data={grafico?.data.map((item) => ({
+                x: item.nome,
+                y: item.total,
+                fill: item.cor,
+              }))}
+              style={{
+                data: {
+                  fill: ({ datum }) => datum.fill,
+                },
+              }}
+            />
+          </VictoryChart>
+        </Box>
       </Box>
     </Flex>
   );
