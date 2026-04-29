@@ -5,7 +5,6 @@ export type PanelsType = {
   initial_value: string;
   categories?: CategoriesType[];
   movements?: MovementsType[];
-  juros?: JurosType[];
 };
 
 export type JurosType = {
