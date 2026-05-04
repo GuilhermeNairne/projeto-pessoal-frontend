@@ -63,10 +63,9 @@ export default function Calendario() {
 
   function navigateTarefas(day: string) {
     const date = new Date(year, month, Number(day));
+    const formatted = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-    router.push(
-      `/modules/tarefas/tarefas-semanais/?date=${date.toISOString()}`,
-    );
+    router.push(`/modules/tarefas/tarefas-semanais/?date=${formatted}`);
   }
 
   function lightenColor(hex: string, opacity: number = 0.3) {
@@ -209,13 +208,6 @@ export default function Calendario() {
                     bg={lightenColor(tarefa.categoria.cor)}
                   >
                     <HStack gap={3} alignItems={`flex-start`}>
-                      <Box
-                        w={4}
-                        mt={2}
-                        h={3}
-                        borderRadius={`100%`}
-                        bg={tarefa.categoria.cor}
-                      />
                       <Stack gap={0}>
                         <Text fontWeight={`bold`}>{tarefa.nome}</Text>
                         <Text mt={1}>{tarefa.categoria.nome}</Text>
