@@ -63,11 +63,9 @@ export default function TarefasSemanais() {
   function getWeekOfMonth(date: Date) {
     if (!date || isNaN(date.getTime())) return 1;
 
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const dayOfMonth = date.getDate() - 1;
-    const firstDayWeekDay = firstDay.getDay(); // Sunday = 0 ✅
+    const dayOfMonth = date.getDate();
 
-    return Math.ceil((dayOfMonth + firstDayWeekDay) / 7);
+    return Math.ceil(dayOfMonth / 7);
   }
 
   function capitalize(text: string) {
