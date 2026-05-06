@@ -72,3 +72,14 @@ export type ListJuros = [
     total: string;
   },
 ];
+
+export type ExpensesGraphicsType = {
+  categories: [
+    {
+      x: string;
+      y: number;
+      color: string;
+    },
+  ];
+  total_expenses: number;
+};

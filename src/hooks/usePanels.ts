@@ -1,5 +1,10 @@
 import { api } from "@/services/api";
-import { EditPanelType, ListJuros, PanelsType } from "@/types/financial-types";
+import {
+  EditPanelType,
+  ExpensesGraphicsType,
+  ListJuros,
+  PanelsType,
+} from "@/types/financial-types";
 
 export function usePanels() {
   async function listPanels(user_id: string) {
@@ -8,6 +13,24 @@ export function usePanels() {
     );
 
     return result;
+  }
+
+  async function expensesGraphics(
+    id_panel: number,
+    month: number,
+    year: number,
+  ) {
+    const result = await api.get<ExpensesGraphicsType>(
+      `/financial-panel/expenses-graphics/${id_panel}`,
+      {
+        params: {
+          month,
+          year,
+        },
+      },
+    );
+
+    return result.data;
   }
 
   async function createPanel(params: PanelsType) {
@@ -25,5 +48,5 @@ export function usePanels() {
     return result;
   }
 
-  return { listPanels, createPanel, editPanel };
+  return { listPanels, createPanel, editPanel, expensesGraphics };
 }
