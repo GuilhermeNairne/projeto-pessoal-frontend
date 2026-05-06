@@ -34,6 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { GraficoJuros } from "@/componnents/financial/grafico-juros";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
+import { FaChartArea, FaChartBar } from "react-icons/fa";
 
 export default function Financeiro() {
   const router = useRouter();
@@ -189,11 +190,10 @@ export default function Financeiro() {
               }
             />
 
-            <GraficoJuros juros={panel.juros} />
             <HStack
               w={"100%"}
               display={"flex"}
-              mt={"80px"}
+              mt={"60px"}
               justifyContent={"space-between"}
               alignItems={"flex-start"}
             >

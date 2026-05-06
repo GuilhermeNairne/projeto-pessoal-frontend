@@ -5,7 +5,6 @@ export type PanelsType = {
   initial_value: string;
   categories?: CategoriesType[];
   movements?: MovementsType[];
-  juros?: JurosType[];
 };
 
 export type JurosType = {
@@ -73,3 +72,14 @@ export type ListJuros = [
     total: string;
   },
 ];
+
+export type ExpensesGraphicsType = {
+  categories: [
+    {
+      x: string;
+      y: number;
+      color: string;
+    },
+  ];
+  total_expenses: number;
+};

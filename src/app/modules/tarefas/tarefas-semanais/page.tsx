@@ -34,6 +34,7 @@ export default function TarefasSemanais() {
   const searchParams = useSearchParams();
   const { listTarefaPorDia } = useTarefas();
   const dateParam = searchParams.get("date");
+  const parsedDate = dateParam ? new Date(dateParam) : new Date();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [tarefaSelecionada, setTarefaSelecionada] =
     useState<ListTarefasReturnType | null>();
@@ -60,12 +61,11 @@ export default function TarefasSemanais() {
   });
 
   function getWeekOfMonth(date: Date) {
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    if (!date || isNaN(date.getTime())) return 1;
 
     const dayOfMonth = date.getDate();
-    const firstDayWeekDay = firstDay.getDay();
 
-    return Math.ceil((dayOfMonth + firstDayWeekDay) / 7);
+    return Math.ceil(dayOfMonth / 7);
   }
 
   function capitalize(text: string) {
@@ -95,7 +95,7 @@ export default function TarefasSemanais() {
       <Stack mt={5} px={10} w={`full`} overflow={"auto"} css={ScrollBarcss}>
         <HStack mr={3} justifyContent={`space-between`}>
           <Text color={"menu_principal"} fontSize={`2xl`} fontWeight={`bold`}>
-            {getWeekOfMonth(new Date(String(dateParam)))}° semana de Abril
+            {getWeekOfMonth(parsedDate)}° semana de Abril
           </Text>
 
           <DefaultButton

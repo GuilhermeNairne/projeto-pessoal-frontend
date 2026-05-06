@@ -44,6 +44,11 @@ const menuOpcoes = [
         rota: "modules/financeiro",
         icon: FaMoneyBillTrendUp,
       },
+      {
+        pagina: "Gráficos",
+        rota: "modules/financeiro/graficos",
+        icon: FaChartBar,
+      },
     ],
   },
   {
