@@ -129,7 +129,7 @@ export default function TarefasSemanais() {
             locale={ptBR}
           />
           {weekDays.map((day, index) => {
-            const tarefaDoDia = tarefas?.data[String(day.getUTCDate())];
+            const tarefaDoDia = tarefas?.data[String(day.getUTCDate() - 1)];
             const totalTarefas = tarefaDoDia?.totalTarefas ?? 0;
             const totalConcluidas = tarefaDoDia?.totalConcluidas ?? 0;
             const porcentagem =
