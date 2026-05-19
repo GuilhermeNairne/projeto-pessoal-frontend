@@ -32,9 +32,7 @@ import {
   Spinner,
   Text,
 } from "@chakra-ui/react";
-import { GraficoJuros } from "@/componnents/financial/grafico-juros";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
-import { FaChartArea, FaChartBar } from "react-icons/fa";
 
 export default function Financeiro() {
   const router = useRouter();
