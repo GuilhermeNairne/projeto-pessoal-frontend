@@ -83,3 +83,8 @@ export type ExpensesGraphicsType = {
   ];
   total_expenses: number;
 };
+
+export type FeesByMonthType = {
+  month: Date;
+  total: string;
+};

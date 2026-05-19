@@ -7,54 +7,23 @@ import { usePanels } from "@/hooks/usePanels";
 import { PiPiggyBankFill } from "react-icons/pi";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { formatarValorBR } from "@/utils/convert-to-real";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import {
-  Box,
-  Center,
-  Flex,
-  HStack,
-  Icon,
-  Spinner,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { VictoryPie, VictoryTheme } from "victory";
+import { GraficoGastosMes } from "@/componnents/financial/grafico-gastos-mes";
+import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { GraficoJurosMensais } from "@/componnents/financial/grafico-juros-mensais";
 
 export default function Graficos() {
   const { user } = useAuthContext();
-  const { listPanels, expensesGraphics } = usePanels();
-  const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
-  const [mesAtual, setMesAtual] = useState(new Date().getMonth() + 1);
+  const { listPanels } = usePanels();
+
   const [painelSelecionado, setPainelSelecionado] = useState<{
     id_panel: number;
     panel: string;
   } | null>(null);
 
-  const {
-    data: panels,
-    refetch: refetchPanel,
-    isLoading: isLoadingPanels,
-  } = useQuery({
+  const { data: panels } = useQuery({
     queryKey: ["panels", user?.id],
     queryFn: async () => listPanels(user?.id ?? ""),
   });
-
-  const {
-    data: graphics,
-    refetch: refetchGraphics,
-    isLoading: isLoadingGraphics,
-  } = useQuery({
-    queryKey: ["graphics", mesAtual, anoAtual, painelSelecionado],
-    queryFn: async () =>
-      expensesGraphics(painelSelecionado?.id_panel ?? 0, mesAtual, anoAtual),
-  });
-
-  function alteraMes(funcao: "proximo" | "anterior") {
-    const data = new Date(anoAtual, mesAtual - 1);
-    data.setMonth(data.getMonth() + (funcao === "proximo" ? 1 : -1));
-    setMesAtual(data.getMonth() + 1);
-    setAnoAtual(data.getFullYear());
-  }
 
   return (
     <Flex
@@ -140,98 +109,15 @@ export default function Graficos() {
             bg={`white`}
             mt={`40px`}
             p={"20px"}
+            overflowY={"auto"}
+            flexDir={"column"}
             borderRadius={10}
           >
-            <Box>
-              <Text fontSize={"lg"} fontWeight={"bold"}>
-                Gráfico de gastos do mês
-              </Text>
+            <GraficoGastosMes painelSelecionado={painelSelecionado.id_panel} />
 
-              <HStack mt={10} justifyContent={"space-between"} w={"150px"}>
-                <Icon
-                  as={FaChevronLeft}
-                  onClick={() => alteraMes("anterior")}
-                />
-                <HStack>
-                  <Text style={{ textTransform: "capitalize" }}>
-                    {new Date(2026, mesAtual - 1).toLocaleString("pt-BR", {
-                      month: "long",
-                    })}
-                  </Text>
-                  <Text>{anoAtual}</Text>
-                </HStack>
-                <Icon
-                  as={FaChevronRight}
-                  onClick={() => alteraMes("proximo")}
-                />
-              </HStack>
-
-              <Stack>
-                {isLoadingGraphics ? (
-                  <Center mt={20}>
-                    <Spinner size={"lg"} />
-                  </Center>
-                ) : (
-                  <Box w={"100%"} display={"flex"} flexDir={"row"}>
-                    <Stack>
-                      <VictoryPie
-                        startAngle={90}
-                        labels={({ datum }) => `R$ ${datum.y}`}
-                        endAngle={450}
-                        data={graphics?.categories}
-                        theme={VictoryTheme.clean}
-                        style={{
-                          labels: {
-                            fontWeight: "bold",
-                          },
-                          data: {
-                            fill: ({ datum }) => datum.color,
-                          },
-                        }}
-                      />
-
-                      <HStack>
-                        <Text fontSize={"lg"}>Total gasto: </Text>
-                        <Text fontSize={"lg"} fontWeight={"bold"}>
-                          R$ {graphics?.total_expenses}
-                        </Text>
-                      </HStack>
-                    </Stack>
-
-                    <Stack
-                      mt={"20px"}
-                      maxH={"200px"}
-                      overflowY={"auto"}
-                      overflowX="hidden"
-                      w={"250px"}
-                      sx={{
-                        "::-webkit-scrollbar": {
-                          display: "none",
-                        },
-                        scrollbarWidth: "none",
-                        msOverflowStyle: "none",
-                      }}
-                    >
-                      {graphics?.categories
-                        ? graphics.categories.map((item) => (
-                            <HStack key={item.x}>
-                              <Box
-                                borderRadius="5px"
-                                w="20px"
-                                h="20px"
-                                bg={item.color}
-                              />
-                              <Text fontSize="lg" fontWeight="bold">
-                                {item.x}
-                              </Text>
-                            </HStack>
-                          ))
-                        : null}
-                    </Stack>
-                  </Box>
-                )}
-              </Stack>
-            </Box>
+            <GraficoJurosMensais
+              painelSelecionado={painelSelecionado.id_panel}
+            />
           </Flex>
         )}
       </Flex>

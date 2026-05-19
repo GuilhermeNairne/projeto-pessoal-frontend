@@ -2,7 +2,7 @@ import { api } from "@/services/api";
 import {
   EditPanelType,
   ExpensesGraphicsType,
-  ListJuros,
+  FeesByMonthType,
   PanelsType,
 } from "@/types/financial-types";
 
@@ -48,5 +48,13 @@ export function usePanels() {
     return result;
   }
 
-  return { listPanels, createPanel, editPanel, expensesGraphics };
+  async function feesByMonth(panel_id: number) {
+    const result = await api.get<FeesByMonthType[]>(
+      `financial-panel/fees/${panel_id}`,
+    );
+
+    return result;
+  }
+
+  return { listPanels, createPanel, editPanel, expensesGraphics, feesByMonth };
 }
