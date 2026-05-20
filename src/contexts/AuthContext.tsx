@@ -35,54 +35,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       password: data.password,
     });
 
-    const { user, accessToken, refreshToken } = response.data;
-
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
-    localStorage.setItem("userInfo", JSON.stringify(user));
-
-    setUser(user);
+    setUser(response.data.user);
   }
 
-  function signOut() {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+  async function signOut() {
+    await api.post("auth/logout");
     setUser(null);
   }
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("userInfo");
-    const storedToken = localStorage.getItem("accessToken");
-
-    if (!storedUser || !storedToken) return;
-
-    try {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-    } catch {
-      localStorage.removeItem("userInfo");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+    async function loadUser() {
+      try {
+        const response = await api.get("auth/me");
+        setUser(response.data.user);
+      } catch {
+        try {
+          const response = await api.post("auth/refresh");
+          setUser(response.data.user);
+        } catch {
+          setUser(null);
+        }
+      } finally {
+        setLoading(false);
+      }
     }
 
-    setLoading(false);
+    loadUser();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        isAuthenticated,
-        signIn,
-        signOut,
-      }}
+      value={{ user, loading, isAuthenticated, signIn, signOut }}
     >
       {children}
     </AuthContext.Provider>
   );
 }
-
 export function useAuthContext() {
   return useContext(AuthContext);
 }
