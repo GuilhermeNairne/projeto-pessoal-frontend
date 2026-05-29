@@ -4,6 +4,9 @@ const setupApiClient = () => {
   const backend = axios.create({
     baseURL: String(process.env.NEXT_PUBLIC_API_URL),
     withCredentials: true,
+    headers: {
+      "X-API-Key": String(process.env.NEXT_PUBLIC_API_KEY),
+    },
   });
 
   backend.interceptors.response.use(
@@ -13,7 +16,7 @@ const setupApiClient = () => {
     (error: any) => {
       console.log(error);
       return Promise.reject(error);
-    }
+    },
   );
 
   return backend;
