@@ -193,10 +193,15 @@ export default function Calendario() {
               </Box>
 
               {tarefas?.data.map((tarefa) => {
-                const tarefaDay = new Date(tarefa.data).getUTCDate();
-                const dayNumber = day ? day.getDate() : null;
+                const tarefaDate = new Date(tarefa.data);
 
-                return tarefaDay === dayNumber ? (
+                const isSameDay = day
+                  ? tarefaDate.getUTCFullYear() === day.getFullYear() &&
+                    tarefaDate.getUTCMonth() === day.getMonth() &&
+                    tarefaDate.getUTCDate() === day.getDate()
+                  : false;
+
+                return isSameDay ? (
                   <Box
                     mt={3}
                     borderWidth={2}
