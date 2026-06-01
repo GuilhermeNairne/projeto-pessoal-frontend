@@ -42,6 +42,10 @@ export default function TarefasSemanais() {
   const startOfWeek = new Date(baseDate);
   startOfWeek.setDate(baseDate.getDate() - baseDate.getDay());
 
+  const monthName = parsedDate
+    .toLocaleString("pt-BR", { month: "long" })
+    .replace(/^\w/, (c) => c.toUpperCase());
+
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(startOfWeek.getDate() + 6);
 
@@ -95,7 +99,7 @@ export default function TarefasSemanais() {
       <Stack mt={5} px={10} w={`full`} overflow={"auto"} css={ScrollBarcss}>
         <HStack mr={3} justifyContent={`space-between`}>
           <Text color={"menu_principal"} fontSize={`2xl`} fontWeight={`bold`}>
-            {getWeekOfMonth(parsedDate)}° semana de Abril
+            {`${getWeekOfMonth(parsedDate)}° semana de ${monthName}`}
           </Text>
 
           <DefaultButton

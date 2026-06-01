@@ -19,7 +19,7 @@ import { DefaultButton } from "@/componnents/default-button";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { CategoriaModal } from "@/componnents/atividades/categoria-modal";
 import { useState } from "react";
-import { VictoryBar, VictoryChart, VictoryTheme } from "victory";
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryTheme } from "victory";
 
 export default function Categorias() {
   const { user } = useAuthContext();
@@ -125,13 +125,29 @@ export default function Categorias() {
         </Text>
 
         <Box
-          w={`30%`}
-          h={`300px`}
+          w={`40%`}
+          h={`350px`}
           alignItems={`flex-start`}
           display={`flex`}
           justifyContent={`flex-start`}
         >
-          <VictoryChart domainPadding={25} theme={VictoryTheme.clean}>
+          <VictoryChart
+            padding={{ top: 20, bottom: 100, left: 50, right: 20 }}
+            domainPadding={25}
+            theme={VictoryTheme.clean}
+          >
+            <VictoryAxis
+              tickValues={grafico?.data.map((item) => item.nome) ?? []}
+              style={{
+                tickLabels: {
+                  angle: -25,
+                  textAnchor: "end",
+                  fontSize: 12,
+                  padding: 2,
+                },
+              }}
+            />
+            <VictoryAxis dependentAxis />
             <VictoryBar
               categories={{
                 x: grafico?.data.map((item) => item.nome) ?? [],
