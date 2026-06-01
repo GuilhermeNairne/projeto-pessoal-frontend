@@ -25,7 +25,13 @@ const setupApiClient = () => {
     async (error) => {
       const originalRequest = error.config;
 
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      const isRefreshCall = originalRequest?.url?.includes("auth/refresh");
+
+      if (
+        error.response?.status === 401 &&
+        !originalRequest._retry &&
+        !isRefreshCall
+      ) {
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
