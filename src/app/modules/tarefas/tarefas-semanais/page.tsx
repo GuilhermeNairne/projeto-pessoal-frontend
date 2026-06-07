@@ -40,11 +40,11 @@ export default function TarefasSemanais() {
     useState<ListTarefasReturnType | null>();
   const baseDate = dateParam ? new Date(dateParam) : new Date();
   const startOfWeek = new Date(baseDate);
-  startOfWeek.setHours(0, 0, 0, 0); // ← add this
+  startOfWeek.setHours(0, 0, 0, 0);
   startOfWeek.setDate(baseDate.getDate() - baseDate.getDay());
 
   const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setHours(0, 0, 0, 0); // ← add this
+  endOfWeek.setHours(0, 0, 0, 0);
   endOfWeek.setDate(startOfWeek.getDate() + 6);
 
   const monthName = parsedDate
