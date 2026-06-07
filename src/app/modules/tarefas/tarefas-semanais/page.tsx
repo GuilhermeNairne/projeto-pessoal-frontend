@@ -40,14 +40,16 @@ export default function TarefasSemanais() {
     useState<ListTarefasReturnType | null>();
   const baseDate = dateParam ? new Date(dateParam) : new Date();
   const startOfWeek = new Date(baseDate);
+  startOfWeek.setHours(0, 0, 0, 0);
   startOfWeek.setDate(baseDate.getDate() - baseDate.getDay());
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setHours(0, 0, 0, 0);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
 
   const monthName = parsedDate
     .toLocaleString("pt-BR", { month: "long" })
     .replace(/^\w/, (c) => c.toUpperCase());
-
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
 
   const weekDays = Array.from({ length: 7 }).map((_, index) => {
     const d = new Date(startOfWeek);
@@ -133,7 +135,7 @@ export default function TarefasSemanais() {
             locale={ptBR}
           />
           {weekDays.map((day, index) => {
-            const tarefaDoDia = tarefas?.data[String(day.getUTCDate() - 1)];
+            const tarefaDoDia = tarefas?.data[String(day.getUTCDate())];
             const totalTarefas = tarefaDoDia?.totalTarefas ?? 0;
             const totalConcluidas = tarefaDoDia?.totalConcluidas ?? 0;
             const porcentagem =
