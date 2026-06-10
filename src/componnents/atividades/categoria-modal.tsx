@@ -161,7 +161,7 @@ export function CategoriaModal({ isOpen, onClose, reload, categoria }: Props) {
             <DefaultButton
               icon={FaTrash}
               title="Excluir"
-              bg="red.800"
+              bg="linear(to-r, #41150f, #650d0d)"
               onClick={() => handleDeleteCategoria()}
               w="150px"
               isLoading={isLoading}

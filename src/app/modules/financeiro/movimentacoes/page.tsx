@@ -136,7 +136,7 @@ export default function Movimentacoes() {
             bg={"menu_principal"}
             borderRadius={"5px"}
             w={"full"}
-            h={activeModal === "filtros" ? "50px" : "35px"}
+            h={activeModal === "filtros" ? "40px" : "45px"}
             alignItems={"center"}
             px={"15px"}
           >

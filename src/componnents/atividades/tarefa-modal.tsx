@@ -215,11 +215,11 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
           />
         </ModalBody>
         <ModalFooter gap={5} mt={"30px"} display={"flex"}>
-          {tarefa && (
+          {tarefa?.nome && (
             <DefaultButton
               icon={FaTrash}
               title="Excluir"
-              bg="red.800"
+              bg="linear(to-r, #41150f, #650d0d)"
               onClick={() => handleDeleteTarafe()}
               w="150px"
               isLoading={isLoading}
