@@ -169,7 +169,6 @@ export default function Login() {
           isLoading={isLoading}
           h="50px"
           onClick={handleSubmit}
-          bg="radial-gradient(circle, #0a1323 0%, var(--chakra-colors-menu_principal) 75%)"
         />
 
         <HStack display={"flex"} justifyContent={"center"} mt={10}>

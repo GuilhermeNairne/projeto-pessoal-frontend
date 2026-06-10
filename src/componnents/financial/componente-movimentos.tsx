@@ -71,8 +71,6 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
         </Box>
       </HStack>
 
-      {/* <Filtros open={activeModal === "filtros"} /> */}
-
       <Stack mt={"10px"}>
         <Box
           display={"flex"}

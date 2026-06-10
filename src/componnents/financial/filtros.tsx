@@ -67,7 +67,7 @@ export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
       style={{ opacity: open ? 1 : 0 }}
     >
       <Flex
-        bg={"#d5d5d5d0"}
+        bg={"#ffffffd0"}
         borderRadius={"10px"}
         h={"190px"}
         flexDir={"column"}

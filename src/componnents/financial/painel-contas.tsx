@@ -87,7 +87,7 @@ export function PainelContas({ paineis, isLoading }: Props) {
               <Box
                 display="flex"
                 flexDir="column"
-                bg="menu_principal"
+                bgGradient={"linear(to-r, #1e293b, #324565)"}
                 p="15px"
                 borderRadius="8px"
                 w="300px"

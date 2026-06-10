@@ -29,12 +29,11 @@ export function DefaultButton({
       borderRadius={5}
       gap={1}
       onClick={onClick}
-      isLoading={isLoading}
-      bg={bg ?? "menu_principal"}
+      bgGradient={bg ?? "linear(to-r, #1e293b, #324565)"}
       _hover={{
-        bg: bg,
-        transform: "scale(1.03)",
+        bgGradient: bg ?? "linear(to-r, #162032, #2e4060)",
       }}
+      isLoading={isLoading}
       rightIcon={<Icon as={icon} boxSize={"5"} color={titleColor ?? "white"} />}
     >
       <Text fontWeight={"bold"} fontSize={"lg"} color={titleColor ?? "white"}>
