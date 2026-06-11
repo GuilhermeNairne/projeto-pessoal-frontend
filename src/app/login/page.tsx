@@ -71,7 +71,7 @@ export default function Login() {
   }
 
   return (
-    <Flex flexDir={"row"} w={"full"} h={"full"}>
+    <Flex flexDir={"row"} w={"full"} h={"full"} p={10} bg={"white"}>
       <FirstScreen />
 
       <Flex
