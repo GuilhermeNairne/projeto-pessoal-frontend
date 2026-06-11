@@ -205,11 +205,11 @@ export default function Calendario() {
                   <Box
                     mt={3}
                     borderWidth={2}
-                    borderColor={tarefa.categoria.cor}
+                    borderColor={lightenColor(tarefa.categoria.cor)}
                     borderRadius={8}
                     w={`full`}
                     p={2}
-                    bg={lightenColor(tarefa.categoria.cor)}
+                    bg={`Linear-gradient(135deg, ${lightenColor(tarefa.categoria.cor, 0.3)} 0%, ${lightenColor(tarefa.categoria.cor, 0.1)} 100%)`}
                   >
                     <HStack gap={3} alignItems={`flex-start`}>
                       <Stack gap={0}>
