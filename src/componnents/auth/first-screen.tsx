@@ -33,6 +33,7 @@ export function FirstScreen() {
       h="full"
       pb={12}
       pl={28}
+      borderRadius={20}
       justifyContent={"center"}
       flexDir={"column"}
       bg="radial-gradient(circle, #0a1323 0%, var(--chakra-colors-menu_principal) 75%)"
