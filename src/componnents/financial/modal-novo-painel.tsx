@@ -31,7 +31,7 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
       name: "",
       inicial_value: "",
     },
-    onSubmit: (values) => {},
+    onSubmit: (values) => { },
   });
 
   async function handleClick() {
@@ -64,7 +64,7 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent mx={{ base: 4 }}>
         <ModalHeader display={"flex"} justifyContent={"center"}>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
             Novo painel

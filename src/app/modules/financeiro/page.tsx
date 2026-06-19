@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
+import { MenuMobile } from "@/componnents/menu-mobile";
 import { FaPencil } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { usePanels } from "@/hooks/usePanels";
@@ -65,11 +66,12 @@ export default function Financeiro() {
     <Flex
       w={"100%"}
       h={"100%"}
-      p={"20px"}
-      flexDir={"row"}
-      gap={10}
+      p={{ base: "10px", lg: "20px" }}
+      flexDir={{ base: "column", lg: "row" }}
+      gap={{ base: 4, lg: 10 }}
       overflow="hidden"
     >
+      <MenuMobile />
       <Menu />
 
       <ModalNovoPainel
