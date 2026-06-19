@@ -29,28 +29,40 @@ export function FirstScreen() {
 
   return (
     <Flex
-      w="40%"
+      w={{ base: "0%", lg: "40%" }}
       h="full"
       pb={12}
-      pl={28}
+      pl={{ base: 6, md: 12, lg: 16, xl: 28 }}
+      pr={{ base: 4, md: 6, lg: 8 }}
       borderRadius={20}
       justifyContent={"center"}
       flexDir={"column"}
+      display={{ base: "none", lg: "flex" }}
       bg="radial-gradient(circle, #0a1323 0%, var(--chakra-colors-menu_principal) 75%)"
     >
-      <Text fontSize={"5xl"} fontWeight={"bold"} color={"white"}>
+      <Text
+        fontSize={{ base: "2xl", lg: "4xl", xl: "5xl" }}
+        fontWeight={"bold"}
+        color={"white"}
+      >
         Organize hoje.
       </Text>
-      <Text fontSize={"5xl"} fontWeight={"bold"} color={"#60a5fa"} mt={-2}>
+      <Text
+        fontSize={{ base: "2xl", lg: "4xl", xl: "5xl" }}
+        fontWeight={"bold"}
+        color={"#60a5fa"}
+        mt={-2}
+      >
         Conquiste amanhã.
       </Text>
 
-      <Stack mt={20}>
+      <Stack mt={{ base: 10, lg: 14, xl: 20 }}>
         {itens.map((item, index) => (
-          <HStack mt={5} gap={5} key={index}>
+          <HStack mt={{ base: 3, lg: 5 }} gap={{ base: 3, lg: 5 }} key={index}>
             <Box
               w={"50px"}
               h={"50px"}
+              minW={"50px"}
               bg={item.bg}
               borderRadius={5}
               display={"flex"}
@@ -63,10 +75,18 @@ export function FirstScreen() {
               <Icon as={item.icon} boxSize={7} color={item.iconColor} />
             </Box>
             <Stack gap={0}>
-              <Text fontSize={"2xl"} fontWeight={"light"} color={"white"}>
+              <Text
+                fontSize={{ base: "lg", lg: "xl", xl: "2xl" }}
+                fontWeight={"light"}
+                color={"white"}
+              >
                 {item.text}
               </Text>
-              <Text fontSize={"lg"} fontWeight={"light"} color={"gray.500"}>
+              <Text
+                fontSize={{ base: "sm", lg: "md", xl: "lg" }}
+                fontWeight={"light"}
+                color={"gray.500"}
+              >
                 {item.subtext}
               </Text>
             </Stack>
