@@ -20,7 +20,7 @@ export function PainelContas({ paineis, isLoading }: Props) {
   function calculaTotal() {
     return formatarValorBR(
       paineis?.reduce((total, item) => total + Number(item.initial_value), 0) ??
-        0,
+      0,
     );
   }
 
@@ -41,9 +41,15 @@ export function PainelContas({ paineis, isLoading }: Props) {
   }
 
   return (
-    <Flex flexDir="column" gap={5} mt={"20px"}>
+    <Flex
+      gap={5}
+      mt={"20px"}
+      flexDir={{ base: "column", lg: "row" }}
+      alignItems={{ base: "center", lg: "flex-start" }}
+      flexWrap={{ lg: "wrap" }}
+    >
       {paineis?.length === 0 && isLoading === false ? (
-        <Center mt={"200px"} display={"flex"} flexDir={"column"}>
+        <Center mt={"200px"} display={"flex"} >
           <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
             Você ainda não criou nenhum painel,
           </Text>
@@ -57,7 +63,13 @@ export function PainelContas({ paineis, isLoading }: Props) {
         </Center>
       ) : (
         linhas.map((linha: any, index: any) => (
-          <HStack key={index} gap={10}>
+          <Flex
+            key={index}
+            gap={{ base: 5, lg: 10 }}
+            flexDir={{ base: "column", lg: "row" }}
+            alignItems={{ base: "center", lg: "flex-start" }}
+            w={{ base: "100%", lg: "auto" }}
+          >
             {linha.map((conta: PanelsType) => (
               <Box
                 key={conta.id}
@@ -66,7 +78,7 @@ export function PainelContas({ paineis, isLoading }: Props) {
                 bg="white"
                 p="15px"
                 borderRadius="8px"
-                w="300px"
+                w={{ base: "100%", sm: "300px" }}
                 h="130px"
                 boxShadow="lg"
               >
@@ -90,7 +102,7 @@ export function PainelContas({ paineis, isLoading }: Props) {
                 bgGradient={"linear(to-r, #1e293b, #324565)"}
                 p="15px"
                 borderRadius="8px"
-                w="300px"
+                w={{ base: "100%", sm: "300px" }}
                 h="130px"
                 boxShadow="lg"
               >
@@ -106,7 +118,7 @@ export function PainelContas({ paineis, isLoading }: Props) {
                 </Text>
               </Box>
             )}
-          </HStack>
+          </Flex>
         ))
       )}
     </Flex>

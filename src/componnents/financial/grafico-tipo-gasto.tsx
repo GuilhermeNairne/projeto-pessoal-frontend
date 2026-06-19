@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { VictoryPie, VictoryTheme } from "victory";
 import { useMovements } from "@/hooks/useMovements";
 import { PanelsType } from "@/types/financial-types";
-import { Box, HStack, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, HStack, Spinner, Stack, Text, useBreakpointValue } from "@chakra-ui/react";
 
 type Props = {
   panel: PanelsType;
@@ -12,7 +12,7 @@ type Props = {
 export function GraficoTipoGasto({ panel, month }: Props) {
   const { listExpensesByMonth } = useMovements();
   const monthName = new Date().toLocaleString("pt-BR", { month: "long" });
-
+  const isMobile = useBreakpointValue({ base: true, lg: false });
   const {
     data: chartData,
     isLoading,
@@ -26,55 +26,60 @@ export function GraficoTipoGasto({ panel, month }: Props) {
     <Box display={"flex"} flexDir={"column"}>
       <HStack display={"flex"} justifyContent={"space-between"}>
         <Text fontSize={"lg"} fontWeight={"bold"}>
-          Gráfico de gastos do mês de {monthName.toUpperCase()}
+          {isMobile ? `Total gastos no mês de ${monthName.toLocaleUpperCase()} ` : "Gráfico de gastos do mês de " + monthName.toUpperCase()}
         </Text>
       </HStack>
       {panel.movements?.some((move) => move.movement_type === "OUT") ? (
-        <Box w={"100%"} display={"flex"} flexDir={"row"}>
-          {isLoading ? (
-            <Spinner size={"lg"} />
-          ) : (
-            <Stack>
-              <VictoryPie
-                startAngle={90}
-                labels={({ datum }) => `R$ ${datum.y}`}
-                endAngle={450}
-                data={chartData?.data.data}
-                theme={VictoryTheme.clean}
-                style={{
-                  labels: {
-                    fontWeight: "bold",
-                  },
-                  data: {
-                    fill: ({ datum }) => datum.color,
-                  },
-                }}
-              />
+        isMobile ? <HStack>
+          <Text fontSize={"lg"}>
+            R$ {chartData?.data.total}
+          </Text>
+        </HStack> :
+          <Box w={"100%"} display={"flex"} flexDir={"row"}>
+            {isLoading ? (
+              <Spinner size={"lg"} />
+            ) : (
+              <Stack>
+                <VictoryPie
+                  startAngle={90}
+                  labels={({ datum }) => `R$ ${datum.y}`}
+                  endAngle={450}
+                  data={chartData?.data.data}
+                  theme={VictoryTheme.clean}
+                  style={{
+                    labels: {
+                      fontWeight: "bold",
+                    },
+                    data: {
+                      fill: ({ datum }) => datum.color,
+                    },
+                  }}
+                />
 
-              <HStack>
-                <Text fontSize={"lg"}>Total gasto: </Text>
-                <Text fontSize={"lg"} fontWeight={"bold"}>
-                  R$ {chartData?.data.total}
-                </Text>
-              </HStack>
-            </Stack>
-          )}
-          <Stack
-            mt={"20px"}
-            maxH={"200px"}
-            overflowY={"auto"}
-            overflowX="hidden"
-            w={"250px"}
-            sx={{
-              "::-webkit-scrollbar": {
-                display: "none",
-              },
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-          >
-            {panel.categories
-              ? panel.categories
+                <HStack>
+                  <Text fontSize={"lg"}>Total gasto: </Text>
+                  <Text fontSize={"lg"} fontWeight={"bold"}>
+                    R$ {chartData?.data.total}
+                  </Text>
+                </HStack>
+              </Stack>
+            )}
+            <Stack
+              mt={"20px"}
+              maxH={"200px"}
+              overflowY={"auto"}
+              overflowX="hidden"
+              w={"250px"}
+              sx={{
+                "::-webkit-scrollbar": {
+                  display: "none",
+                },
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
+            >
+              {panel.categories
+                ? panel.categories
                   .filter((item) => (item.totalSpent ? item.totalSpent : 0))
                   .map((item) => (
                     <HStack key={item.name}>
@@ -89,9 +94,9 @@ export function GraficoTipoGasto({ panel, month }: Props) {
                       </Text>
                     </HStack>
                   ))
-              : null}
-          </Stack>
-        </Box>
+                : null}
+            </Stack>
+          </Box>
       ) : (
         <Text color={"gray.500"}>
           Não foi registrado nenhuma movimentação de gasto.

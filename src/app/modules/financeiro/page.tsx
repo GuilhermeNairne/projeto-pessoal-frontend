@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
-import { MenuMobile } from "@/componnents/menu-mobile";
 import { FaPencil } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { usePanels } from "@/hooks/usePanels";
@@ -32,13 +31,16 @@ import {
   Link,
   Spinner,
   Text,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
+import { MenuMobile } from "@/componnents/menu-mobile";
 
 export default function Financeiro() {
   const router = useRouter();
   const { user } = useAuthContext();
   const { listPanels } = usePanels();
+  const isMobile = useBreakpointValue({ base: true, lg: false });
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [editPanelValues, setEditPanelValues] = useState<EditPanelType>();
   const [openTransactionModal, setOpenTransactionModal] = useState<{
@@ -66,7 +68,7 @@ export default function Financeiro() {
     <Flex
       w={"100%"}
       h={"100%"}
-      p={{ base: "10px", lg: "20px" }}
+      p={{ base: "20px", lg: "20px" }}
       flexDir={{ base: "column", lg: "row" }}
       gap={{ base: 4, lg: 10 }}
       overflow="hidden"
@@ -168,27 +170,31 @@ export default function Financeiro() {
                   })
                 }
               >
-                <Box
-                  display={"flex"}
-                  flexDir={"row"}
-                  alignItems={"center"}
-                  gap={3}
-                >
-                  <Text fontSize={"lg"}>Registrar movimento</Text>
-                  <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
-                </Box>
+                {isMobile ? <Icon as={GrTransaction} boxSize={"5"} color={"green"} /> :
+                  <Box
+                    display={"flex"}
+                    flexDir={"row"}
+                    alignItems={"center"}
+                    gap={3}
+                  >
+                    <Text fontSize={"lg"}>Registrar movimento</Text>
+                    <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
+                  </Box>
+                }
               </Link>
             </HStack>
 
-            <ComponenteMovimentos
-              panel={panel}
-              refetch={() => refetchPanel()}
-              navigate={() =>
-                router.push(
-                  `/modules/financeiro/movimentacoes?id_panel=${panel.id}`,
-                )
-              }
-            />
+            {isMobile ? null :
+              <ComponenteMovimentos
+                panel={panel}
+                refetch={() => refetchPanel()}
+                navigate={() =>
+                  router.push(
+                    `/modules/financeiro/movimentacoes?id_panel=${panel.id}`,
+                  )
+                }
+              />
+            }
 
             <HStack
               w={"100%"}
@@ -202,10 +208,12 @@ export default function Financeiro() {
                 month={new Date().getMonth() + 1}
               />
 
-              <CategoriasComponente
-                panel={panel}
-                refetch={() => refetchPanel()}
-              />
+              {isMobile ? null :
+                <CategoriasComponente
+                  panel={panel}
+                  refetch={() => refetchPanel()}
+                />
+              }
             </HStack>
           </Box>
         ))}
