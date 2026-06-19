@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
+import { MenuMobile } from "@/componnents/menu-mobile";
 import { usePanels } from "@/hooks/usePanels";
 import { PiPiggyBankFill } from "react-icons/pi";
 import { useAuthContext } from "@/contexts/AuthContext";
@@ -29,11 +30,12 @@ export default function Graficos() {
     <Flex
       w={"100%"}
       h={"100%"}
-      p={"20px"}
-      flexDir={"row"}
-      gap={10}
+      p={{ base: "10px", lg: "20px" }}
+      flexDir={{ base: "column", lg: "row" }}
+      gap={{ base: 4, lg: 10 }}
       overflow="hidden"
     >
+      <MenuMobile />
       <Menu />
 
       <Flex flexDir={"column"} mt={30} alignSelf={"flex-start"} w={"full"}>
