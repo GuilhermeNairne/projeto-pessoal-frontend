@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Menu } from "@/componnents/menu";
+import { MenuMobile } from "@/componnents/menu-mobile";
 import { useSearchParams } from "next/navigation";
 import { useMovements } from "@/hooks/useMovements";
 import { formatarValorBR } from "@/utils/convert-to-real";
@@ -85,11 +86,12 @@ export default function Movimentacoes() {
     <Flex
       w={"100%"}
       h={"100%"}
-      p={"20px"}
-      flexDir={"row"}
-      gap={10}
+      p={{ base: "10px", lg: "20px" }}
+      flexDir={{ base: "column", lg: "row" }}
+      gap={{ base: 4, lg: 10 }}
       overflow="hidden"
     >
+      <MenuMobile />
       <Menu />
 
       <Flex w={"full"} h={"full"} flexDir={"column"}>

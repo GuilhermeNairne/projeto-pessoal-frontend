@@ -81,6 +81,7 @@ export function Menu() {
 
   return (
     <Flex
+      display={{ base: "none", lg: "flex" }}
       w={"16%"}
       maxW={"16%"}
       minW={"16%"}

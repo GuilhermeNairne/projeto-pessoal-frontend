@@ -52,7 +52,7 @@ export function ModalRegistrarMovimento({
       date: brToIso(new Date().toLocaleDateString("pt-BR")),
     },
     enableReinitialize: true,
-    onSubmit: (values) => {},
+    onSubmit: (values) => { },
   });
 
   async function handleClick() {
@@ -85,7 +85,7 @@ export function ModalRegistrarMovimento({
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent mx={{ base: 4 }}>
         <ModalHeader>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
             Registrar movimento {painel}

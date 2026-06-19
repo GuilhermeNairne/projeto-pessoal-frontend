@@ -71,13 +71,20 @@ export default function Login() {
   }
 
   return (
-    <Flex flexDir={"row"} w={"full"} h={"full"} p={10} bg={"white"}>
+    <Flex
+      flexDir={{ base: "column", lg: "row" }}
+      w={"full"}
+      h={"full"}
+      p={{ base: 4, md: 6, lg: 10 }}
+      bg={"white"}
+    >
       <FirstScreen />
 
       <Flex
-        w={"60%"}
+        w={{ base: "100%", lg: "60%" }}
         h={"full"}
-        px={60}
+        px={{ base: 4, sm: 8, md: 16, lg: 20, xl: 60 }}
+        py={{ base: 10, lg: 0 }}
         justifyContent={"center"}
         flexDir={"column"}
       >
@@ -96,11 +103,11 @@ export default function Login() {
         >
           <Icon as={CiCircleCheck} boxSize={8} color={"white"} />
         </Box>
-        <Text fontSize={"3xl"} fontWeight={"bold"} mt={2}>
+        <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight={"bold"} mt={2}>
           Bem-vindo de volta
         </Text>
 
-        <Stack mt={20}>
+        <Stack mt={{ base: 8, md: 12, lg: 20 }}>
           <Text fontWeight={"bold"}>E-mail</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
@@ -156,7 +163,7 @@ export default function Login() {
             fontSize={"sm"}
             color={"menu_principal"}
             fontWeight={"semibold"}
-            mb={10}
+            mb={{ base: 6, md: 10 }}
           >
             Esqueci a senha
           </Text>
@@ -171,13 +178,21 @@ export default function Login() {
           onClick={handleSubmit}
         />
 
-        <HStack display={"flex"} justifyContent={"center"} mt={10}>
-          <Text fontSize={"lg"} textAlign={"center"} fontWeight={"thin"}>
+        <HStack
+          display={"flex"}
+          justifyContent={"center"}
+          mt={{ base: 6, md: 10 }}
+        >
+          <Text
+            fontSize={{ base: "md", md: "lg" }}
+            textAlign={"center"}
+            fontWeight={"thin"}
+          >
             Não tem uma conta?
           </Text>
           <Link onClick={() => router.push("/modules/primeiro-acesso")}>
             <Text
-              fontSize={"lg"}
+              fontSize={{ base: "md", md: "lg" }}
               textAlign={"center"}
               color={"menu_principal"}
               fontWeight={"bold"}

@@ -3,6 +3,7 @@
 import { useQuery } from "react-query";
 import { useMemo, useState } from "react";
 import { Menu } from "@/componnents/menu";
+import { MenuMobile } from "@/componnents/menu-mobile";
 import { useRouter } from "next/navigation";
 import { useTarefas } from "@/hooks/useTarefas";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
@@ -93,11 +94,12 @@ export default function Calendario() {
     <Flex
       w={"100%"}
       h={"100%"}
-      p={"20px"}
-      flexDir={"row"}
-      gap={10}
+      p={{ base: "10px", lg: "20px" }}
+      flexDir={{ base: "column", lg: "row" }}
+      gap={{ base: 4, lg: 10 }}
       overflow="hidden"
     >
+      <MenuMobile />
       <Menu />
 
       <Stack mt={5} px={10} w={`full`} overflow={"auto"} css={ScrollBarcss}>

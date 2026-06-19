@@ -41,7 +41,7 @@ export function EditPanelModal({
       value: panelValues.value,
     },
     enableReinitialize: true,
-    onSubmit: (values) => {},
+    onSubmit: (values) => { },
   });
 
   async function handleEdit() {
@@ -71,7 +71,7 @@ export function EditPanelModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent mx={{ base: 4 }}>
         <ModalHeader display={"flex"} justifyContent={"center"}>
           <Text fontSize={"3xl"} fontWeight={"bold"}>
             Editar painel

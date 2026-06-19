@@ -5,6 +5,7 @@ import "react-day-picker/dist/style.css";
 import { CiClock2 } from "react-icons/ci";
 import "../../../../utils/mini-calendar.css";
 import { Menu } from "@/componnents/menu";
+import { MenuMobile } from "@/componnents/menu-mobile";
 import { DayPicker } from "react-day-picker";
 import { MdOutlinePlaylistAdd } from "react-icons/md";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
@@ -82,11 +83,12 @@ export default function TarefasSemanais() {
     <Flex
       w={"100%"}
       h={"100%"}
-      p={"20px"}
-      flexDir={"row"}
-      gap={10}
+      p={{ base: "10px", lg: "20px" }}
+      flexDir={{ base: "column", lg: "row" }}
+      gap={{ base: 4, lg: 10 }}
       overflow="hidden"
     >
+      <MenuMobile />
       <Menu />
 
       <TarefaModal

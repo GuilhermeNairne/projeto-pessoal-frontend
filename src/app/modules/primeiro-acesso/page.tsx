@@ -20,6 +20,7 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Link,
   Stack,
   Text,
   useToast,
@@ -76,15 +77,23 @@ export default function Login() {
   }
 
   return (
-    <Flex flexDir={"row"} w={"full"} h={"full"}>
+    <Flex
+      flexDir={{ base: "column", lg: "row" }}
+      w={"full"}
+      h={"full"}
+      bg={"white"}
+      p={{ base: 4, md: 6, lg: 10 }}
+    >
       <FirstScreen />
 
       <Flex
-        w={"60%"}
+        w={{ base: "100%", lg: "60%" }}
         h={"full"}
-        px={60}
+        px={{ base: 4, sm: 8, md: 16, lg: 20, xl: 60 }}
+        py={{ base: 10, lg: 0 }}
         justifyContent={"center"}
         flexDir={"column"}
+        overflowY={"auto"}
       >
         <Box
           w="50px"
@@ -101,14 +110,14 @@ export default function Login() {
         >
           <Icon as={LuClipboardList} boxSize={8} color={"white"} />
         </Box>
-        <Text fontSize={"3xl"} fontWeight={"bold"} mt={2}>
+        <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight={"bold"} mt={2}>
           Bem-vindo a plataforma
         </Text>
-        <Text fontSize={"lg"} color={"gray.400"}>
+        <Text fontSize={{ base: "md", md: "lg" }} color={"gray.400"}>
           Faça seu primeiro acesso
         </Text>
 
-        <Stack mt={20}>
+        <Stack mt={{ base: 8, md: 12, lg: 20 }}>
           <Text fontWeight={"bold"}>Nome completo</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
@@ -184,7 +193,7 @@ export default function Login() {
           )}
         </Stack>
 
-        <Stack mt={7} mb={20}>
+        <Stack mt={7} mb={{ base: 10, md: 10 }}>
           <Text fontWeight={"bold"}>Repita sua Senha</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
@@ -225,6 +234,22 @@ export default function Login() {
           onClick={handleSubmit}
           bg="radial-gradient(circle, #0a1323 0%, var(--chakra-colors-menu_principal) 75%)"
         />
+
+        <Link
+          _hover={{ textDecoration: "none" }}
+          onClick={() => router.push("/login")}
+          mt={5}
+        >
+          <Text
+            color={"menu_principal"}
+            fontWeight={"bold"}
+            fontSize={"sm"}
+            textAlign={"center"}
+            mt={4}
+          >
+            Voltar para login
+          </Text>
+        </Link>
       </Flex>
     </Flex>
   );
