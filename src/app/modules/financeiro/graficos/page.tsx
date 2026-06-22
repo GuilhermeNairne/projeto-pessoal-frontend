@@ -38,23 +38,39 @@ export default function Graficos() {
       <MenuMobile />
       <Menu />
 
-      <Flex flexDir={"column"} mt={30} alignSelf={"flex-start"} w={"full"}>
-        <Text fontSize={"2xl"} fontWeight={"bold"} color={`principal`}>
+      <Flex
+        flexDir={"column"}
+        mt={{ base: 4, lg: 30 }}
+        alignSelf={"flex-start"}
+        w={"full"}
+        overflow="auto"
+      >
+        <Text
+          fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
+          fontWeight={"bold"}
+          color={`principal`}
+        >
           Selecione o painel
         </Text>
-        <HStack mt={`20px`} gap={10}>
+        <Flex
+          mt={{ base: "10px", lg: "20px" }}
+          gap={{ base: 3, lg: 10 }}
+          flexWrap="wrap"
+        >
           {panels?.data.map((panel) => (
             <Box
+              key={panel.id}
               display="flex"
               flexDir="column"
               bg="white"
+              cursor="pointer"
               onClick={() =>
                 setPainelSelecionado({
                   id_panel: panel.id ?? 0,
                   panel: panel.name,
                 })
               }
-              p="15px"
+              p={{ base: "10px", lg: "15px" }}
               borderWidth={2}
               borderColor={
                 painelSelecionado?.panel === panel.name
@@ -62,14 +78,20 @@ export default function Graficos() {
                   : "#dcdcdc"
               }
               borderRadius="8px"
-              w="300px"
-              h="130px"
+              w={{
+                base: "100%",
+                sm: "calc(50% - 6px)",
+                md: "250px",
+                lg: "300px",
+              }}
+              h={{ base: "auto", lg: "130px" }}
+              minH="100px"
               boxShadow="lg"
             >
-              <HStack gap={3}>
+              <HStack gap={{ base: 2, lg: 3 }}>
                 <Icon
                   as={PiPiggyBankFill}
-                  boxSize="8"
+                  boxSize={{ base: "6", lg: "8" }}
                   color={
                     painelSelecionado?.panel === panel.name
                       ? "menu_principal"
@@ -78,7 +100,7 @@ export default function Graficos() {
                 />
                 <Text
                   fontWeight="bold"
-                  fontSize="2xl"
+                  fontSize={{ base: "lg", lg: "2xl" }}
                   color={
                     painelSelecionado?.panel === panel.name
                       ? "menu_principal"
@@ -90,8 +112,8 @@ export default function Graficos() {
               </HStack>
 
               <Text
-                mt="20px"
-                fontSize="2xl"
+                mt={{ base: "10px", lg: "20px" }}
+                fontSize={{ base: "lg", lg: "2xl" }}
                 color={
                   painelSelecionado?.panel === panel.name
                     ? "menu_principal"
@@ -102,15 +124,16 @@ export default function Graficos() {
               </Text>
             </Box>
           ))}
-        </HStack>
+        </Flex>
 
         {painelSelecionado && (
           <Flex
-            w={`98%`}
-            h={"650px"}
+            w={{ base: "100%", lg: "98%" }}
+            h={{ base: "auto", lg: "650px" }}
+            minH={{ base: "400px", md: "500px" }}
             bg={`white`}
-            mt={`40px`}
-            p={"20px"}
+            mt={{ base: "20px", lg: "40px" }}
+            p={{ base: "10px", md: "15px", lg: "20px" }}
             overflowY={"auto"}
             flexDir={"column"}
             borderRadius={10}
