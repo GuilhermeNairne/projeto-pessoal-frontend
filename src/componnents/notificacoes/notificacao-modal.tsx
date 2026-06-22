@@ -1,6 +1,5 @@
 import {
   Checkbox,
-  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,6 +9,7 @@ import {
   ModalOverlay,
   Radio,
   RadioGroup,
+  Select,
   Stack,
   Text,
   Textarea,
@@ -18,91 +18,156 @@ import {
 import { DefaultInput } from "../default-input";
 import { DefaultButton } from "../default-button";
 import { FaSave, FaTrash } from "react-icons/fa";
-import { useState, useEffect } from "react";
-import { NotificacaoType } from "@/app/modules/notificacoes/page";
+import { useState } from "react";
+import { useFormik } from "formik";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { NotificacaoType, useNotifications } from "@/hooks/useNotifications";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   notificacao?: NotificacaoType;
-  onSave: (notificacao: Omit<NotificacaoType, "id">) => void;
-  onDelete: (id: number) => void;
+  reload: () => void;
 };
 
 export function NotificacaoModal({
   isOpen,
   onClose,
   notificacao,
-  onSave,
-  onDelete,
+  reload,
 }: Props) {
   const toast = useToast();
+  const { user } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [titulo, setTitulo] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [data, setData] = useState("");
-  const [canal, setCanal] = useState<"email" | "whatsapp" | "ambos">("email");
-  const [recorrente, setRecorrente] = useState(false);
+  const { createNotification, editNotification, deleteNotification } =
+    useNotifications();
 
-  useEffect(() => {
-    if (notificacao) {
-      setTitulo(notificacao.titulo);
-      setDescricao(notificacao.descricao);
-      setData(notificacao.data);
-      setCanal(notificacao.canal);
-      setRecorrente(notificacao.recorrente);
-    } else {
-      setTitulo("");
-      setDescricao("");
-      setData("");
-      setCanal("email");
-      setRecorrente(false);
+  const { values, handleChange, resetForm, handleSubmit, setFieldValue } =
+    useFormik({
+      initialValues: {
+        title: notificacao?.title ?? "",
+        description: notificacao?.description ?? "",
+        date: notificacao?.date ? notificacao.date.substring(0, 10) : "",
+        recurrentDay: notificacao?.isCurrent && notificacao?.date
+          ? String(new Date(notificacao.date).getUTCDate())
+          : "1",
+        isCurrent: notificacao?.isCurrent ?? false,
+        method: notificacao?.method ?? "EMAIL",
+      },
+      enableReinitialize: true,
+      onSubmit: () => {
+        notificacao?.id ? handleEdit() : handleCreate();
+      },
+    });
+
+  function buildDate() {
+    if (values.isCurrent) {
+      const today = new Date();
+      const day = Number(values.recurrentDay);
+      const month = today.getDate() >= day
+        ? today.getMonth() + 1
+        : today.getMonth();
+      const year = month > 11
+        ? today.getFullYear() + 1
+        : today.getFullYear();
+      const adjustedMonth = month > 11 ? 0 : month;
+      return new Date(year, adjustedMonth, day).toISOString().substring(0, 10);
     }
-  }, [notificacao, isOpen]);
+    return values.date;
+  }
 
-  function handleSave() {
-    if (!titulo.trim()) {
+  async function handleCreate() {
+    try {
+      setIsLoading(true);
+      await createNotification({
+        userId: user?.id ?? "",
+        title: values.title,
+        description: values.description,
+        date: buildDate(),
+        isCurrent: values.isCurrent,
+        method: values.method as "EMAIL" | "WHATSAPP" | "BOTH",
+      });
+
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "success",
+        title: "Notificação cadastrada com sucesso!",
+      });
+
+      onClose();
+      reload();
+      resetForm();
+    } catch (error: any) {
       toast({
         position: "top",
         isClosable: true,
         status: "error",
-        title: "Informe o título da notificação!",
+        title: "Erro ao cadastrar notificação!",
       });
-      return;
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(true);
-
-    onSave({ titulo, descricao, data, canal, recorrente });
-
-    toast({
-      position: "top",
-      isClosable: true,
-      status: "success",
-      title: notificacao
-        ? "Notificação alterada com sucesso!"
-        : "Notificação cadastrada com sucesso!",
-    });
-
-    setIsLoading(false);
-    onClose();
   }
 
-  function handleDelete() {
-    if (!notificacao) return;
+  async function handleEdit() {
+    try {
+      setIsLoading(true);
+      await editNotification(notificacao?.id ?? 0, {
+        title: values.title,
+        description: values.description,
+        date: buildDate(),
+        isCurrent: values.isCurrent,
+        method: values.method as "EMAIL" | "WHATSAPP" | "BOTH",
+      });
 
-    setIsLoading(true);
-    onDelete(notificacao.id);
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "success",
+        title: "Notificação alterada com sucesso!",
+      });
 
-    toast({
-      position: "top",
-      isClosable: true,
-      status: "success",
-      title: "Notificação deletada com sucesso!",
-    });
+      onClose();
+      reload();
+      resetForm();
+    } catch (error: any) {
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "error",
+        title: "Erro ao editar notificação!",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
-    setIsLoading(false);
-    onClose();
+  async function handleDelete() {
+    try {
+      setIsLoading(true);
+      await deleteNotification(notificacao?.id ?? 0);
+
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "success",
+        title: "Notificação deletada com sucesso!",
+      });
+
+      onClose();
+      reload();
+      resetForm();
+    } catch (error: any) {
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "error",
+        title: "Erro ao deletar notificação!",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -111,7 +176,7 @@ export function NotificacaoModal({
       <ModalContent mx={{ base: 4 }}>
         <ModalHeader display={"flex"}>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
-            {!notificacao ? "Adicionar notificação" : "Editar notificação"}
+            {!notificacao?.id ? "Adicionar notificação" : "Editar notificação"}
           </Text>
         </ModalHeader>
         <ModalCloseButton />
@@ -120,8 +185,8 @@ export function NotificacaoModal({
             placeholder="Informe o título"
             position="cima"
             title="Título"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
+            value={values.title}
+            onChange={handleChange("title")}
           />
 
           <Stack mt={5}>
@@ -132,51 +197,68 @@ export function NotificacaoModal({
               placeholder="Informe a descrição"
               w={"100%"}
               bg={"white"}
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
+              value={values.description}
+              onChange={handleChange("description")}
             />
-          </Stack>
-
-          <DefaultInput
-            placeholder="Informe a data"
-            position="cima"
-            title="Data"
-            mt="20px"
-            type="date"
-            value={data}
-            onChange={(e) => setData(e.target.value)}
-          />
-
-          <Stack mt={5}>
-            <Text fontWeight={"bold"}>Canal de envio</Text>
-            <RadioGroup
-              value={canal}
-              onChange={(value) =>
-                setCanal(value as "email" | "whatsapp" | "ambos")
-              }
-            >
-              <Stack spacing={3}>
-                <Radio value="email" colorScheme="blue">
-                  E-mail
-                </Radio>
-                <Radio value="whatsapp" colorScheme="green">
-                  WhatsApp
-                </Radio>
-                <Radio value="ambos" colorScheme="purple">
-                  Ambos
-                </Radio>
-              </Stack>
-            </RadioGroup>
           </Stack>
 
           <Stack mt={5}>
             <Checkbox
-              isChecked={recorrente}
-              onChange={(e) => setRecorrente(e.target.checked)}
+              isChecked={values.isCurrent}
+              onChange={(e) => setFieldValue("isCurrent", e.target.checked)}
               colorScheme="blue"
             >
               <Text fontWeight={"bold"}>Notificação recorrente</Text>
             </Checkbox>
+          </Stack>
+
+          {values.isCurrent ? (
+            <Stack mt={5}>
+              <Text fontWeight={"bold"}>Dia do mês para envio</Text>
+              <Select
+                borderColor={"gray.400"}
+                borderRadius={"10px"}
+                bg={"white"}
+                value={values.recurrentDay}
+                onChange={handleChange("recurrentDay")}
+              >
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                  <option key={day} value={String(day)}>
+                    Dia {day}
+                  </option>
+                ))}
+              </Select>
+            </Stack>
+          ) : (
+            <DefaultInput
+              placeholder="Informe a data"
+              position="cima"
+              title="Data"
+              mt="20px"
+              type="date"
+              value={values.date}
+              onChange={handleChange("date")}
+            />
+          )}
+
+          <Stack mt={5}>
+            <Text fontWeight={"bold"}>Canal de envio</Text>
+            <RadioGroup
+              value={values.method}
+              onChange={(value) => setFieldValue("method", value)}
+            >
+              <Stack spacing={3}>
+                <Radio value="EMAIL" colorScheme="blue">
+                  E-mail
+                </Radio>
+                <Radio value="WHATSAPP" colorScheme="green" isDisabled>
+                  WhatsApp
+                </Radio>
+                <Radio value="BOTH" colorScheme="purple" isDisabled>
+                  Ambos
+                </Radio>
+              </Stack>
+            </RadioGroup>
           </Stack>
         </ModalBody>
         <ModalFooter gap={5} mt={"30px"} display={"flex"}>
@@ -196,7 +278,7 @@ export function NotificacaoModal({
             title="Salvar"
             w="150px"
             isLoading={isLoading}
-            onClick={() => handleSave()}
+            onClick={() => handleSubmit()}
           />
         </ModalFooter>
       </ModalContent>
