@@ -23,63 +23,27 @@ import { FaWhatsapp, FaSave } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { useState } from "react";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
-
-export type NotificacaoType = {
-  id: number;
-  titulo: string;
-  descricao: string;
-  data: string;
-  canal: "email" | "whatsapp" | "ambos";
-  recorrente: boolean;
-};
-
-const notificacoesMock: NotificacaoType[] = [
-  {
-    id: 1,
-    titulo: "Pagar spotify Lucas",
-    descricao:
-      "Pagar a mensalidade do spotify para o Lucas no valor de 6,81.",
-    data: "2026-07-05",
-    canal: "whatsapp",
-    recorrente: true,
-  },
-  {
-    id: 2,
-    titulo: "Reunião semanal",
-    descricao: "Lembrete da reunião semanal toda segunda-feira às 10h.",
-    data: "2026-06-23",
-    canal: "email",
-    recorrente: true,
-  },
-  {
-    id: 3,
-    titulo: "Renovar domínio",
-    descricao: "Renovar o domínio do site pessoal antes do vencimento.",
-    data: "2026-08-15",
-    canal: "ambos",
-    recorrente: false,
-  },
-  {
-    id: 4,
-    titulo: "Pagar conta de luz",
-    descricao: "Pagar a conta de luz do apartamento todo dia 15.",
-    data: "2026-07-15",
-    canal: "email",
-    recorrente: true,
-  },
-];
+import { useAuthContext } from "@/contexts/AuthContext";
+import { useQuery } from "react-query";
+import { NotificacaoType, useNotifications } from "@/hooks/useNotifications";
 
 export default function Notificacoes() {
+  const { user } = useAuthContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const toast = useToast();
+  const { listNotifications } = useNotifications();
 
-  const [email, setEmail] = useState("kakacorsine@gmail.com");
-  const [telefone, setTelefone] = useState("(11) 99999-9999");
-  const [notificacoes, setNotificacoes] =
-    useState<NotificacaoType[]>(notificacoesMock);
+  const [email, setEmail] = useState(user?.email ?? "");
+  const [telefone, setTelefone] = useState("");
   const [notificacaoSelecionada, setNotificacaoSelecionada] = useState<
     NotificacaoType | undefined
   >(undefined);
+
+  const { data: notificacoes, refetch } = useQuery({
+    queryKey: ["notificacoes", user?.id],
+    queryFn: () => listNotifications(user?.id ?? ""),
+    enabled: !!user?.id,
+  });
 
   function handleSalvarContato() {
     toast({
@@ -90,48 +54,26 @@ export default function Notificacoes() {
     });
   }
 
-  function handleSalvarNotificacao(notificacao: Omit<NotificacaoType, "id">) {
-    if (notificacaoSelecionada) {
-      setNotificacoes((prev) =>
-        prev.map((n) =>
-          n.id === notificacaoSelecionada.id
-            ? { ...n, ...notificacao }
-            : n
-        )
-      );
-    } else {
-      const novaNotificacao: NotificacaoType = {
-        ...notificacao,
-        id: Math.max(...notificacoes.map((n) => n.id), 0) + 1,
-      };
-      setNotificacoes((prev) => [...prev, novaNotificacao]);
-    }
-  }
-
-  function handleDeletarNotificacao(id: number) {
-    setNotificacoes((prev) => prev.filter((n) => n.id !== id));
-  }
-
-  function getCanalLabel(canal: string) {
-    switch (canal) {
-      case "email":
+  function getMethodLabel(method: string) {
+    switch (method) {
+      case "EMAIL":
         return "E-mail";
-      case "whatsapp":
+      case "WHATSAPP":
         return "WhatsApp";
-      case "ambos":
+      case "BOTH":
         return "Ambos";
       default:
-        return canal;
+        return method;
     }
   }
 
-  function getCanalColor(canal: string) {
-    switch (canal) {
-      case "email":
+  function getMethodColor(method: string) {
+    switch (method) {
+      case "EMAIL":
         return "blue";
-      case "whatsapp":
+      case "WHATSAPP":
         return "green";
-      case "ambos":
+      case "BOTH":
         return "purple";
       default:
         return "gray";
@@ -154,8 +96,7 @@ export default function Notificacoes() {
         isOpen={isOpen}
         onClose={onClose}
         notificacao={notificacaoSelecionada}
-        onSave={handleSalvarNotificacao}
-        onDelete={handleDeletarNotificacao}
+        reload={refetch}
       />
 
       <Box w={{ base: "100%", lg: "80%" }} overflow="auto">
@@ -257,13 +198,13 @@ export default function Notificacoes() {
         </HStack>
 
         <Stack mt={5} pb={10}>
-          {notificacoes.map((notificacao, index) => (
+          {notificacoes?.data.map((notificacao, index) => (
             <Flex
               key={notificacao.id}
               flexDir={{ base: "column", md: "row" }}
               alignItems={{ base: "flex-start", md: "center" }}
               h={{ base: "auto", md: "50px" }}
-              bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
+              bg={index % 2 === 0 ? "#F3F3F3" : "#d4d4d4"}
               borderRadius={5}
               p={{ base: 3, md: 5 }}
               gap={{ base: 2, md: 0 }}
@@ -276,7 +217,7 @@ export default function Notificacoes() {
                 >
                   Título:
                 </Text>
-                <Text fontWeight={"semi-bold"}>{notificacao.titulo}</Text>
+                <Text fontWeight={"semi-bold"}>{notificacao.title}</Text>
               </HStack>
 
               <HStack w={{ base: "100%", md: "25%" }}>
@@ -288,7 +229,7 @@ export default function Notificacoes() {
                   Descrição:
                 </Text>
                 <Text fontWeight={"semi-bold"} noOfLines={1}>
-                  {notificacao.descricao}
+                  {notificacao.description}
                 </Text>
               </HStack>
 
@@ -301,7 +242,9 @@ export default function Notificacoes() {
                   Data:
                 </Text>
                 <Text fontWeight={"semi-bold"}>
-                  {ConvertDataToBR(notificacao.data)}
+                  {notificacao.isCurrent
+                    ? `Dia ${new Date(notificacao.date).getUTCDate()}`
+                    : ConvertDataToBR(notificacao.date)}
                 </Text>
               </HStack>
 
@@ -314,20 +257,22 @@ export default function Notificacoes() {
                   Canal:
                 </Text>
                 <Badge
-                  colorScheme={getCanalColor(notificacao.canal)}
+                  colorScheme={getMethodColor(notificacao.method)}
                   borderRadius={4}
                   px={2}
                 >
                   <HStack spacing={1}>
-                    {(notificacao.canal === "email" ||
-                      notificacao.canal === "ambos") && (
+                    {(notificacao.method === "EMAIL" ||
+                      notificacao.method === "BOTH") && (
                       <Icon as={MdEmail} boxSize={3} />
                     )}
-                    {(notificacao.canal === "whatsapp" ||
-                      notificacao.canal === "ambos") && (
+                    {(notificacao.method === "WHATSAPP" ||
+                      notificacao.method === "BOTH") && (
                       <Icon as={FaWhatsapp} boxSize={3} />
                     )}
-                    <Text fontSize="xs">{getCanalLabel(notificacao.canal)}</Text>
+                    <Text fontSize="xs">
+                      {getMethodLabel(notificacao.method)}
+                    </Text>
                   </HStack>
                 </Badge>
               </HStack>
@@ -341,15 +286,18 @@ export default function Notificacoes() {
                   Recorrente:
                 </Text>
                 <Badge
-                  colorScheme={notificacao.recorrente ? "green" : "gray"}
+                  colorScheme={notificacao.isCurrent ? "green" : "gray"}
                   borderRadius={4}
                   px={2}
                 >
-                  {notificacao.recorrente ? "Sim" : "Não"}
+                  {notificacao.isCurrent ? "Sim" : "Não"}
                 </Badge>
               </HStack>
 
-              <Flex w={{ base: "100%", md: "10%" }} justify={{ base: "flex-end", md: "center" }}>
+              <Flex
+                w={{ base: "100%", md: "10%" }}
+                justify={{ base: "flex-end", md: "center" }}
+              >
                 <Icon
                   as={FaPencil}
                   cursor="pointer"
@@ -362,7 +310,7 @@ export default function Notificacoes() {
             </Flex>
           ))}
 
-          {notificacoes.length === 0 && (
+          {(!notificacoes?.data || notificacoes.data.length === 0) && (
             <Text mt={5} color={"gray.500"} textAlign={"center"}>
               Nenhuma notificação cadastrada.
             </Text>
