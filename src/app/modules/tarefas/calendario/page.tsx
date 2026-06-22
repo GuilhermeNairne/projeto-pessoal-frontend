@@ -102,25 +102,39 @@ export default function Calendario() {
       <MenuMobile />
       <Menu />
 
-      <Stack mt={5} px={10} w={`full`} overflow={"auto"} css={ScrollBarcss}>
+      <Stack
+        mt={5}
+        px={{ base: 2, md: 5, lg: 10 }}
+        w={`full`}
+        overflow={"auto"}
+        css={ScrollBarcss}
+      >
         <Quadros
           totalMes={cards?.data.totalMes ?? 0}
           totalMinutosConcluidos={cards?.data.totalMinutosConcluidos ?? 0}
           totalPendente={cards?.data.totalPendente ?? 0}
         />
 
-        <HStack mt={30} justifyContent={"space-between"} w={200}>
-          <Icon as={FaChevronLeft} onClick={() => changeMonth("sub")} />
-          <Text fontWeight={"bold"}>
+        <HStack mt={{ base: 5, lg: 30 }} justifyContent={"space-between"} w={200}>
+          <Icon
+            as={FaChevronLeft}
+            cursor="pointer"
+            onClick={() => changeMonth("sub")}
+          />
+          <Text fontWeight={"bold"} fontSize={{ base: "sm", md: "md" }}>
             {formattedMonth} {year}
           </Text>
-          <Icon as={FaChevronRight} onClick={() => changeMonth("add")} />
+          <Icon
+            as={FaChevronRight}
+            cursor="pointer"
+            onClick={() => changeMonth("add")}
+          />
         </HStack>
 
         <HStack
-          py={3}
-          mt={10}
-          px={20}
+          py={{ base: 2, lg: 3 }}
+          mt={{ base: 4, lg: 10 }}
+          px={{ base: 1, md: 10, lg: 20 }}
           mb={-2}
           w={"100%"}
           bg={`white`}
@@ -133,7 +147,12 @@ export default function Calendario() {
           justifyContent={`space-between`}
         >
           {daysName.map((name) => (
-            <Text color={`gray.500`} fontWeight={`hairline`} fontSize={`lg`}>
+            <Text
+              key={name}
+              color={`gray.500`}
+              fontWeight={`hairline`}
+              fontSize={{ base: "xs", md: "sm", lg: "lg" }}
+            >
               {name}
             </Text>
           ))}
@@ -141,89 +160,120 @@ export default function Calendario() {
         <SimpleGrid
           justifyContent={"space-between"}
           columns={7}
-          spacing={1}
+          spacing={{ base: 0, md: 1 }}
           borderColor={"gray.400"}
         >
-          {paddedDays.map((day, index) => (
-            <Box
-              h="150px"
-              p={2}
-              key={index}
-              borderWidth={1}
-              borderRadius={3}
-              display={"flex"}
-              flexDir={`column`}
-              onClick={() => navigateTarefas(day.getDate())}
-              overflowY={`auto`}
-              css={ScrollBarcss}
-              borderColor={"gray.400"}
-              alignItems={"flex-start"}
-              _hover={{
-                bg: "gray.100",
-                cursor: "pointer",
-              }}
-            >
-              <Box
-                w={6}
-                h={6}
-                display={`flex`}
-                alignItems={`center`}
-                justifyContent={`center`}
-                borderRadius={10}
-                bg={
-                  day &&
-                  day.getDate() === new Date().getDate() &&
-                  month === new Date().getMonth()
-                    ? "purple.600"
-                    : undefined
-                }
-              >
-                {day && (
-                  <Text
-                    color={
-                      day &&
-                      day.getDate() === new Date().getDate() &&
-                      month === new Date().getMonth()
-                        ? "white"
-                        : undefined
-                    }
-                    textAlign="center"
-                  >
-                    {day.getDate()}
-                  </Text>
-                )}
-              </Box>
-
-              {tarefas?.data.map((tarefa) => {
-                const tarefaDate = new Date(tarefa.data);
-
-                const isSameDay = day
-                  ? tarefaDate.getUTCFullYear() === day.getFullYear() &&
+          {paddedDays.map((day, index) => {
+            const dayTarefas = day
+              ? tarefas?.data.filter((tarefa) => {
+                  const tarefaDate = new Date(tarefa.data);
+                  return (
+                    tarefaDate.getUTCFullYear() === day.getFullYear() &&
                     tarefaDate.getUTCMonth() === day.getMonth() &&
                     tarefaDate.getUTCDate() === day.getDate()
-                  : false;
+                  );
+                })
+              : [];
 
-                return isSameDay ? (
-                  <Box
-                    mt={3}
-                    borderWidth={2}
-                    borderColor={lightenColor(tarefa.categoria.cor)}
-                    borderRadius={8}
-                    w={`full`}
-                    p={2}
-                    bg={`Linear-gradient(135deg, ${lightenColor(tarefa.categoria.cor, 0.3)} 0%, ${lightenColor(tarefa.categoria.cor, 0.1)} 100%)`}
-                  >
-                    <HStack gap={3} alignItems={`flex-start`}>
-                      <Stack gap={0}>
-                        <Text fontWeight={`bold`}>{tarefa.nome}</Text>
-                        <Text mt={1}>{tarefa.categoria.nome}</Text>
-                      </Stack>
-                    </HStack>
-                  </Box>
-                ) : null;
-              })}
-            </Box>
-          ))}
+            return (
+              <Box
+                h={{ base: "60px", md: "100px", lg: "150px" }}
+                p={{ base: 1, md: 2 }}
+                key={index}
+                borderWidth={1}
+                borderRadius={3}
+                display={"flex"}
+                flexDir={`column`}
+                alignItems={{ base: "center", md: "flex-start" }}
+                onClick={() => day && navigateTarefas(day.getDate())}
+                overflowY={{ base: "hidden", md: "auto" }}
+                css={ScrollBarcss}
+                borderColor={"gray.400"}
+                _hover={{
+                  bg: "gray.100",
+                  cursor: "pointer",
+                }}
+              >
+                <Box
+                  w={6}
+                  h={6}
+                  display={`flex`}
+                  alignItems={`center`}
+                  justifyContent={`center`}
+                  borderRadius={10}
+                  bg={
+                    day &&
+                    day.getDate() === new Date().getDate() &&
+                    month === new Date().getMonth()
+                      ? "purple.600"
+                      : undefined
+                  }
+                >
+                  {day && (
+                    <Text
+                      fontSize={{ base: "xs", md: "sm", lg: "md" }}
+                      color={
+                        day &&
+                        day.getDate() === new Date().getDate() &&
+                        month === new Date().getMonth()
+                          ? "white"
+                          : undefined
+                      }
+                      textAlign="center"
+                    >
+                      {day.getDate()}
+                    </Text>
+                  )}
+                </Box>
+
+                {/* Mobile: colored dots */}
+                <HStack
+                  display={{ base: "flex", md: "none" }}
+                  mt={1}
+                  gap={1}
+                  flexWrap="wrap"
+                  justifyContent="center"
+                >
+                  {dayTarefas?.map((tarefa, i) => (
+                    <Box
+                      key={i}
+                      w="6px"
+                      h="6px"
+                      borderRadius="full"
+                      bg={tarefa.categoria.cor}
+                    />
+                  ))}
+                </HStack>
+
+                {/* Desktop: full task cards */}
+                <Box display={{ base: "none", md: "block" }} w="full">
+                  {dayTarefas?.map((tarefa, i) => (
+                    <Box
+                      key={i}
+                      mt={3}
+                      borderWidth={2}
+                      borderColor={lightenColor(tarefa.categoria.cor)}
+                      borderRadius={8}
+                      w={`full`}
+                      p={2}
+                      bg={`Linear-gradient(135deg, ${lightenColor(tarefa.categoria.cor, 0.3)} 0%, ${lightenColor(tarefa.categoria.cor, 0.1)} 100%)`}
+                    >
+                      <HStack gap={3} alignItems={`flex-start`}>
+                        <Stack gap={0}>
+                          <Text fontWeight={`bold`} fontSize={{ md: "xs", lg: "sm" }}>
+                            {tarefa.nome}
+                          </Text>
+                          <Text mt={1} fontSize={{ md: "xs", lg: "sm" }}>
+                            {tarefa.categoria.nome}
+                          </Text>
+                        </Stack>
+                      </HStack>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            );
+          })}
         </SimpleGrid>
       </Stack>
     </Flex>

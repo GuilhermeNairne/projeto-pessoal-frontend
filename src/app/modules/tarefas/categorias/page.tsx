@@ -59,7 +59,7 @@ export default function Categorias() {
         categoria={categoriaSelecionada}
       />
 
-      <Box w={`80%`}>
+      <Box w={{ base: "100%", lg: "80%" }} overflow="auto">
         <HStack justifyContent={"flex-end"} mt={"10px"}>
           <Link
             display={"flex"}
@@ -70,11 +70,19 @@ export default function Categorias() {
               (setCategoriaSelecionada(undefined), onOpen());
             }}
           >
-            <Text fontSize={"lg"}>Nova categoria</Text>
-            <Icon as={IoIosAddCircleOutline} boxSize={"8"} />
+            <Text fontSize={{ base: "md", lg: "lg" }}>Nova categoria</Text>
+            <Icon as={IoIosAddCircleOutline} boxSize={{ base: "6", lg: "8" }} />
           </Link>
         </HStack>
-        <HStack mt={5} h={"40px"} bg={`menu_principal`} borderRadius={5} p={5}>
+
+        <HStack
+          display={{ base: "none", md: "flex" }}
+          mt={5}
+          h={"40px"}
+          bg={`menu_principal`}
+          borderRadius={5}
+          p={5}
+        >
           <Text w={`25%`} fontWeight={`semi-bold`} color={`white`}>
             Categoria
           </Text>
@@ -88,47 +96,79 @@ export default function Categorias() {
 
         <Stack mt={5}>
           {categorias?.data.map((categoria, index) => (
-            <HStack
-              h={"40px"}
+            <Flex
+              key={categoria.nome}
+              flexDir={{ base: "column", md: "row" }}
+              alignItems={{ base: "flex-start", md: "center" }}
+              h={{ base: "auto", md: "40px" }}
               bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
               borderRadius={5}
-              p={5}
+              p={{ base: 3, md: 5 }}
+              gap={{ base: 2, md: 0 }}
             >
-              <Text w={`25%`} fontWeight={`semi-bold`}>
-                {categoria.nome}
-              </Text>
-              <Box w={`10%`}>
+              <HStack w={{ base: "100%", md: "25%" }}>
+                <Text
+                  display={{ base: "inline", md: "none" }}
+                  fontWeight="bold"
+                  fontSize="sm"
+                >
+                  Categoria:
+                </Text>
+                <Text fontWeight={`semi-bold`}>{categoria.nome}</Text>
+              </HStack>
+
+              <HStack w={{ base: "100%", md: "10%" }}>
+                <Text
+                  display={{ base: "inline", md: "none" }}
+                  fontWeight="bold"
+                  fontSize="sm"
+                >
+                  Cor:
+                </Text>
                 <Box
-                  ml={3}
                   w={`14px`}
                   h={`14px`}
                   borderRadius={5}
                   bg={categoria.cor}
                 />
-              </Box>
+              </HStack>
 
-              <Text ml={16} w={`60%`} fontWeight={`semi-bold`}>
-                {categoria.tarefasPendentes}
-              </Text>
+              <HStack w={{ base: "100%", md: "60%" }}>
+                <Text
+                  display={{ base: "inline", md: "none" }}
+                  fontWeight="bold"
+                  fontSize="sm"
+                >
+                  Pendentes:
+                </Text>
+                <Text fontWeight={`semi-bold`}>
+                  {categoria.tarefasPendentes}
+                </Text>
+              </HStack>
 
               <Icon
                 as={FaPencil}
-                alignItems={`flex-end`}
+                cursor="pointer"
+                alignSelf={{ base: "flex-end", md: "center" }}
                 onClick={() => {
                   (setCategoriaSelecionada(categoria), onOpen());
                 }}
               />
-            </HStack>
+            </Flex>
           ))}
         </Stack>
 
-        <Text mt={100} fontSize={"lg"} fontWeight={"bold"}>
+        <Text
+          mt={{ base: 10, lg: 100 }}
+          fontSize={{ base: "md", lg: "lg" }}
+          fontWeight={"bold"}
+        >
           Quantidade de tarefas concluídas por categoria
         </Text>
 
         <Box
-          w={`40%`}
-          h={`350px`}
+          w={{ base: "100%", md: "70%", lg: "40%" }}
+          h={{ base: "280px", md: "320px", lg: "350px" }}
           alignItems={`flex-start`}
           display={`flex`}
           justifyContent={`flex-start`}

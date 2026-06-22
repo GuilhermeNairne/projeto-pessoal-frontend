@@ -146,7 +146,7 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent mx={{ base: 4 }}>
         <ModalHeader display={"flex"}>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
             {!tarefa?.id ? "Adicionar tarefa" : "Editar tarefa"}
