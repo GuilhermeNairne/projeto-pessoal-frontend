@@ -130,7 +130,7 @@ export function CategoriaModal({ isOpen, onClose, reload, categoria }: Props) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent mx={{ base: 4 }}>
         <ModalHeader display={"flex"}>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
             {!categoria?.id ? "Adicionar categoria" : "Editar categoria"}

@@ -3,6 +3,7 @@
 import { ptBR } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
 import { CiClock2 } from "react-icons/ci";
+import { FiChevronLeft } from "react-icons/fi";
 import "../../../../utils/mini-calendar.css";
 import { Menu } from "@/componnents/menu";
 import { MenuMobile } from "@/componnents/menu-mobile";
@@ -100,9 +101,25 @@ export default function TarefasSemanais() {
         tarefa={tarefaSelecionada ?? ({} as ListTarefasReturnType)}
       />
 
-      <Stack mt={5} px={10} w={`full`} overflow={"auto"} css={ScrollBarcss}>
-        <HStack mr={3} justifyContent={`space-between`}>
-          <Text color={"menu_principal"} fontSize={`2xl`} fontWeight={`bold`}>
+      <Stack
+        // mt={5}
+        px={{ base: 2, md: 5, lg: 10 }}
+        w={`full`}
+        overflow={"auto"}
+        css={ScrollBarcss}
+      >
+        <Flex
+          mr={3}
+          justifyContent={`space-between`}
+          alignItems={{ base: "flex-start", md: "center" }}
+          flexDir={{ base: "column", md: "row" }}
+        >
+          <Text
+            color={"menu_principal"}
+            fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
+            fontWeight={`bold`}
+            mb={5}
+          >
             {`${getWeekOfMonth(parsedDate)}° semana de ${monthName}`}
           </Text>
 
@@ -112,30 +129,32 @@ export default function TarefasSemanais() {
             w="180px"
             onClick={() => onOpen()}
           />
-        </HStack>
+        </Flex>
 
         <SimpleGrid
           justifyContent={"space-between"}
-          columns={4}
-          mt={8}
-          spacing={10}
+          columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+          mt={{ base: 4, lg: 8 }}
+          spacing={{ base: 4, md: 6, lg: 10 }}
           borderColor={"gray.400"}
         >
-          <DayPicker
-            mode={undefined}
-            showOutsideDays
-            onDayClick={() => router.push("/modules/tarefas/calendario")}
-            formatters={{
-              formatCaption: (date) => {
-                const text = date.toLocaleDateString("pt-BR", {
-                  month: "long",
-                  year: "numeric",
-                });
-                return capitalize(text);
-              },
-            }}
-            locale={ptBR}
-          />
+          <Box display={{ base: "none", lg: "block" }}>
+            <DayPicker
+              mode={undefined}
+              showOutsideDays
+              onDayClick={() => router.push("/modules/tarefas/calendario")}
+              formatters={{
+                formatCaption: (date) => {
+                  const text = date.toLocaleDateString("pt-BR", {
+                    month: "long",
+                    year: "numeric",
+                  });
+                  return capitalize(text);
+                },
+              }}
+              locale={ptBR}
+            />
+          </Box>
           {weekDays.map((day, index) => {
             const tarefaDoDia = tarefas?.data[String(day.getUTCDate())];
             const totalTarefas = tarefaDoDia?.totalTarefas ?? 0;
@@ -145,8 +164,9 @@ export default function TarefasSemanais() {
             return (
               <Box
                 py={3}
-                w={320}
-                h={400}
+                w="100%"
+                h={{ base: "auto", lg: 400 }}
+                minH={{ base: 200, md: 300 }}
                 key={index}
                 display={`flex`}
                 flexDir={`column`}
@@ -168,7 +188,10 @@ export default function TarefasSemanais() {
                   px={3}
                 >
                   <Stack>
-                    <Text fontWeight={`bold`} fontSize={`lg`}>
+                    <Text
+                      fontWeight={`bold`}
+                      fontSize={{ base: "md", lg: "lg" }}
+                    >
                       {day
                         .toLocaleDateString("pt-BR", { weekday: "long" })
                         .replace(/^\w/, (c) => c.toUpperCase())}{" "}
@@ -181,7 +204,7 @@ export default function TarefasSemanais() {
 
                     <HStack alignItems={"center"}>
                       <Icon as={CiClock2} sx={{ strokeWidth: 1 }} />
-                      <Text fontSize={`sm`}>
+                      <Text fontSize={{ base: "xs", lg: "sm" }}>
                         {tarefaDoDia?.tempoRestante ?? "0h0m"} restante |{" "}
                         {tarefaDoDia?.totalTarefas ?? 0} atividades
                       </Text>
@@ -221,7 +244,11 @@ export default function TarefasSemanais() {
                       />
                     ))
                   ) : (
-                    <Text textAlign={`center`} fontWeight={`bold`} mt={20}>
+                    <Text
+                      textAlign={`center`}
+                      fontWeight={`bold`}
+                      mt={{ base: 8, lg: 20 }}
+                    >
                       Nenhuma tarefa cadastrada
                     </Text>
                   )}

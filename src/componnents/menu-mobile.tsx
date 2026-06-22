@@ -6,6 +6,7 @@ import {
   FaMoon,
   FaCalendarAlt,
   FaChartBar,
+  FaBell,
 } from "react-icons/fa";
 import { HiMenu } from "react-icons/hi";
 
@@ -73,6 +74,18 @@ const menuOpcoes = [
         pagina: "Categorias e Acomp.",
         rota: "modules/tarefas/categorias",
         icon: FaChartBar,
+      },
+    ],
+  },
+  {
+    nome: "Notificacoes",
+    icon: FaBell,
+
+    opcoes: [
+      {
+        pagina: "Notificações",
+        rota: "modules/notificacoes",
+        icon: FaBell,
       },
     ],
   },
