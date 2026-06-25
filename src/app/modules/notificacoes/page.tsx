@@ -42,7 +42,7 @@ export default function Notificacoes() {
   const { data: notificacoes, refetch } = useQuery({
     queryKey: ["notificacoes", user?.id],
     queryFn: () => listNotifications(user?.id ?? ""),
-    enabled: !!user?.id,
+    // enabled: !!user?.id,
   });
 
   function handleSalvarContato() {
@@ -220,7 +220,7 @@ export default function Notificacoes() {
                 <Text fontWeight={"semi-bold"}>{notificacao.title}</Text>
               </HStack>
 
-              <HStack w={{ base: "100%", md: "25%" }}>
+              <HStack w={{ base: "10%", md: "25%" }}>
                 <Text
                   display={{ base: "inline", md: "none" }}
                   fontWeight="bold"
@@ -228,7 +228,7 @@ export default function Notificacoes() {
                 >
                   Descrição:
                 </Text>
-                <Text fontWeight={"semi-bold"} noOfLines={1}>
+                <Text fontWeight={"semi-bold"} noOfLines={1} mr={5}>
                   {notificacao.description}
                 </Text>
               </HStack>
