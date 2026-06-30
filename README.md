@@ -50,7 +50,9 @@ O frontend está publicado na **Vercel** e consome o backend hospedado no **Rail
 - [Backend](https://github.com/GuilhermeNairne/projeto-pessoal-backend) — API desenvolvida com NestJS e PostgreSQL
 
 ---
-
 ## 👨‍💻 Autor
 
 **Guilherme Men Linhares Nairne**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-guilherme--men--nairne-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/guilherme-men-nairne-332aa7181)
+[![Gmail](https://img.shields.io/badge/Gmail-guilhermemen2003@gmail.com-red?style=flat&logo=gmail)](mailto:guilhermemen2003@gmail.com)
