@@ -220,7 +220,7 @@ export default function Notificacoes() {
                 <Text fontWeight={"semi-bold"}>{notificacao.title}</Text>
               </HStack>
 
-              <HStack w={{ base: "10%", md: "25%" }}>
+              <HStack w={{ base: "100%", md: "25%" }}>
                 <Text
                   display={{ base: "inline", md: "none" }}
                   fontWeight="bold"

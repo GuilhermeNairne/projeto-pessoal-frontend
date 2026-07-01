@@ -38,7 +38,7 @@ export function GraficoJurosMensais({ painelSelecionado }: Props) {
               borderRadius={3}
             />
             <Text fontWeight={"bold"}>
-              {new Date(fee.month)
+              {new Date(fee.year, fee.month - 1)
                 .toLocaleString("pt-BR", { month: "long" })
                 .replace(/^./, (char) => char.toUpperCase())}
             </Text>
