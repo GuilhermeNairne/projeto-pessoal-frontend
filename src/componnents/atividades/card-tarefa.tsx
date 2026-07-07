@@ -71,6 +71,7 @@ export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
           />
           <Text
             fontWeight={`bold`}
+            maxW={`80%`}
             color={dadosTarefa.status === "Concluida" ? "cinza_600" : "black"}
           >
             {dadosTarefa.nome}
