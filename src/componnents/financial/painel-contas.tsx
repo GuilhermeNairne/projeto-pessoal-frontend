@@ -20,7 +20,7 @@ export function PainelContas({ paineis, isLoading }: Props) {
   function calculaTotal() {
     return formatarValorBR(
       paineis?.reduce((total, item) => total + Number(item.initial_value), 0) ??
-      0,
+        0,
     );
   }
 
@@ -49,9 +49,15 @@ export function PainelContas({ paineis, isLoading }: Props) {
       flexWrap={{ lg: "wrap" }}
     >
       {paineis?.length === 0 && isLoading === false ? (
-        <Center mt={"200px"} display={"flex"} >
+        <Center
+          mt={"200px"}
+          display={"flex"}
+          flexDir={"column"}
+          gap={5}
+          w="full"
+        >
           <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
-            Você ainda não criou nenhum painel,
+            Você ainda não criou nenhum painel.
           </Text>
           <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
             Clique no botão acima para adicionar um.

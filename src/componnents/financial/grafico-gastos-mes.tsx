@@ -69,12 +69,16 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
             </Center>
           ) : (
             <Box w={"100%"} display={"flex"} flexDir={"row"}>
-              <Stack>
+              <Stack position={"relative"}>
                 <VictoryPie
+                  width={280}
+                  height={300}
+                  padding={20}
+                  innerRadius={80}
+                  padAngle={2}
                   startAngle={90}
                   labels={({ datum }) => `R$ ${datum.y}`}
                   endAngle={450}
-                  data={expensesGraphicsData?.categories}
                   theme={VictoryTheme.clean}
                   style={{
                     labels: {
@@ -84,18 +88,30 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
                       fill: ({ datum }) => datum.color,
                     },
                   }}
+                  data={expensesGraphicsData?.categories}
                 />
 
-                <HStack>
-                  <Text fontSize={"lg"}>Total gasto: </Text>
+                <Stack
+                  position={"absolute"}
+                  top={"50%"}
+                  left={"50%"}
+                  transform={"translate(-50%, -50%)"}
+                  gap={0}
+                  align={"center"}
+                  pointerEvents={"none"}
+                >
+                  <Text fontSize={"sm"} color={"gray.500"}>
+                    Total gasto
+                  </Text>
                   <Text fontSize={"lg"} fontWeight={"bold"}>
                     R$ {expensesGraphicsData?.total_expenses}
                   </Text>
-                </HStack>
+                </Stack>
               </Stack>
 
               <Stack
                 mt={"20px"}
+                ml={20}
                 maxH={"200px"}
                 overflowY={"auto"}
                 overflowX="hidden"

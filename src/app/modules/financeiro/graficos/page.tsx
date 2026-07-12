@@ -11,6 +11,7 @@ import { formatarValorBR } from "@/utils/convert-to-real";
 import { GraficoGastosMes } from "@/componnents/financial/grafico-gastos-mes";
 import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { GraficoJurosMensais } from "@/componnents/financial/grafico-juros-mensais";
+import { ScrollBarcss } from "@/utils/scroll-bar-css";
 
 export default function Graficos() {
   const { user } = useAuthContext();
@@ -30,7 +31,7 @@ export default function Graficos() {
     <Flex
       w={"100%"}
       h={"100%"}
-      p={{ base: "10px", lg: "20px" }}
+      p={{ base: "20px", lg: "20px" }}
       flexDir={{ base: "column", lg: "row" }}
       gap={{ base: 4, lg: 10 }}
       overflow="hidden"
@@ -38,13 +39,7 @@ export default function Graficos() {
       <MenuMobile />
       <Menu />
 
-      <Flex
-        flexDir={"column"}
-        mt={{ base: 4, lg: 30 }}
-        alignSelf={"flex-start"}
-        w={"full"}
-        overflow="auto"
-      >
+      <Flex flexDir={"column"} w={"full"} mr={"18px"}>
         <Text
           fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
           fontWeight={"bold"}
@@ -134,7 +129,8 @@ export default function Graficos() {
             bg={`white`}
             mt={{ base: "20px", lg: "40px" }}
             p={{ base: "10px", md: "15px", lg: "20px" }}
-            overflowY={"auto"}
+            overflow={"auto"}
+            css={ScrollBarcss}
             flexDir={"column"}
             borderRadius={10}
           >
