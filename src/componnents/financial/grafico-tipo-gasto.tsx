@@ -2,7 +2,14 @@ import { useQuery } from "react-query";
 import { VictoryPie, VictoryTheme } from "victory";
 import { useMovements } from "@/hooks/useMovements";
 import { PanelsType } from "@/types/financial-types";
-import { Box, HStack, Spinner, Stack, Text, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Spinner,
+  Stack,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 
 type Props = {
   panel: PanelsType;
@@ -26,25 +33,31 @@ export function GraficoTipoGasto({ panel, month }: Props) {
     <Box display={"flex"} flexDir={"column"}>
       <HStack display={"flex"} justifyContent={"space-between"}>
         <Text fontSize={"lg"} fontWeight={"bold"}>
-          {isMobile ? `Total gastos no mês de ${monthName.toLocaleUpperCase()} ` : "Gráfico de gastos do mês de " + monthName.toUpperCase()}
+          {isMobile
+            ? `Total gastos no mês de ${monthName.toLocaleUpperCase()} `
+            : "Gráfico de gastos do mês de " + monthName.toUpperCase()}
         </Text>
       </HStack>
       {panel.movements?.some((move) => move.movement_type === "OUT") ? (
-        isMobile ? <HStack>
-          <Text fontSize={"lg"}>
-            R$ {chartData?.data.total}
-          </Text>
-        </HStack> :
+        isMobile ? (
+          <HStack>
+            <Text fontSize={"lg"}>R$ {chartData?.data.total}</Text>
+          </HStack>
+        ) : (
           <Box w={"100%"} display={"flex"} flexDir={"row"}>
             {isLoading ? (
               <Spinner size={"lg"} />
             ) : (
-              <Stack>
+              <Box position={"relative"} w={"320px"} h={"320px"} mr={20}>
                 <VictoryPie
+                  width={280}
+                  height={300}
+                  padding={20}
+                  innerRadius={80}
+                  padAngle={2}
                   startAngle={90}
                   labels={({ datum }) => `R$ ${datum.y}`}
                   endAngle={450}
-                  data={chartData?.data.data}
                   theme={VictoryTheme.clean}
                   style={{
                     labels: {
@@ -54,15 +67,26 @@ export function GraficoTipoGasto({ panel, month }: Props) {
                       fill: ({ datum }) => datum.color,
                     },
                   }}
+                  data={chartData?.data.data}
                 />
 
-                <HStack>
-                  <Text fontSize={"lg"}>Total gasto: </Text>
+                <Stack
+                  position={"absolute"}
+                  top={"50%"}
+                  left={"50%"}
+                  transform={"translate(-50%, -50%)"}
+                  gap={0}
+                  align={"center"}
+                  pointerEvents={"none"}
+                >
+                  <Text fontSize={"sm"} color={"gray.500"}>
+                    Total gasto
+                  </Text>
                   <Text fontSize={"lg"} fontWeight={"bold"}>
                     R$ {chartData?.data.total}
                   </Text>
-                </HStack>
-              </Stack>
+                </Stack>
+              </Box>
             )}
             <Stack
               mt={"20px"}
@@ -80,23 +104,24 @@ export function GraficoTipoGasto({ panel, month }: Props) {
             >
               {panel.categories
                 ? panel.categories
-                  .filter((item) => (item.totalSpent ? item.totalSpent : 0))
-                  .map((item) => (
-                    <HStack key={item.name}>
-                      <Box
-                        borderRadius="5px"
-                        w="20px"
-                        h="20px"
-                        bg={item.color}
-                      />
-                      <Text fontSize="lg" fontWeight="bold">
-                        {item.name}
-                      </Text>
-                    </HStack>
-                  ))
+                    .filter((item) => (item.totalSpent ? item.totalSpent : 0))
+                    .map((item) => (
+                      <HStack key={item.name}>
+                        <Box
+                          borderRadius="5px"
+                          w="20px"
+                          h="20px"
+                          bg={item.color}
+                        />
+                        <Text fontSize="lg" fontWeight="bold">
+                          {item.name}
+                        </Text>
+                      </HStack>
+                    ))
                 : null}
             </Stack>
           </Box>
+        )
       ) : (
         <Text color={"gray.500"}>
           Não foi registrado nenhuma movimentação de gasto.
