@@ -1,6 +1,6 @@
 import { Box, Flex, HStack, Icon, Stack, Text } from "@chakra-ui/react";
 import { FaCalendar, FaDollarSign } from "react-icons/fa";
-import { GiProgression } from "react-icons/gi";
+import { IoIosNotifications } from "react-icons/io";
 
 export function FirstScreen() {
   const itens = [
@@ -20,10 +20,10 @@ export function FirstScreen() {
     },
     {
       bg: "#333260",
-      icon: GiProgression,
+      icon: IoIosNotifications,
       iconColor: "#A78BFA",
-      text: "Acompanhe seu progresso",
-      subtext: "Visualize sua evolução em tempo real",
+      text: "Notificações",
+      subtext: "Envio de notificações via email e whatsapp",
     },
   ];
 
