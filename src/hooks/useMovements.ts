@@ -48,6 +48,28 @@ export function useMovements() {
     return result;
   }
 
+  async function updateMovement(id: number, body: Partial<MovementsType>) {
+    const bodyUpdated = {
+      ...body,
+      ...(body.category_id !== undefined && {
+        category_id: Number(body.category_id),
+      }),
+      ...(body.value !== undefined && {
+        value: Number(
+          String(body.value).replace(/\./g, "").replace(",", "."),
+        ),
+      }),
+      ...(body.date !== undefined && { date: new Date(body.date) }),
+    };
+
+    const result = await api.patch(
+      `financial-movement/update/${id}`,
+      bodyUpdated,
+    );
+
+    return result;
+  }
+
   async function listExpensesByMonth(panel_id: number, month: number) {
     const result = await api.get<ExpensesByMonthType>(
       `financial-movement/expenses/${panel_id}`,
@@ -59,5 +81,11 @@ export function useMovements() {
     return result;
   }
 
-  return { createMovement, deleteMovement, listMovements, listExpensesByMonth };
+  return {
+    createMovement,
+    deleteMovement,
+    listMovements,
+    listExpensesByMonth,
+    updateMovement,
+  };
 }
