@@ -1,7 +1,9 @@
-import { FaList, FaTrash } from "react-icons/fa";
+import { useState } from "react";
+import { FaList, FaPencilAlt, FaTrash } from "react-icons/fa";
 import { useMovements } from "@/hooks/useMovements";
-import { PanelsType } from "@/types/financial-types";
+import { MovementsType, PanelsType } from "@/types/financial-types";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
+import { ModalRegistrarMovimento } from "./modal-registrar-movimento";
 import {
   Box,
   Flex,
@@ -26,6 +28,9 @@ type Props = {
 export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
   const toast = useToast();
   const { deleteMovement } = useMovements();
+  const [editingMovement, setEditingMovement] = useState<MovementsType | null>(
+    null,
+  );
 
   async function handleDelete(
     id: number,
@@ -156,6 +161,11 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
 
                   <Icon
                     w="2%"
+                    as={FaPencilAlt}
+                    onClick={() => setEditingMovement(occ)}
+                  />
+                  <Icon
+                    w="2%"
                     as={FaTrash}
                     onClick={() =>
                       handleDelete(occ.id ?? 0, panel.id ?? 0, occ.value)
@@ -166,6 +176,16 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
             : null}
         </Flex>
       </Stack>
+
+      <ModalRegistrarMovimento
+        isOpen={!!editingMovement}
+        onClose={() => setEditingMovement(null)}
+        refetch={refetch}
+        painel={panel.name}
+        painel_id={String(panel.id ?? "")}
+        categorys={panel.categories ?? []}
+        movement={editingMovement}
+      />
     </>
   );
 }

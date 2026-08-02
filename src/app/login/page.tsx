@@ -156,7 +156,7 @@ export default function Login() {
           </InputGroup>
         </Stack>
 
-        <Link>
+        <Link onClick={() => router.push("/modules/recuperar-senha")}>
           <Text
             textAlign={"right"}
             mt={2}

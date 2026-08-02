@@ -17,10 +17,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import { CategoriesType } from "@/types/financial-types";
+import { CategoriesType, MovementsType } from "@/types/financial-types";
 import { useMovements } from "@/hooks/useMovements";
 import { useState } from "react";
 import { brToIso } from "@/utils/brToIso";
+import { formatarValorBR } from "@/utils/convert-to-real";
 
 type Props = {
   painel: string;
@@ -29,7 +30,15 @@ type Props = {
   categorys: CategoriesType[];
   onClose: () => void;
   refetch: () => void;
+  movement?: MovementsType | null;
 };
+
+function isoToInputDate(iso: string) {
+  const date = new Date(iso);
+  date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+  return date.toISOString().split("T")[0];
+}
 
 export function ModalRegistrarMovimento({
   isOpen,
@@ -38,18 +47,22 @@ export function ModalRegistrarMovimento({
   painel_id,
   categorys,
   refetch,
+  movement,
 }: Props) {
   const toast = useToast();
-  const { createMovement } = useMovements();
+  const { createMovement, updateMovement } = useMovements();
   const [isLoading, setIsLoading] = useState(false);
+  const isEditing = !!movement;
   const { values, handleChange, resetForm } = useFormik({
     initialValues: {
-      name: "",
-      value: 0,
-      category_id: 0,
-      movement_type: "",
+      name: movement?.name ?? "",
+      value: movement ? formatarValorBR(movement.value) ?? "" : "",
+      category_id: movement?.category_id ?? 0,
+      movement_type: movement?.movement_type ?? "",
       painel_id: Number(painel_id),
-      date: brToIso(new Date().toLocaleDateString("pt-BR")),
+      date: movement
+        ? isoToInputDate(movement.date)
+        : brToIso(new Date().toLocaleDateString("pt-BR")),
     },
     enableReinitialize: true,
     onSubmit: (values) => { },
@@ -58,10 +71,20 @@ export function ModalRegistrarMovimento({
   async function handleClick() {
     try {
       setIsLoading(true);
-      await createMovement(values);
+
+      if (isEditing && movement?.id) {
+        await updateMovement(
+          movement.id,
+          values as unknown as Partial<MovementsType>,
+        );
+      } else {
+        await createMovement(values as unknown as MovementsType);
+      }
 
       toast({
-        title: "Movimentação registrada com sucesso!",
+        title: isEditing
+          ? "Movimentação atualizada com sucesso!"
+          : "Movimentação registrada com sucesso!",
         status: "success",
         position: "top",
         isClosable: true,
@@ -72,7 +95,9 @@ export function ModalRegistrarMovimento({
       resetForm();
     } catch (error) {
       toast({
-        title: "Erro ao registrar movimentação",
+        title: isEditing
+          ? "Erro ao atualizar movimentação"
+          : "Erro ao registrar movimentação",
         status: "error",
         position: "top",
         isClosable: true,
@@ -88,7 +113,7 @@ export function ModalRegistrarMovimento({
       <ModalContent mx={{ base: 4 }}>
         <ModalHeader>
           <Text fontSize={"2xl"} fontWeight={"bold"}>
-            Registrar movimento {painel}
+            {isEditing ? "Editar movimento" : "Registrar movimento"} {painel}
           </Text>
         </ModalHeader>
         <ModalCloseButton />
@@ -107,6 +132,7 @@ export function ModalRegistrarMovimento({
               placeholder="Selecione a categoria"
               borderColor={"gray.400"}
               borderRadius={"10px"}
+              value={values.category_id || ""}
               onChange={handleChange("category_id")}
             >
               {categorys.map((categoria, index) => (
@@ -120,7 +146,7 @@ export function ModalRegistrarMovimento({
           <Stack mt="20px">
             <Text fontWeight={"bold"}>Tipo da movimentação</Text>
             <RadioGroup
-              defaultValue="2"
+              value={values.movement_type}
               onChange={handleChange("movement_type")}
             >
               <Radio color="red" value="IN" mr={"20px"}>
@@ -137,7 +163,7 @@ export function ModalRegistrarMovimento({
             placeholder="Informa o valor da movimentação"
             position="cima"
             mt="20px"
-            value={values.value === 0 ? "" : String(values.value)}
+            value={String(values.value)}
             onChange={handleChange("value")}
           />
 
