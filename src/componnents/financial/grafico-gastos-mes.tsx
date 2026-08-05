@@ -69,11 +69,11 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
             </Center>
           ) : (
             <Box w={"100%"} display={"flex"} flexDir={"row"}>
-              <Stack position={"relative"}>
+              <Stack position={"relative"} w={"350px"}>
                 <VictoryPie
-                  width={280}
+                  width={300}
                   height={300}
-                  padding={20}
+                  padding={{ top: 20, bottom: 20, left: 20, right: 56 }}
                   innerRadius={80}
                   padAngle={2}
                   startAngle={90}
@@ -94,7 +94,7 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
                 <Stack
                   position={"absolute"}
                   top={"50%"}
-                  left={"50%"}
+                  left={"45%"}
                   transform={"translate(-50%, -50%)"}
                   gap={0}
                   align={"center"}
@@ -111,7 +111,7 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
 
               <Stack
                 mt={"20px"}
-                ml={20}
+                ml={40}
                 maxH={"200px"}
                 overflowY={"auto"}
                 overflowX="hidden"
