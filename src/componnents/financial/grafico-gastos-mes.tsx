@@ -18,7 +18,7 @@ type Props = {
 };
 
 export function GraficoGastosMes({ painelSelecionado }: Props) {
-  const { listPanels, expensesGraphics } = usePanels();
+  const { expensesGraphics } = usePanels();
   const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
   const [mesAtual, setMesAtual] = useState(new Date().getMonth() + 1);
 
@@ -71,9 +71,9 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
             <Box w={"100%"} display={"flex"} flexDir={"row"}>
               <Stack position={"relative"} w={"350px"}>
                 <VictoryPie
-                  width={300}
-                  height={300}
-                  padding={{ top: 20, bottom: 20, left: 20, right: 56 }}
+                  width={350}
+                  height={350}
+                  padding={{ top: 30, bottom: 30, left: 50, right: 50 }}
                   innerRadius={80}
                   padAngle={2}
                   startAngle={90}
@@ -94,7 +94,7 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
                 <Stack
                   position={"absolute"}
                   top={"50%"}
-                  left={"45%"}
+                  left={"50%"}
                   transform={"translate(-50%, -50%)"}
                   gap={0}
                   align={"center"}
@@ -126,14 +126,24 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
               >
                 {expensesGraphicsData?.categories
                   ? expensesGraphicsData.categories.map((item) => (
-                      <HStack key={item.x}>
+                      <HStack key={item.x} w={"100%"}>
                         <Box
+                          flexShrink={0}
                           borderRadius="5px"
                           w="20px"
                           h="20px"
                           bg={item.color}
                         />
-                        <Text fontSize="lg" fontWeight="bold">
+                        <Text
+                          flex={1}
+                          minW={0}
+                          overflow={"hidden"}
+                          textOverflow={"ellipsis"}
+                          whiteSpace={"nowrap"}
+                          title={item.x}
+                          fontSize="lg"
+                          fontWeight="bold"
+                        >
                           {item.x}
                         </Text>
                       </HStack>

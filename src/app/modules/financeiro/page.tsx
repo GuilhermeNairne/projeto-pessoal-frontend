@@ -12,7 +12,6 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { PainelContas } from "@/componnents/financial/painel-contas";
 import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
 import { ModalNovoPainel } from "@/componnents/financial/modal-novo-painel";
-import { GraficoTipoGasto } from "@/componnents/financial/grafico-tipo-gasto";
 import { ComponenteMovimentos } from "@/componnents/financial/componente-movimentos";
 import { CategoriasComponente } from "@/componnents/financial/categorias-componente";
 import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
@@ -35,6 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
 import { MenuMobile } from "@/componnents/menu-mobile";
+import { GraficoGastosMes } from "@/componnents/financial/grafico-gastos-mes";
 
 export default function Financeiro() {
   const router = useRouter();
@@ -170,7 +170,9 @@ export default function Financeiro() {
                   })
                 }
               >
-                {isMobile ? <Icon as={GrTransaction} boxSize={"5"} color={"green"} /> :
+                {isMobile ? (
+                  <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
+                ) : (
                   <Box
                     display={"flex"}
                     flexDir={"row"}
@@ -180,11 +182,11 @@ export default function Financeiro() {
                     <Text fontSize={"lg"}>Registrar movimento</Text>
                     <Icon as={GrTransaction} boxSize={"5"} color={"green"} />
                   </Box>
-                }
+                )}
               </Link>
             </HStack>
 
-            {isMobile ? null :
+            {isMobile ? null : (
               <ComponenteMovimentos
                 panel={panel}
                 refetch={() => refetchPanel()}
@@ -194,7 +196,7 @@ export default function Financeiro() {
                   )
                 }
               />
-            }
+            )}
 
             <HStack
               w={"100%"}
@@ -203,17 +205,14 @@ export default function Financeiro() {
               justifyContent={"space-between"}
               alignItems={"flex-start"}
             >
-              <GraficoTipoGasto
-                panel={panel}
-                month={new Date().getMonth() + 1}
-              />
+              <GraficoGastosMes painelSelecionado={panel.id ?? 0} />
 
-              {isMobile ? null :
+              {isMobile ? null : (
                 <CategoriasComponente
                   panel={panel}
                   refetch={() => refetchPanel()}
                 />
-              }
+              )}
             </HStack>
           </Box>
         ))}
