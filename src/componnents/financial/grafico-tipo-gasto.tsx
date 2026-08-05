@@ -48,11 +48,11 @@ export function GraficoTipoGasto({ panel, month }: Props) {
             {isLoading ? (
               <Spinner size={"lg"} />
             ) : (
-              <Box position={"relative"} w={"320px"} h={"320px"} mr={20}>
+              <Box position={"relative"} w={"400px"} h={"320px"} mr={20}>
                 <VictoryPie
-                  width={280}
+                  width={340}
                   height={300}
-                  padding={20}
+                  padding={{ top: 20, bottom: 20, left: 20, right: 60 }}
                   innerRadius={80}
                   padAngle={2}
                   startAngle={90}

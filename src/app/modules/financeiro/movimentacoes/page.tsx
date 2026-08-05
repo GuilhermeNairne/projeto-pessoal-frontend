@@ -6,14 +6,18 @@ import { Menu } from "@/componnents/menu";
 import { MenuMobile } from "@/componnents/menu-mobile";
 import { useSearchParams } from "next/navigation";
 import { useMovements } from "@/hooks/useMovements";
+import { useCategoies } from "@/hooks/useCategories";
+import { MovementsType } from "@/types/financial-types";
 import { formatarValorBR } from "@/utils/convert-to-real";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import { Filtros, FiltrosMovementsType } from "@/componnents/financial/filtros";
+import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
 import {
   FaChevronDown,
   FaChevronLeft,
   FaChevronRight,
   FaChevronUp,
+  FaPencilAlt,
   FaTrash,
 } from "react-icons/fa";
 import {
@@ -39,8 +43,11 @@ export default function Movimentacoes() {
   const id_panel = searchParams.get("id_panel");
   const [actualPage, setActualPage] = useState(1);
   const { deleteMovement, listMovements } = useMovements();
+  const { listCategories } = useCategoies();
   const [activeModal, setActiveModal] = useState<"filtros" | null>(null);
   const [filtros, setFiltros] = useState<FiltrosMovementsType | null>({});
+  const [editingMovement, setEditingMovement] =
+    useState<MovementsType | null>(null);
 
   const {
     data: result,
@@ -49,6 +56,11 @@ export default function Movimentacoes() {
   } = useQuery({
     queryKey: ["movements", id_panel, actualPage],
     queryFn: async () => listMovements(id_panel ?? "", filtros, actualPage),
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories", id_panel],
+    queryFn: async () => listCategories(id_panel ?? ""),
   });
 
   const pages = Array.from(
@@ -225,6 +237,11 @@ export default function Movimentacoes() {
                       )
                     }
                   />
+                  <Icon
+                    w="2%"
+                    as={FaPencilAlt}
+                    onClick={() => setEditingMovement(occ)}
+                  />
                 </Box>
               ))
             ) : isLoading ? (
@@ -304,6 +321,16 @@ export default function Movimentacoes() {
           </HStack>
         </Stack>
       </Flex>
+
+      <ModalRegistrarMovimento
+        isOpen={!!editingMovement}
+        onClose={() => setEditingMovement(null)}
+        refetch={refetch}
+        painel=""
+        painel_id={id_panel ?? ""}
+        categorys={categories?.data ?? []}
+        movement={editingMovement}
+      />
     </Flex>
   );
 }
