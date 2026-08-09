@@ -1,10 +1,12 @@
 import { Button, Icon, Text } from "@chakra-ui/react";
+import type { ResponsiveValue } from "@chakra-ui/react";
 
 type Props = {
   icon: any;
   w?: string;
   h?: string;
   bg?: string;
+  mt?: ResponsiveValue<number | string>;
   title: string;
   isLoading?: boolean;
   titleColor?: string;
@@ -17,6 +19,7 @@ export function DefaultButton({
   title,
   h,
   bg,
+  mt,
   titleColor,
   isLoading,
   onClick,
@@ -26,6 +29,7 @@ export function DefaultButton({
       h={h ?? "40px"}
       boxShadow={"md"}
       w={w ?? "200px"}
+      mt={mt}
       borderRadius={5}
       gap={1}
       onClick={onClick}
