@@ -25,5 +25,31 @@ export function useAuth() {
     return response;
   }
 
-  return { login, firstAccess };
+  async function sendPasswordRecoveryEmail(email: string) {
+    const response = await api.post("auth/send-email-password-recovery", {
+      email,
+    });
+
+    return response.data;
+  }
+
+  async function validateRecoveryCode(email: string, code: string) {
+    const response = await api.post("auth/validate-code", { email, code });
+
+    return response.data;
+  }
+
+  async function resetPassword(newPassword: string) {
+    const response = await api.post("auth/reset-password", { newPassword });
+
+    return response.data;
+  }
+
+  return {
+    login,
+    firstAccess,
+    sendPasswordRecoveryEmail,
+    validateRecoveryCode,
+    resetPassword,
+  };
 }
