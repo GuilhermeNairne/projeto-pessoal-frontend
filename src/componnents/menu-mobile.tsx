@@ -7,6 +7,9 @@ import {
   FaCalendarAlt,
   FaChartBar,
   FaBell,
+  FaUserShield,
+  FaUsers,
+  FaKey,
 } from "react-icons/fa";
 import { HiMenu } from "react-icons/hi";
 
@@ -89,6 +92,23 @@ const menuOpcoes = [
       },
     ],
   },
+  {
+    nome: "Admin",
+    icon: FaUserShield,
+
+    opcoes: [
+      {
+        pagina: "Usuários",
+        rota: "modules/admin/usuarios",
+        icon: FaUsers,
+      },
+      {
+        pagina: "Papéis",
+        rota: "modules/admin/papeis",
+        icon: FaKey,
+      },
+    ],
+  },
 ];
 
 export function MenuMobile() {
@@ -96,6 +116,10 @@ export function MenuMobile() {
   const pathname = usePathname();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { signOut, user } = useAuthContext();
+  const isAdmin = !!user?.roles?.some((role) => role.name === "ADMIN");
+  const opcoesMenu = menuOpcoes.filter(
+    (item) => item.nome !== "Admin" || isAdmin,
+  );
 
   function Logout() {
     signOut();
@@ -164,7 +188,7 @@ export function MenuMobile() {
 
               <Stack mt="40px">
                 <Accordion allowToggle>
-                  {menuOpcoes.map((item, idx) => {
+                  {opcoesMenu.map((item, idx) => {
                     const isOnPage = pathname.includes(
                       item.nome.toLocaleLowerCase()
                     );

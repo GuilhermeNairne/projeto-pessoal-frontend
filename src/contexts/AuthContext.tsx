@@ -7,6 +7,7 @@ type User = {
   id: string;
   name: string;
   email: string;
+  roles: { id: number; name: string }[];
 };
 
 export type SignInData = {
