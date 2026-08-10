@@ -7,6 +7,7 @@ import {
   Spinner,
   Stack,
   Text,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -21,6 +22,8 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
   const { expensesGraphics } = usePanels();
   const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
   const [mesAtual, setMesAtual] = useState(new Date().getMonth() + 1);
+  const pieSize = useBreakpointValue({ base: 260, md: 350 }) ?? 350;
+  const pieInnerRadius = useBreakpointValue({ base: 50, md: 80 }) ?? 80;
 
   const {
     data: expensesGraphicsData,
@@ -68,13 +71,18 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
               <Spinner size={"lg"} />
             </Center>
           ) : (
-            <Box w={"100%"} display={"flex"} flexDir={"row"}>
-              <Stack position={"relative"} w={"350px"}>
+            <Box
+              w={"100%"}
+              display={"flex"}
+              flexDir={{ base: "column", md: "row" }}
+              alignItems={{ base: "center", md: "flex-start" }}
+            >
+              <Stack position={"relative"} w={`${pieSize}px`} flexShrink={0}>
                 <VictoryPie
-                  width={350}
-                  height={350}
+                  width={pieSize}
+                  height={pieSize}
                   padding={{ top: 30, bottom: 30, left: 50, right: 50 }}
-                  innerRadius={80}
+                  innerRadius={pieInnerRadius}
                   padAngle={2}
                   startAngle={90}
                   labels={({ datum }) => `R$ ${datum.y}`}
@@ -110,12 +118,13 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
               </Stack>
 
               <Stack
-                mt={"20px"}
-                ml={40}
+                mt={{ base: 5, md: "20px" }}
+                ml={{ base: 0, md: 10 }}
                 maxH={"200px"}
                 overflowY={"auto"}
                 overflowX="hidden"
-                w={"250px"}
+                w={{ base: "100%", md: "250px" }}
+                maxW={{ base: `${pieSize}px`, md: "250px" }}
                 sx={{
                   "::-webkit-scrollbar": {
                     display: "none",
