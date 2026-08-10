@@ -7,6 +7,9 @@ import {
   FaCalendarAlt,
   FaChartBar,
   FaBell,
+  FaUserShield,
+  FaUsers,
+  FaKey,
 } from "react-icons/fa";
 
 import {
@@ -81,12 +84,33 @@ const menuOpcoes = [
       },
     ],
   },
+  {
+    nome: "Admin",
+    icon: FaUserShield,
+
+    opcoes: [
+      {
+        pagina: "Usuários",
+        rota: "modules/admin/usuarios",
+        icon: FaUsers,
+      },
+      {
+        pagina: "Papéis",
+        rota: "modules/admin/papeis",
+        icon: FaKey,
+      },
+    ],
+  },
 ];
 
 export function Menu() {
   const router = useRouter();
   const pathname = usePathname();
   const { signOut, user } = useAuthContext();
+  const isAdmin = !!user?.roles?.some((role) => role.name === "ADMIN");
+  const opcoesMenu = menuOpcoes.filter(
+    (item) => item.nome !== "Admin" || isAdmin,
+  );
 
   function Logout() {
     signOut();
@@ -128,7 +152,7 @@ export function Menu() {
 
         <Stack mt={"50px"}>
           <Accordion allowToggle>
-            {menuOpcoes.map((item) => {
+            {opcoesMenu.map((item) => {
               const isOnPage = pathname.includes(item.nome.toLocaleLowerCase());
 
               return (
