@@ -3,22 +3,28 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { hasModuleAccess } from "@/config/module-access";
+import { hasModuleAccess, ModuleKey } from "@/config/module-access";
 
-export function RequireAdmin({ children }: { children: React.ReactNode }) {
+export function RequireModuleAccess({
+  module,
+  children,
+}: {
+  module: ModuleKey;
+  children: React.ReactNode;
+}) {
   const { user, loading } = useAuthContext();
   const router = useRouter();
-  const isAdmin = hasModuleAccess(user, "admin");
+  const allowed = hasModuleAccess(user, module);
 
   useEffect(() => {
-    if (!loading && !isAdmin) {
+    if (!loading && !allowed) {
       router.replace("/home");
     }
-  }, [loading, isAdmin, router]);
+  }, [loading, allowed, router]);
 
   if (loading) return null;
 
-  if (!isAdmin) return null;
+  if (!allowed) return null;
 
   return <>{children}</>;
 }

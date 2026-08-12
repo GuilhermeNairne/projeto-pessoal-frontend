@@ -33,14 +33,21 @@ import {
 
 import { MdOutlineAttachMoney } from "react-icons/md";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { ModuleKey, hasModuleAccess } from "@/config/module-access";
 
 const defaultPicture =
   "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg";
 
-const menuOpcoes = [
+const menuOpcoes: {
+  nome: string;
+  icon: any;
+  moduleKey: ModuleKey;
+  opcoes: { pagina: string; rota: string; icon: any }[];
+}[] = [
   {
     nome: "Financeiro",
     icon: MdOutlineAttachMoney,
+    moduleKey: "financeiro",
 
     opcoes: [
       {
@@ -58,6 +65,7 @@ const menuOpcoes = [
   {
     nome: "Tarefas",
     icon: FaBook,
+    moduleKey: "tarefas",
 
     opcoes: [
       {
@@ -75,6 +83,7 @@ const menuOpcoes = [
   {
     nome: "Notificacoes",
     icon: FaBell,
+    moduleKey: "notificacoes",
 
     opcoes: [
       {
@@ -87,6 +96,7 @@ const menuOpcoes = [
   {
     nome: "Admin",
     icon: FaUserShield,
+    moduleKey: "admin",
 
     opcoes: [
       {
@@ -107,9 +117,8 @@ export function Menu() {
   const router = useRouter();
   const pathname = usePathname();
   const { signOut, user } = useAuthContext();
-  const isAdmin = !!user?.roles?.some((role) => role.name === "ADMIN");
-  const opcoesMenu = menuOpcoes.filter(
-    (item) => item.nome !== "Admin" || isAdmin,
+  const opcoesMenu = menuOpcoes.filter((item) =>
+    hasModuleAccess(user, item.moduleKey),
   );
 
   function Logout() {

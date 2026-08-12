@@ -1,11 +1,16 @@
 "use client";
 
 import { Protected } from "@/componnents/Protected";
+import { RequireModuleAccess } from "@/componnents/RequireModuleAccess";
 
 export default function ModuloLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <Protected>{children}</Protected>;
+  return (
+    <Protected>
+      <RequireModuleAccess module="financeiro">{children}</RequireModuleAccess>
+    </Protected>
+  );
 }
