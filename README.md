@@ -54,5 +54,5 @@ O frontend está publicado na **Vercel** e consome o backend hospedado no **Rail
 
 **Guilherme Men Linhares Nairne**
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-guilherme--men--nairne-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/guilherme-men-nairne-332aa7181)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-guilherme--men--nairne-blue?style=flat&logo=linkedin)]([https://www.linkedin.com/in/guilherme-men-nairne-332aa7181](https://www.linkedin.com/in/guilherme-men-linhares-nairne-332aa7181/))
 [![Gmail](https://img.shields.io/badge/Gmail-guilherme.men.nairne@gmail.com-red?style=flat&logo=gmail)](mailto:guilherme.men.nairne@gmail.com)
