@@ -48,18 +48,20 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
         Gráfico de gastos do mês
       </Text>
 
-      <HStack mt={10} justifyContent={"space-between"} w={"150px"}>
-        <Icon as={FaChevronLeft} onClick={() => alteraMes("anterior")} />
-        <HStack>
-          <Text style={{ textTransform: "capitalize" }}>
-            {new Date(2026, mesAtual - 1).toLocaleString("pt-BR", {
-              month: "long",
-            })}
-          </Text>
-          <Text>{anoAtual}</Text>
+      {expensesGraphicsData?.total_expenses === 0 ? null : (
+        <HStack mt={10} justifyContent={"space-between"} w={"150px"}>
+          <Icon as={FaChevronLeft} onClick={() => alteraMes("anterior")} />
+          <HStack>
+            <Text style={{ textTransform: "capitalize" }}>
+              {new Date(2026, mesAtual - 1).toLocaleString("pt-BR", {
+                month: "long",
+              })}
+            </Text>
+            <Text>{anoAtual}</Text>
+          </HStack>
+          <Icon as={FaChevronRight} onClick={() => alteraMes("proximo")} />
         </HStack>
-        <Icon as={FaChevronRight} onClick={() => alteraMes("proximo")} />
-      </HStack>
+      )}
       {expensesGraphicsData?.total_expenses === 0 ? (
         <Text mt={10} fontWeight={`bold`}>
           Nenhum movimento registrado nesse mês
