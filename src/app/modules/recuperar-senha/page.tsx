@@ -82,13 +82,23 @@ export default function RecuperarSenha() {
         title: "Código enviado para o seu e-mail!",
       });
     } catch (error: any) {
-      toast({
-        position: "top",
-        status: "error",
-        isClosable: true,
-        title:
-          error?.response?.data?.message ?? "Erro ao enviar e-mail de recuperação!",
-      });
+      if (error?.response?.status === 429) {
+        toast({
+          position: "top",
+          status: "warning",
+          isClosable: true,
+          title: "Muitas tentativas!",
+          description: "Aguarde alguns minutos antes de solicitar um novo código.",
+        });
+      } else {
+        toast({
+          position: "top",
+          status: "error",
+          isClosable: true,
+          title:
+            error?.response?.data?.message ?? "Erro ao enviar e-mail de recuperação!",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -101,12 +111,23 @@ export default function RecuperarSenha() {
 
       setStep("newPassword");
     } catch (error: any) {
-      toast({
-        position: "top",
-        status: "error",
-        isClosable: true,
-        title: error?.response?.data?.message ?? "Código inválido!",
-      });
+      if (error?.response?.status === 429) {
+        toast({
+          position: "top",
+          status: "warning",
+          isClosable: true,
+          title: "Muitas tentativas!",
+          description: "Aguarde alguns minutos antes de tentar novamente.",
+        });
+      } else {
+        toast({
+          position: "top",
+          status: "error",
+          isClosable: true,
+          title: error?.response?.data?.message ?? "Código inválido!",
+          description: "Solicite um novo código caso ele tenha expirado.",
+        });
+      }
     } finally {
       setIsLoading(false);
     }

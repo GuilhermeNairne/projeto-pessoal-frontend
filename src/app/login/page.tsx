@@ -57,13 +57,23 @@ export default function Login() {
         status: "success",
         title: "Login realizado com sucesso!",
       });
-    } catch (error) {
-      toast({
-        position: "top",
-        status: "error",
-        isClosable: true,
-        title: "Erro ao realizar login!",
-      });
+    } catch (error: any) {
+      if (error?.response?.status === 429) {
+        toast({
+          position: "top",
+          status: "warning",
+          isClosable: true,
+          title: "Muitas tentativas de login!",
+          description: "Aguarde alguns minutos antes de tentar novamente.",
+        });
+      } else {
+        toast({
+          position: "top",
+          status: "error",
+          isClosable: true,
+          title: "Erro ao realizar login!",
+        });
+      }
     } finally {
       resetForm();
       setIsLoading(false);
