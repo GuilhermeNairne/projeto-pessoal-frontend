@@ -10,6 +10,7 @@ import {
   FaUserShield,
   FaUsers,
   FaKey,
+  FaHome,
 } from "react-icons/fa";
 
 import {
@@ -120,6 +121,7 @@ export function Menu() {
   const opcoesMenu = menuOpcoes.filter((item) =>
     hasModuleAccess(user, item.moduleKey),
   );
+  const isHomePage = pathname === "/home";
 
   function Logout() {
     signOut();
@@ -160,6 +162,36 @@ export function Menu() {
         </Box>
 
         <Stack mt={"50px"}>
+          <Box
+            as="button"
+            onClick={() => router.push("/home")}
+            h={"50px"}
+            bg={isHomePage ? "white" : undefined}
+            borderRadius={4}
+            px={3}
+            display={"flex"}
+            flexDir={"row"}
+            alignItems={"center"}
+            gap={4}
+            _hover={{
+              borderRadius: 4,
+              fontWeight: "bold",
+            }}
+          >
+            <Icon
+              as={FaHome}
+              boxSize={8}
+              color={isHomePage ? "menu_principal" : "white"}
+            />
+            <Text
+              color={isHomePage ? "menu_principal" : "white"}
+              fontSize={"lg"}
+              fontWeight={"semi-bold"}
+            >
+              Home
+            </Text>
+          </Box>
+
           <Accordion allowToggle>
             {opcoesMenu.map((item) => {
               const isOnPage = pathname.includes(item.nome.toLocaleLowerCase());
