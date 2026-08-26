@@ -8,9 +8,7 @@ import {
 
 export function usePanels() {
   async function listPanels(user_id: string) {
-    const result = await api.get<PanelsType[]>(
-      `/financial-panel/list/${user_id}`,
-    );
+    const result = await api.get<PanelsType[]>(`/financial-panel/list/`);
 
     return result;
   }
