@@ -10,6 +10,7 @@ import {
   FaUserShield,
   FaUsers,
   FaKey,
+  FaHome,
 } from "react-icons/fa";
 import { HiMenu } from "react-icons/hi";
 
@@ -129,6 +130,7 @@ export function MenuMobile() {
   const opcoesMenu = menuOpcoes.filter((item) =>
     hasModuleAccess(user, item.moduleKey),
   );
+  const isHomePage = pathname === "/home";
 
   function Logout() {
     signOut();
@@ -196,6 +198,40 @@ export function MenuMobile() {
               </Box>
 
               <Stack mt="40px">
+                <Box
+                  as="button"
+                  onClick={() => {
+                    router.push("/home");
+                    onClose();
+                  }}
+                  h="60px"
+                  bg={isHomePage ? "white" : undefined}
+                  borderRadius={4}
+                  p={2}
+                  mb={3}
+                  display="flex"
+                  flexDir="row"
+                  alignItems="center"
+                  gap={3}
+                  _hover={{
+                    borderRadius: 4,
+                    fontWeight: "bold",
+                  }}
+                >
+                  <Icon
+                    as={FaHome}
+                    boxSize={7}
+                    color={isHomePage ? "menu_principal" : "white"}
+                  />
+                  <Text
+                    color={isHomePage ? "menu_principal" : "white"}
+                    fontSize="md"
+                    fontWeight="semi-bold"
+                  >
+                    Home
+                  </Text>
+                </Box>
+
                 <Accordion allowToggle>
                   {opcoesMenu.map((item, idx) => {
                     const isOnPage = pathname.includes(

@@ -23,6 +23,13 @@ const myTheme = extendTheme({
     menu_principal: "#1e293b",
     menu_secundario: "#000647",
     menu_selecionado: "#d5d5d577",
+    console_placa: "#182238",
+    ambar: "#F5A623",
+    ambar_dim: "#7A5A22",
+    ambar_texto: "#9C5B0A",
+    fio: "#2A3550",
+    texto_frio: "#C7CEDD",
+    texto_frio_dim: "#7C89A8",
   },
   breakpoints: {
     celular: "320px",
