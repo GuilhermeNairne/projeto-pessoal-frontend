@@ -282,14 +282,14 @@ export default function Home() {
 
                       <Box textAlign={"left"} minW={0}>
                         <Text
-                          fontSize={"md"}
+                          fontSize={"lg"}
                           fontWeight={"bold"}
                           color={"menu_principal"}
                           noOfLines={1}
                         >
                           {item.nome}
                         </Text>
-                        <Text fontSize={"xs"} color={"cinza_900"} noOfLines={1}>
+                        <Text fontSize={"md"} color={"cinza_900"} noOfLines={1}>
                           {item.descricao}
                         </Text>
                       </Box>
@@ -300,7 +300,7 @@ export default function Home() {
                         <Spinner size={"xs"} color={"ambar_texto"} />
                       ) : (
                         <Text
-                          fontSize={{ base: "sm", lg: "md" }}
+                          fontSize={{ base: "md", lg: "lg" }}
                           fontWeight={"bold"}
                           color={"ambar_texto"}
                           fontFamily={"var(--font-geist-mono)"}
