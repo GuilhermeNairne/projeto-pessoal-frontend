@@ -126,7 +126,7 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
                   boxShadow="md"
                   display="flex"
                   flexDir="row"
-                  bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
+                  bg={index % 2 === 0 ? "surface.stripe.odd" : "surface.stripe.even"}
                   borderRadius={"5px"}
                   w="full"
                   h="35px"
@@ -134,16 +134,16 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
                   px="15px"
                   py={"10px"}
                 >
-                  <Text w="23%" color="black">
+                  <Text w="23%" color="text.primary">
                     {occ.name}
                   </Text>
-                  <Text w="18%" color="black">
+                  <Text w="18%" color="text.primary">
                     {occ.categories?.name}
                   </Text>
-                  <Text w="12%" color="black">
+                  <Text w="12%" color="text.primary">
                     R$ {occ.value}
                   </Text>
-                  <Text w="16%" color="black">
+                  <Text w="16%" color="text.primary">
                     {ConvertDataToBR(occ.date)}
                   </Text>
 

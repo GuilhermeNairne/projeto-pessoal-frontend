@@ -8,6 +8,11 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
+body.chakra-ui-dark .rdp-month {
+  background: #182238;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
 /* Header (Month + arrows) */
 .rdp-caption {
   display: flex;
@@ -29,6 +34,10 @@
   font-weight: 500;
 }
 
+body.chakra-ui-dark .rdp-head_cell {
+  color: #7c89a8;
+}
+
 .rdp-day_today {
   background-color: #22c55e;
   color: white;
@@ -45,6 +54,11 @@
 
 .rdp-day:hover {
   background-color: #283c64;
+  color: white;
+}
+
+body.chakra-ui-dark .rdp-day:hover {
+  background-color: #2a3550;
   color: white;
 }
 
@@ -65,4 +79,8 @@
 .rdp-button:hover {
   background: #f3f4f6;
   border-radius: 6px;
+}
+
+body.chakra-ui-dark .rdp-button:hover {
+  background: rgba(255, 255, 255, 0.08);
 }

@@ -107,7 +107,7 @@ export default function Notificacoes() {
         <Box
           mt={5}
           p={{ base: 4, lg: 6 }}
-          bg={"white"}
+          bg={"surface.card"}
           borderRadius={8}
           boxShadow={"md"}
         >
@@ -204,7 +204,7 @@ export default function Notificacoes() {
               flexDir={{ base: "column", md: "row" }}
               alignItems={{ base: "flex-start", md: "center" }}
               h={{ base: "auto", md: "50px" }}
-              bg={index % 2 === 0 ? "#F3F3F3" : "#d4d4d4"}
+              bg={index % 2 === 0 ? "surface.stripe.odd" : "surface.stripe.even"}
               borderRadius={5}
               p={{ base: 3, md: 5 }}
               gap={{ base: 2, md: 0 }}
@@ -311,7 +311,7 @@ export default function Notificacoes() {
           ))}
 
           {(!notificacoes?.data || notificacoes.data.length === 0) && (
-            <Text mt={5} color={"gray.500"} textAlign={"center"}>
+            <Text mt={5} color={"text.muted"} textAlign={"center"}>
               Nenhuma notificação cadastrada.
             </Text>
           )}

@@ -23,7 +23,7 @@ export function Quadros(values: ListCardsTarefasType) {
         minH="90px"
         borderRadius={8}
         boxShadow={"md"}
-        bg={"white"}
+        bg={"surface.card"}
       >
         <HStack>
           <Box
@@ -37,7 +37,7 @@ export function Quadros(values: ListCardsTarefasType) {
           >
             <Icon as={FaCheck} boxSize={{ base: 3, md: 5 }} color={"white"} />
           </Box>
-          <Text fontSize={{ base: "xs", md: "sm" }} color={"gray.500"} fontWeight={"light"}>
+          <Text fontSize={{ base: "xs", md: "sm" }} color={"text.muted"} fontWeight={"light"}>
             METAS CUMPRIDAS (H)
           </Text>
         </HStack>
@@ -54,7 +54,7 @@ export function Quadros(values: ListCardsTarefasType) {
         minH="90px"
         borderRadius={8}
         boxShadow={"md"}
-        bg={"white"}
+        bg={"surface.card"}
       >
         <HStack>
           <Box
@@ -68,7 +68,7 @@ export function Quadros(values: ListCardsTarefasType) {
           >
             <Icon as={MdOutlinePendingActions} boxSize={{ base: 4, md: 6 }} color={"white"} />
           </Box>
-          <Text fontSize={{ base: "xs", md: "sm" }} color={"gray.500"} fontWeight={"light"}>
+          <Text fontSize={{ base: "xs", md: "sm" }} color={"text.muted"} fontWeight={"light"}>
             PENDENTES
           </Text>
         </HStack>
@@ -86,7 +86,7 @@ export function Quadros(values: ListCardsTarefasType) {
         minH="90px"
         borderRadius={8}
         boxShadow={"md"}
-        bg={"white"}
+        bg={"surface.card"}
       >
         <HStack>
           <Box
@@ -100,7 +100,7 @@ export function Quadros(values: ListCardsTarefasType) {
           >
             <Icon as={TiClipboard} boxSize={{ base: 4, md: 6 }} color={"white"} />
           </Box>
-          <Text fontSize={{ base: "xs", md: "sm" }} color={"gray.500"} fontWeight={"light"}>
+          <Text fontSize={{ base: "xs", md: "sm" }} color={"text.muted"} fontWeight={"light"}>
             TAREFAS CADASTRADAS
           </Text>
         </HStack>

@@ -115,7 +115,7 @@ export default function TarefasSemanais() {
           flexDir={{ base: "column", md: "row" }}
         >
           <Text
-            color={"menu_principal"}
+            color={"text.primary"}
             fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
             fontWeight={`bold`}
             mb={5}
@@ -172,13 +172,13 @@ export default function TarefasSemanais() {
                 flexDir={`column`}
                 alignItems={`center`}
                 borderWidth={2}
-                bg={"white"}
+                bg={"surface.card"}
                 boxShadow={"md"}
                 borderRadius={8}
                 borderColor={
                   day.getDate() === new Date().getDate()
-                    ? "menu_principal"
-                    : "white"
+                    ? "accent.text"
+                    : "surface.card"
                 }
               >
                 <Flex
@@ -219,13 +219,13 @@ export default function TarefasSemanais() {
                       h={8}
                       borderRadius="full"
                       borderWidth={`2px`}
-                      borderColor={`#1e293b`}
-                      bg={`conic-gradient(#1e293b ${porcentagem}%, transparent ${porcentagem}%)`}
+                      borderColor={`var(--chakra-colors-text-primary)`}
+                      bg={`conic-gradient(var(--chakra-colors-text-primary) ${porcentagem}%, transparent ${porcentagem}%)`}
                     />
                   )}
                 </Flex>
 
-                <Box w={"full"} h={"2px"} bg={"#dedede"} mt={5} />
+                <Box w={"full"} h={"2px"} bg={"border.default"} mt={5} />
 
                 <Flex
                   overflowY={"auto"}

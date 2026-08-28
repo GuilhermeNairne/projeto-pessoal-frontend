@@ -155,11 +155,11 @@ export default function Papeis() {
 
         <HStack mt={5}>
           <Input
-            borderColor={"gray.400"}
+            borderColor={"border.default"}
             borderRadius={"10px"}
             placeholder={"Nome do novo papel"}
             w={{ base: "100%", md: "300px" }}
-            bg={"white"}
+            bg={"surface.card"}
             value={novoNome}
             onChange={(e) => setNovoNome(e.target.value)}
             onKeyDown={(e) => {
@@ -218,7 +218,7 @@ export default function Papeis() {
                   boxShadow="md"
                   display="flex"
                   flexDir="row"
-                  bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
+                  bg={index % 2 === 0 ? "surface.stripe.odd" : "surface.stripe.even"}
                   borderRadius={"5px"}
                   w="full"
                   minH="45px"
@@ -231,7 +231,7 @@ export default function Papeis() {
                       <Input
                         autoFocus
                         size="sm"
-                        bg={"white"}
+                        bg={"surface.card"}
                         borderRadius={"5px"}
                         w={"80%"}
                         value={editValue}
@@ -242,10 +242,10 @@ export default function Papeis() {
                         }}
                       />
                     ) : (
-                      <Text color="black">{role.name}</Text>
+                      <Text color="text.primary">{role.name}</Text>
                     )}
                   </Box>
-                  <Text w="30%" color="black">
+                  <Text w="30%" color="text.primary">
                     {role.created_at
                       ? new Date(role.created_at).toLocaleDateString("pt-BR")
                       : "-"}
@@ -288,7 +288,7 @@ export default function Papeis() {
               </Center>
             ) : (
               <Center mt={20}>
-                <Text fontSize={"lg"} fontWeight={"bold"} color={"gray.600"}>
+                <Text fontSize={"lg"} fontWeight={"bold"} color={"text.muted"}>
                   Nenhum papel encontrado!
                 </Text>
               </Center>

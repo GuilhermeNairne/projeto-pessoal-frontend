@@ -43,7 +43,7 @@ export default function Graficos() {
         <Text
           fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
           fontWeight={"bold"}
-          color={`principal`}
+          color={"text.primary"}
         >
           Selecione o painel
         </Text>
@@ -57,7 +57,7 @@ export default function Graficos() {
               key={panel.id}
               display="flex"
               flexDir="column"
-              bg="white"
+              bg="surface.card"
               cursor="pointer"
               onClick={() =>
                 setPainelSelecionado({
@@ -69,8 +69,8 @@ export default function Graficos() {
               borderWidth={2}
               borderColor={
                 painelSelecionado?.panel === panel.name
-                  ? "menu_principal"
-                  : "#dcdcdc"
+                  ? "accent.text"
+                  : "border.default"
               }
               borderRadius="8px"
               w={{
@@ -89,8 +89,8 @@ export default function Graficos() {
                   boxSize={{ base: "6", lg: "8" }}
                   color={
                     painelSelecionado?.panel === panel.name
-                      ? "menu_principal"
-                      : "#aeaeae"
+                      ? "accent.text"
+                      : "text.muted"
                   }
                 />
                 <Text
@@ -98,8 +98,8 @@ export default function Graficos() {
                   fontSize={{ base: "lg", lg: "2xl" }}
                   color={
                     painelSelecionado?.panel === panel.name
-                      ? "menu_principal"
-                      : "#aeaeae"
+                      ? "accent.text"
+                      : "text.muted"
                   }
                 >
                   {panel.name}
@@ -111,8 +111,8 @@ export default function Graficos() {
                 fontSize={{ base: "lg", lg: "2xl" }}
                 color={
                   painelSelecionado?.panel === panel.name
-                    ? "menu_principal"
-                    : "#aeaeae"
+                    ? "accent.text"
+                    : "text.muted"
                 }
               >
                 R$ {formatarValorBR(panel.initial_value)}
@@ -126,7 +126,7 @@ export default function Graficos() {
             w={{ base: "100%", lg: "98%" }}
             h={{ base: "auto", lg: "650px" }}
             minH={{ base: "400px", md: "500px" }}
-            bg={`white`}
+            bg={"surface.card"}
             mt={{ base: "20px", lg: "40px" }}
             p={{ base: "10px", md: "15px", lg: "20px" }}
             overflow={"auto"}

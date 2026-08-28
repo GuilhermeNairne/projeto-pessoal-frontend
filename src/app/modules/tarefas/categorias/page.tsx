@@ -101,7 +101,7 @@ export default function Categorias() {
               flexDir={{ base: "column", md: "row" }}
               alignItems={{ base: "flex-start", md: "center" }}
               h={{ base: "auto", md: "40px" }}
-              bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
+              bg={index % 2 === 0 ? "surface.stripe.odd" : "surface.stripe.even"}
               borderRadius={5}
               p={{ base: 3, md: 5 }}
               gap={{ base: 2, md: 0 }}
@@ -186,10 +186,18 @@ export default function Categorias() {
                   textAnchor: "end",
                   fontSize: 12,
                   padding: 2,
+                  fill: "var(--chakra-colors-text-primary)",
                 },
               }}
             />
-            <VictoryAxis dependentAxis />
+            <VictoryAxis
+              dependentAxis
+              style={{
+                tickLabels: {
+                  fill: "var(--chakra-colors-text-primary)",
+                },
+              }}
+            />
             <VictoryBar
               categories={{
                 x: grafico?.data.map((item) => item.nome) ?? [],

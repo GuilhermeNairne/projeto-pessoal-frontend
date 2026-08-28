@@ -91,6 +91,9 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
                   endAngle={450}
                   theme={VictoryTheme.clean}
                   style={{
+                    parent: {
+                      backgroundColor: "var(--chakra-colors-surface-card)",
+                    },
                     labels: {
                       fontWeight: "bold",
                     },
@@ -110,7 +113,7 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
                   align={"center"}
                   pointerEvents={"none"}
                 >
-                  <Text fontSize={"sm"} color={"gray.500"}>
+                  <Text fontSize={"sm"} color={"text.muted"}>
                     Total gasto
                   </Text>
                   <Text fontSize={"lg"} fontWeight={"bold"}>
