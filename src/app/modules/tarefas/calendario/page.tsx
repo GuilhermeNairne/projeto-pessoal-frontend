@@ -137,19 +137,19 @@ export default function Calendario() {
           px={{ base: 1, md: 10, lg: 20 }}
           mb={-2}
           w={"100%"}
-          bg={`white`}
+          bg={"surface.card"}
           borderTopWidth={1}
           borderRightWidth={1}
           borderLeftWidth={1}
           borderTopRadius={10}
           alignSelf={`center`}
-          borderColor={"gray.400"}
+          borderColor={"border.default"}
           justifyContent={`space-between`}
         >
           {daysName.map((name) => (
             <Text
               key={name}
-              color={`gray.500`}
+              color={"text.muted"}
               fontWeight={`hairline`}
               fontSize={{ base: "xs", md: "sm", lg: "lg" }}
             >
@@ -161,7 +161,7 @@ export default function Calendario() {
           justifyContent={"space-between"}
           columns={7}
           spacing={{ base: 0, md: 1 }}
-          borderColor={"gray.400"}
+          borderColor={"border.default"}
         >
           {paddedDays.map((day, index) => {
             const dayTarefas = day
@@ -188,9 +188,9 @@ export default function Calendario() {
                 onClick={() => day && navigateTarefas(day.getDate())}
                 overflowY={{ base: "hidden", md: "auto" }}
                 css={ScrollBarcss}
-                borderColor={"gray.400"}
+                borderColor={"border.default"}
                 _hover={{
-                  bg: "gray.100",
+                  bg: "surface.hover",
                   cursor: "pointer",
                 }}
               >

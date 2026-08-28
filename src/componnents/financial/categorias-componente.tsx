@@ -39,11 +39,11 @@ const css = {
     background: "transparent",
   },
   "::-webkit-scrollbar-thumb": {
-    background: "rgba(0, 0, 0, 0.3)",
+    background: "rgba(128, 128, 148, 0.4)",
     borderRadius: "20px",
   },
   scrollbarWidth: "thin",
-  scrollbarColor: "rgba(0,0,0,0.3) transparent",
+  scrollbarColor: "rgba(128, 128, 148, 0.4) transparent",
 };
 
 type categoryToDelete = {

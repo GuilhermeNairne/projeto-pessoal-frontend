@@ -137,7 +137,7 @@ export default function Financeiro() {
             key={index}
             display={"flex"}
             flexDir={"column"}
-            bg={"white"}
+            bg={"surface.card"}
             boxShadow={"md"}
             mt={"50px"}
             p={"20px"}

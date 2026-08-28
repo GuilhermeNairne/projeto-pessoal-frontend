@@ -185,9 +185,9 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
             <Select
               placeholder="Selecione a categoria"
               w={"full"}
-              textColor={"black"}
-              bg={"white"}
-              borderColor={"gray.400"}
+              textColor={"text.primary"}
+              bg={"surface.card"}
+              borderColor={"border.default"}
               value={values.categoriaId}
               borderRadius={"10px"}
               onChange={handleChange("categoriaId")}

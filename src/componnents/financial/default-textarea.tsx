@@ -25,13 +25,13 @@ export function DefatultTextarea({
     <Stack mt={mt ?? ""}>
       <Text fontWeight={"bold"}>{title}</Text>
       <Textarea
-        borderColor={"gray.400"}
+        borderColor={"border.default"}
         borderRadius={"10px"}
         placeholder={placeholder}
         w={w ?? "100%"}
         onChange={onChange}
         value={value}
-        bg={"white"}
+        bg={"surface.card"}
       />
     </Stack>
   );

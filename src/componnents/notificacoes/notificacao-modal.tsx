@@ -192,11 +192,11 @@ export function NotificacaoModal({
           <Stack mt={5}>
             <Text fontWeight={"bold"}>Descrição</Text>
             <Textarea
-              borderColor={"gray.400"}
+              borderColor={"border.default"}
               borderRadius={"10px"}
               placeholder="Informe a descrição"
               w={"100%"}
-              bg={"white"}
+              bg={"surface.card"}
               value={values.description}
               onChange={handleChange("description")}
             />
@@ -216,9 +216,9 @@ export function NotificacaoModal({
             <Stack mt={5}>
               <Text fontWeight={"bold"}>Dia do mês para envio</Text>
               <Select
-                borderColor={"gray.400"}
+                borderColor={"border.default"}
                 borderRadius={"10px"}
-                bg={"white"}
+                bg={"surface.card"}
                 value={values.recurrentDay}
                 onChange={handleChange("recurrentDay")}
               >

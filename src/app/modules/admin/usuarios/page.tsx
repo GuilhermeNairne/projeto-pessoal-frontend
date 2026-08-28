@@ -158,7 +158,7 @@ export default function Usuarios() {
                     boxShadow="md"
                     display="flex"
                     flexDir="row"
-                    bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
+                    bg={index % 2 === 0 ? "surface.stripe.odd" : "surface.stripe.even"}
                     borderRadius={"5px"}
                     w="full"
                     minH="45px"
@@ -166,13 +166,13 @@ export default function Usuarios() {
                     px="15px"
                     py={"10px"}
                   >
-                    <Text w="25%" color="black">
+                    <Text w="25%" color="text.primary">
                       {user.name}
                     </Text>
-                    <Text w="25%" color="black">
+                    <Text w="25%" color="text.primary">
                       {user.email}
                     </Text>
-                    <Text w="15%" color="black">
+                    <Text w="15%" color="text.primary">
                       {new Date(user.createdAt).toLocaleDateString("pt-BR")}
                     </Text>
 
@@ -226,7 +226,7 @@ export default function Usuarios() {
               </Center>
             ) : (
               <Center mt={20}>
-                <Text fontSize={"lg"} fontWeight={"bold"} color={"gray.600"}>
+                <Text fontSize={"lg"} fontWeight={"bold"} color={"text.muted"}>
                   Nenhum usuário encontrado!
                 </Text>
               </Center>

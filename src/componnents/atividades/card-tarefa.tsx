@@ -56,23 +56,23 @@ export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
       flexDir={`column`}
       borderLeftWidth={2}
       alignSelf={"center"}
-      bg={dadosTarefa.status === "Concluido" ? "cinza_200" : "#eef1f8"}
+      bg={dadosTarefa.status === "Concluido" ? "surface.taskDone" : "surface.taskActive"}
       borderLeftColor={
-        dadosTarefa.status === "Concluida" ? "cinza_600" : "menu_principal"
+        dadosTarefa.status === "Concluida" ? "border.default" : "text.primary"
       }
     >
       <Box display={`flex`} flexDir={`row`} justifyContent={`space-between`}>
         <HStack>
           <Icon
             as={LuClipboardCheck}
-            color={dadosTarefa.status === "Concluida" ? "cinza_600" : "black"}
+            color={dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"}
             boxSize={5}
             sx={{ strokeWidth: 2 }}
           />
           <Text
             fontWeight={`bold`}
             maxW={`80%`}
-            color={dadosTarefa.status === "Concluida" ? "cinza_600" : "black"}
+            color={dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"}
           >
             {dadosTarefa.nome}
           </Text>
@@ -83,7 +83,7 @@ export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
           size="lg"
           onChange={() => handleEditaTarefa()}
           isChecked={dadosTarefa.status === "Concluida"}
-          borderColor={`gray.400`}
+          borderColor={"border.default"}
           sx={{
             "& .chakra-checkbox__control": {
               borderRadius: "5px",
@@ -95,7 +95,7 @@ export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
       <Text
         fontWeight={"bold"}
         mt={3}
-        color={dadosTarefa.status === "Concluida" ? "cinza_600" : "blue.500"}
+        color={dadosTarefa.status === "Concluida" ? "text.muted" : "blue.500"}
       >
         {dadosTarefa.descricao}
       </Text>
@@ -105,10 +105,10 @@ export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
           <Icon
             as={CiClock2}
             sx={{ strokeWidth: 1 }}
-            color={dadosTarefa.status === "Concluida" ? "cinza_600" : "black"}
+            color={dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"}
           />
           <Text
-            color={dadosTarefa.status === "Concluida" ? "cinza_600" : "black"}
+            color={dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"}
           >
             {tempoFormatado} horas
           </Text>

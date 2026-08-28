@@ -56,10 +56,10 @@ export function PainelContas({ paineis, isLoading }: Props) {
           gap={5}
           w="full"
         >
-          <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
+          <Text color={"text.muted"} fontSize={"2xl"} fontWeight={"bold"}>
             Você ainda não criou nenhum painel.
           </Text>
-          <Text color={"gray.600"} fontSize={"2xl"} fontWeight={"bold"}>
+          <Text color={"text.muted"} fontSize={"2xl"} fontWeight={"bold"}>
             Clique no botão acima para adicionar um.
           </Text>
         </Center>
@@ -81,7 +81,7 @@ export function PainelContas({ paineis, isLoading }: Props) {
                 key={conta.id}
                 display="flex"
                 flexDir="column"
-                bg="white"
+                bg="surface.card"
                 p="15px"
                 borderRadius="8px"
                 w={{ base: "100%", sm: "300px" }}

@@ -30,6 +30,7 @@ import {
   Switch,
   Text,
   VStack,
+  useColorMode,
 } from "@chakra-ui/react";
 
 import { MdOutlineAttachMoney } from "react-icons/md";
@@ -118,6 +119,7 @@ export function Menu() {
   const router = useRouter();
   const pathname = usePathname();
   const { signOut, user } = useAuthContext();
+  const { colorMode, toggleColorMode } = useColorMode();
   const opcoesMenu = menuOpcoes.filter((item) =>
     hasModuleAccess(user, item.moduleKey),
   );
@@ -287,7 +289,12 @@ export function Menu() {
               Modo escuro
             </Text>
           </Box>
-          <Switch color={"blackAlpha.600"} size={"md"} />
+          <Switch
+            isChecked={colorMode === "dark"}
+            onChange={toggleColorMode}
+            color={"blackAlpha.600"}
+            size={"md"}
+          />
         </Box>
       </Flex>
     </Flex>
