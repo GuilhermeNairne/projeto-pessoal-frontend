@@ -27,13 +27,13 @@ export function DefaultInput({
         <Stack mt={mt ?? ""}>
           <Text fontWeight={"bold"}>{title}</Text>
           <Input
-            borderColor={"gray.400"}
+            borderColor={"border.default"}
             borderRadius={"10px"}
             placeholder={placeholder}
             w={w ?? "100%"}
             onChange={onChange}
             value={value}
-            bg={"white"}
+            bg={"surface.card"}
             type={type ?? "string"}
           />
         </Stack>
@@ -41,11 +41,11 @@ export function DefaultInput({
         <HStack mt={mt ?? ""}>
           <Text fontWeight={"bold"}>{title}</Text>
           <Input
-            borderColor={"gray.400"}
+            borderColor={"border.default"}
             borderRadius={"10px"}
             placeholder={placeholder}
             w={w ?? "100%"}
-            bg={"white"}
+            bg={"surface.card"}
             onChange={onChange}
             value={value}
             type={type ?? "string"}

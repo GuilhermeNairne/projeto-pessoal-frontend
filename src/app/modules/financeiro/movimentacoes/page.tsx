@@ -193,7 +193,7 @@ export default function Movimentacoes() {
                   boxShadow="md"
                   display="flex"
                   flexDir="row"
-                  bg={index % 2 === 0 ? "#F3F3F3" : "#D9D9D9"}
+                  bg={index % 2 === 0 ? "surface.stripe.odd" : "surface.stripe.even"}
                   borderRadius={"5px"}
                   w="full"
                   h="35px"
@@ -201,16 +201,16 @@ export default function Movimentacoes() {
                   px="15px"
                   py={"10px"}
                 >
-                  <Text w="23%" color="black">
+                  <Text w="23%" color="text.primary">
                     {occ.name}
                   </Text>
-                  <Text w="18%" color="black">
+                  <Text w="18%" color="text.primary">
                     {occ.categories?.name}
                   </Text>
-                  <Text w="12%" color="black">
+                  <Text w="12%" color="text.primary">
                     R$ {formatarValorBR(occ.value)}
                   </Text>
-                  <Text w="16%" color="black">
+                  <Text w="16%" color="text.primary">
                     {ConvertDataToBR(occ.date)}
                   </Text>
 
@@ -250,7 +250,7 @@ export default function Movimentacoes() {
               </Center>
             ) : (
               <Center mt={20}>
-                <Text fontSize={"lg"} fontWeight={"bold"} color={"gray.600"}>
+                <Text fontSize={"lg"} fontWeight={"bold"} color={"text.muted"}>
                   Nenhuma movimentação registrada!
                 </Text>
               </Center>

@@ -67,11 +67,11 @@ export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
       style={{ opacity: open ? 1 : 0 }}
     >
       <Flex
-        bg={"#ffffffd0"}
+        bg={"surface.overlay"}
         borderRadius={"10px"}
         h={"190px"}
         flexDir={"column"}
-        borderColor={"#d5d5d5dd"}
+        borderColor={"border.default"}
         borderWidth={"1px"}
       >
         <HStack
@@ -92,7 +92,7 @@ export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
             <Text fontWeight={"bold"}>Ordenar por data</Text>
             <RadioGroup defaultValue="all" value={values.order_date}>
               <Radio
-                borderColor={"gray.400"}
+                borderColor={"border.default"}
                 value="DESC"
                 mr={"20px"}
                 onChange={handleChange("order_date")}
@@ -100,7 +100,7 @@ export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
                 Mais recentes
               </Radio>
               <Radio
-                borderColor={"gray.400"}
+                borderColor={"border.default"}
                 value="ASC"
                 onChange={handleChange("order_date")}
               >
@@ -113,7 +113,7 @@ export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
             <Text fontWeight={"bold"}>Movimento</Text>
             <RadioGroup defaultValue="ALL" value={values.movement_type}>
               <Radio
-                borderColor={"gray.400"}
+                borderColor={"border.default"}
                 value="IN"
                 mr={"20px"}
                 onChange={handleChange("movement_type")}
@@ -121,7 +121,7 @@ export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
                 Entrada
               </Radio>
               <Radio
-                borderColor={"gray.400"}
+                borderColor={"border.default"}
                 value="OUT"
                 onChange={handleChange("movement_type")}
               >
@@ -135,8 +135,8 @@ export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
             <Select
               placeholder="Selecione a categoria"
               w={"250px"}
-              bg={"white"}
-              borderColor={"gray.400"}
+              bg={"surface.card"}
+              borderColor={"border.default"}
               value={values.category_id}
               borderRadius={"10px"}
               onChange={handleChange("category_id")}
@@ -171,7 +171,7 @@ export function Filtros({ open, id_panel, refetch, filtrosValues }: Props) {
                 }, 500));
             }}
           >
-            <Text color={"menu_principal"}>Limpar todos os filtros</Text>
+            <Text color={"text.primary"}>Limpar todos os filtros</Text>
           </Link>
           <DefaultButton
             icon={FaFilter}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryClient, QueryClientProvider } from "react-query";
 import myTheme from "./mytheme";
@@ -32,9 +32,9 @@ export default function RootLayout({
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#E8E8E8",
         }}
       >
+        <ColorModeScript initialColorMode={myTheme.config.initialColorMode} />
         <AuthProvider>
           <QueryClientProvider client={queryClient}>
             <ChakraProvider theme={myTheme}>{children}</ChakraProvider>

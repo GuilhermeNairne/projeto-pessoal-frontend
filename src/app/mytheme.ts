@@ -1,9 +1,49 @@
-import { extendTheme } from "@chakra-ui/react";
+import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
+
+const config: ThemeConfig = {
+  initialColorMode: "light",
+  useSystemColorMode: false,
+};
 
 const myTheme = extendTheme({
+  config,
   fonts: {
     heading: "Roboto, sans-serif",
     body: "Roboto, sans-serif",
+  },
+  semanticTokens: {
+    colors: {
+      surface: {
+        canvas: { default: "#E8E8E8", _dark: "#0B1220" },
+        card: { default: "white", _dark: "console_placa" },
+        hover: { default: "fundo_cinza", _dark: "fio" },
+        stripe: {
+          odd: { default: "#F3F3F3", _dark: "fio" },
+          even: { default: "#d4d4d4", _dark: "console_placa" },
+        },
+        taskActive: { default: "#eef1f8", _dark: "fio" },
+        taskDone: { default: "cinza_200", _dark: "whiteAlpha.100" },
+        overlay: { default: "#ffffffd0", _dark: "rgba(24, 34, 56, 0.92)" },
+      },
+      text: {
+        primary: { default: "menu_principal", _dark: "texto_frio" },
+        muted: { default: "cinza_900", _dark: "texto_frio_dim" },
+      },
+      border: {
+        default: { default: "cinza_600", _dark: "fio" },
+      },
+      accent: {
+        text: { default: "ambar_texto", _dark: "ambar" },
+      },
+    },
+  },
+  styles: {
+    global: {
+      body: {
+        bg: "surface.canvas",
+        color: "text.primary",
+      },
+    },
   },
   colors: {
     vermelho: "#d50c20",

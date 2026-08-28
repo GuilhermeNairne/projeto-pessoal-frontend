@@ -164,7 +164,7 @@ export function ModalRegistrarMovimento({
               <Text fontWeight={"bold"}>Painel</Text>
               <Select
                 placeholder="Selecione o painel"
-                borderColor={"gray.400"}
+                borderColor={"border.default"}
                 borderRadius={"10px"}
                 value={painelSelecionadoId}
                 onChange={(e) => setPainelSelecionadoId(e.target.value)}

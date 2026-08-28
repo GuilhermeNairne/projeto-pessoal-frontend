@@ -155,7 +155,7 @@ export default function Home() {
       <Flex
         flexDir={"column"}
         w={"full"}
-        bg={"branco"}
+        bg={"surface.card"}
         boxShadow={"md"}
         borderRadius={"20px"}
         p={{ base: "24px", lg: "36px" }}
@@ -172,7 +172,7 @@ export default function Home() {
               fontSize={"xs"}
               fontWeight={"bold"}
               letterSpacing={"0.2em"}
-              color={"ambar_texto"}
+              color={"accent.text"}
               fontFamily={"var(--font-geist-sans)"}
             >
               {saudacao.toUpperCase()}
@@ -180,7 +180,7 @@ export default function Home() {
             <Text
               fontSize={{ base: "2xl", lg: "3xl" }}
               fontWeight={"bold"}
-              color={"menu_principal"}
+              color={"text.primary"}
               fontFamily={"var(--font-geist-sans)"}
             >
               {primeiroNome}
@@ -190,14 +190,14 @@ export default function Home() {
           <Text
             fontSize={"xs"}
             letterSpacing={"0.15em"}
-            color={"cinza_900"}
+            color={"text.muted"}
             fontFamily={"var(--font-geist-mono)"}
           >
             {dataLabel}
           </Text>
         </Flex>
 
-        <Box h={"1px"} bg={"cinza_600"} mt={"24px"} mb={"28px"} />
+        <Box h={"1px"} bg={"border.default"} mt={"24px"} mb={"28px"} />
 
         {modulosDisponiveis.length === 0 ? (
           <Flex
@@ -206,21 +206,21 @@ export default function Home() {
             justifyContent={"center"}
             gap={3}
             border={"1px dashed"}
-            borderColor={"cinza_600"}
+            borderColor={"border.default"}
             borderRadius={"12px"}
             py={"60px"}
             px={"20px"}
           >
-            <Icon as={MdPowerSettingsNew} boxSize={8} color={"cinza_900"} />
+            <Icon as={MdPowerSettingsNew} boxSize={8} color={"text.muted"} />
             <Text
               fontSize={"lg"}
               fontWeight={"bold"}
-              color={"menu_principal"}
+              color={"text.primary"}
               textAlign={"center"}
             >
               Você não possui permissões para acessar aos módulos
             </Text>
-            <Text fontSize={"sm"} color={"cinza_900"} textAlign={"center"}>
+            <Text fontSize={"sm"} color={"text.muted"} textAlign={"center"}>
               Peça a um administrador para liberar seus módulos.
             </Text>
           </Flex>
@@ -230,7 +230,7 @@ export default function Home() {
               fontSize={"xs"}
               fontWeight={"bold"}
               letterSpacing={"0.2em"}
-              color={"cinza_900"}
+              color={"text.muted"}
               mb={"8px"}
             >
               SISTEMAS DISPONÍVEIS
@@ -262,14 +262,14 @@ export default function Home() {
                         ? undefined
                         : "1px solid"
                     }
-                    borderColor={"cinza_600"}
+                    borderColor={"border.default"}
                     borderRadius={"8px"}
                     sx={{
                       transition:
                         "background-color 0.2s ease, transform 0.2s ease",
                     }}
                     _hover={{
-                      bg: "fundo_cinza",
+                      bg: "surface.hover",
                       transform: "translateX(4px)",
                     }}
                   >
@@ -277,19 +277,19 @@ export default function Home() {
                       <Icon
                         as={item.icon}
                         boxSize={6}
-                        color={"menu_principal"}
+                        color={"text.primary"}
                       />
 
                       <Box textAlign={"left"} minW={0}>
                         <Text
                           fontSize={"lg"}
                           fontWeight={"bold"}
-                          color={"menu_principal"}
+                          color={"text.primary"}
                           noOfLines={1}
                         >
                           {item.nome}
                         </Text>
-                        <Text fontSize={"md"} color={"cinza_900"} noOfLines={1}>
+                        <Text fontSize={"md"} color={"text.muted"} noOfLines={1}>
                           {item.descricao}
                         </Text>
                       </Box>
@@ -297,12 +297,12 @@ export default function Home() {
 
                     {stat ? (
                       stat.loading ? (
-                        <Spinner size={"xs"} color={"ambar_texto"} />
+                        <Spinner size={"xs"} color={"accent.text"} />
                       ) : (
                         <Text
                           fontSize={{ base: "md", lg: "lg" }}
                           fontWeight={"bold"}
-                          color={"ambar_texto"}
+                          color={"accent.text"}
                           fontFamily={"var(--font-geist-mono)"}
                           whiteSpace={"nowrap"}
                         >
@@ -310,7 +310,7 @@ export default function Home() {
                         </Text>
                       )
                     ) : (
-                      <HStack gap={1} color={"cinza_900"}>
+                      <HStack gap={1} color={"text.muted"}>
                         <Text fontSize={"sm"} whiteSpace={"nowrap"}>
                           Acessar
                         </Text>
