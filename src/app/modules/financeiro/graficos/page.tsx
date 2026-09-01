@@ -11,6 +11,7 @@ import { formatarValorBR } from "@/utils/convert-to-real";
 import { GraficoGastosMes } from "@/componnents/financial/grafico-gastos-mes";
 import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { GraficoJurosMensais } from "@/componnents/financial/grafico-juros-mensais";
+import { GraficoSalarioDespesas } from "@/componnents/financial/grafico-salario-despesas";
 import { ScrollBarcss } from "@/utils/scroll-bar-css";
 
 export default function Graficos() {
@@ -135,6 +136,10 @@ export default function Graficos() {
             borderRadius={10}
           >
             <GraficoGastosMes painelSelecionado={painelSelecionado.id_panel} />
+
+            <GraficoSalarioDespesas
+              painelSelecionado={painelSelecionado.id_panel}
+            />
 
             <GraficoJurosMensais
               painelSelecionado={painelSelecionado.id_panel}

@@ -4,6 +4,7 @@ import {
   ExpensesGraphicsType,
   FeesByMonthType,
   PanelsType,
+  TotalSalaryType,
 } from "@/types/financial-types";
 
 export function usePanels() {
@@ -54,5 +55,26 @@ export function usePanels() {
     return result;
   }
 
-  return { listPanels, createPanel, editPanel, expensesGraphics, feesByMonth };
+  async function totalSalary(id_panel: number, month: number, year: number) {
+    const result = await api.get<TotalSalaryType>(
+      `/financial-panel/salary/${id_panel}`,
+      {
+        params: {
+          month,
+          year,
+        },
+      },
+    );
+
+    return result.data;
+  }
+
+  return {
+    listPanels,
+    createPanel,
+    editPanel,
+    expensesGraphics,
+    feesByMonth,
+    totalSalary,
+  };
 }

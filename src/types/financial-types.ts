@@ -89,3 +89,7 @@ export type FeesByMonthType = {
   month: number;
   total: string;
 };
+
+export type TotalSalaryType = {
+  total_salary: number;
+};
