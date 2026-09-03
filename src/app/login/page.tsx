@@ -86,7 +86,7 @@ export default function Login() {
       w={"full"}
       h={"full"}
       p={{ base: 4, md: 6, lg: 10 }}
-      bg={"white"}
+      bg={"surface.canvas"}
     >
       <FirstScreen />
 
@@ -121,7 +121,7 @@ export default function Login() {
           <Text fontWeight={"bold"}>E-mail</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
-              <Icon as={MdOutlineEmail} boxSize={6} color="gray.400" />
+              <Icon as={MdOutlineEmail} boxSize={6} color="text.muted" />
             </InputLeftElement>
 
             <Input
@@ -129,7 +129,7 @@ export default function Login() {
               h="50px"
               borderWidth={1}
               boxShadow={"sm"}
-              borderColor="gray.300"
+              borderColor="border.default"
               value={values.email}
               placeholder="seu@email.com"
               onChange={handleChange("email")}
@@ -141,13 +141,13 @@ export default function Login() {
           <Text fontWeight={"bold"}>Senha</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
-              <Icon as={RiLockPasswordLine} boxSize={6} color="gray.400" />
+              <Icon as={RiLockPasswordLine} boxSize={6} color="text.muted" />
             </InputLeftElement>
             <InputRightElement mt={1}>
               <Icon
                 as={showPassword ? FaRegEye : FaRegEyeSlash}
                 boxSize={5}
-                color="gray.400"
+                color="text.muted"
                 onClick={() => setShowPassword(!showPassword)}
               />
             </InputRightElement>
@@ -157,7 +157,7 @@ export default function Login() {
               pl="40px"
               borderWidth={1}
               boxShadow={"sm"}
-              borderColor="gray.300"
+              borderColor="border.default"
               value={values.password}
               placeholder="Informe sua senha"
               onChange={handleChange("password")}
@@ -171,7 +171,7 @@ export default function Login() {
             textAlign={"right"}
             mt={2}
             fontSize={"sm"}
-            color={"menu_principal"}
+            color={"text.primary"}
             fontWeight={"semibold"}
             mb={{ base: 6, md: 10 }}
           >
@@ -204,7 +204,7 @@ export default function Login() {
             <Text
               fontSize={{ base: "md", md: "lg" }}
               textAlign={"center"}
-              color={"menu_principal"}
+              color={"text.primary"}
               fontWeight={"bold"}
             >
               Cadastre-se
