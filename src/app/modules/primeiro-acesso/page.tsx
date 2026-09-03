@@ -81,7 +81,7 @@ export default function Login() {
       flexDir={{ base: "column", lg: "row" }}
       w={"full"}
       h={"full"}
-      bg={"white"}
+      bg={"surface.canvas"}
       p={{ base: 4, md: 6, lg: 10 }}
     >
       <FirstScreen />
@@ -113,7 +113,7 @@ export default function Login() {
         <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight={"bold"} mt={2}>
           Bem-vindo a plataforma
         </Text>
-        <Text fontSize={{ base: "md", md: "lg" }} color={"gray.400"}>
+        <Text fontSize={{ base: "md", md: "lg" }} color={"text.muted"}>
           Faça seu primeiro acesso
         </Text>
 
@@ -121,7 +121,7 @@ export default function Login() {
           <Text fontWeight={"bold"}>Nome completo</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
-              <Icon as={FaUser} boxSize={6} color="gray.400" />
+              <Icon as={FaUser} boxSize={6} color="text.muted" />
             </InputLeftElement>
 
             <Input
@@ -129,7 +129,7 @@ export default function Login() {
               h="50px"
               borderWidth={1}
               boxShadow={"sm"}
-              borderColor="gray.300"
+              borderColor="border.default"
               placeholder="seu nome completo"
               onChange={handleChange("name")}
             />
@@ -140,7 +140,7 @@ export default function Login() {
           <Text fontWeight={"bold"}>E-mail</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
-              <Icon as={MdOutlineEmail} boxSize={6} color="gray.400" />
+              <Icon as={MdOutlineEmail} boxSize={6} color="text.muted" />
             </InputLeftElement>
 
             <Input
@@ -148,7 +148,7 @@ export default function Login() {
               h="50px"
               borderWidth={1}
               boxShadow={"sm"}
-              borderColor="gray.300"
+              borderColor="border.default"
               placeholder="seu@email.com"
               onChange={handleChange("email")}
             />
@@ -164,13 +164,13 @@ export default function Login() {
           <Text fontWeight={"bold"}>Senha</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
-              <Icon as={RiLockPasswordLine} boxSize={6} color="gray.400" />
+              <Icon as={RiLockPasswordLine} boxSize={6} color="text.muted" />
             </InputLeftElement>
             <InputRightElement mt={1}>
               <Icon
                 as={showPassword ? FaRegEye : FaRegEyeSlash}
                 boxSize={5}
-                color="gray.400"
+                color="text.muted"
                 onClick={() => setShowPassword(!showPassword)}
               />
             </InputRightElement>
@@ -180,7 +180,7 @@ export default function Login() {
               pl="40px"
               borderWidth={1}
               boxShadow={"sm"}
-              borderColor="gray.300"
+              borderColor="border.default"
               placeholder="Informe sua senha"
               onChange={handleChange("password")}
               type={showPassword ? "text" : "password"}
@@ -197,13 +197,13 @@ export default function Login() {
           <Text fontWeight={"bold"}>Repita sua Senha</Text>
           <InputGroup>
             <InputLeftElement pointerEvents="none" mt={1}>
-              <Icon as={RiLockPasswordLine} boxSize={6} color="gray.400" />
+              <Icon as={RiLockPasswordLine} boxSize={6} color="text.muted" />
             </InputLeftElement>
             <InputRightElement mt={1}>
               <Icon
                 as={showPassword ? FaRegEye : FaRegEyeSlash}
                 boxSize={5}
-                color="gray.400"
+                color="text.muted"
                 onClick={() => setShowPassword(!showPassword)}
               />
             </InputRightElement>
@@ -213,7 +213,7 @@ export default function Login() {
               pl="40px"
               borderWidth={1}
               boxShadow={"sm"}
-              borderColor="gray.300"
+              borderColor="border.default"
               placeholder="Informe sua senha novamente"
               onBlur={handleChange("password_repetead")}
               type={showPassword ? "text" : "password"}
@@ -241,7 +241,7 @@ export default function Login() {
           mt={5}
         >
           <Text
-            color={"menu_principal"}
+            color={"text.primary"}
             fontWeight={"bold"}
             fontSize={"sm"}
             textAlign={"center"}
