@@ -11,6 +11,7 @@ import {
   FaUsers,
   FaKey,
   FaHome,
+  FaUserCircle,
 } from "react-icons/fa";
 
 import {
@@ -124,6 +125,7 @@ export function Menu() {
     hasModuleAccess(user, item.moduleKey),
   );
   const isHomePage = pathname === "/home";
+  const isPerfilPage = pathname === "/modules/perfil";
 
   function Logout() {
     signOut();
@@ -145,17 +147,19 @@ export function Menu() {
     >
       <Flex flexDir={"column"}>
         <Box
+          as="button"
           display={"flex"}
           flexDir={"row"}
           gap={5}
           h={"10%"}
           alignItems={"center"}
           mt={"10px"}
+          onClick={() => router.push("/modules/perfil")}
         >
           <Image
             w={"70px"}
             h={"70px"}
-            src={defaultPicture}
+            src={user?.profilePicture || defaultPicture}
             borderRadius={"100%"}
           />
           <Text color={"white"} fontWeight={"bold"} fontSize={"18px"}>
@@ -258,6 +262,36 @@ export function Menu() {
               );
             })}
           </Accordion>
+
+          <Box
+            as="button"
+            onClick={() => router.push("/modules/perfil")}
+            h={"50px"}
+            bg={isPerfilPage ? "white" : undefined}
+            borderRadius={4}
+            px={3}
+            display={"flex"}
+            flexDir={"row"}
+            alignItems={"center"}
+            gap={4}
+            _hover={{
+              borderRadius: 4,
+              fontWeight: "bold",
+            }}
+          >
+            <Icon
+              as={FaUserCircle}
+              boxSize={8}
+              color={isPerfilPage ? "menu_principal" : "white"}
+            />
+            <Text
+              color={isPerfilPage ? "menu_principal" : "white"}
+              fontSize={"lg"}
+              fontWeight={"semi-bold"}
+            >
+              Perfil
+            </Text>
+          </Box>
         </Stack>
       </Flex>
 

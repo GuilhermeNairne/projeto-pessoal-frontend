@@ -8,6 +8,7 @@ type User = {
   name: string;
   email: string;
   roles: { id: number; name: string }[];
+  profilePicture?: string | null;
 };
 
 export type SignInData = {
@@ -21,6 +22,7 @@ type AuthContextData = {
   signIn(data: SignInData): Promise<void>;
   loading: boolean;
   signOut(): void;
+  updateUser(data: Partial<User>): void;
 };
 
 const AuthContext = createContext({} as AuthContextData);
@@ -42,6 +44,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function signOut() {
     await api.post("auth/logout");
     setUser(null);
+  }
+
+  function updateUser(data: Partial<User>) {
+    setUser((prev) => (prev ? { ...prev, ...data } : prev));
   }
 
   useEffect(() => {
@@ -66,7 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, isAuthenticated, signIn, signOut }}
+      value={{ user, loading, isAuthenticated, signIn, signOut, updateUser }}
     >
       {children}
     </AuthContext.Provider>

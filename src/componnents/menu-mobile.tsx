@@ -11,6 +11,7 @@ import {
   FaUsers,
   FaKey,
   FaHome,
+  FaUserCircle,
 } from "react-icons/fa";
 import { HiMenu } from "react-icons/hi";
 
@@ -131,6 +132,7 @@ export function MenuMobile() {
     hasModuleAccess(user, item.moduleKey),
   );
   const isHomePage = pathname === "/home";
+  const isPerfilPage = pathname === "/modules/perfil";
 
   function Logout() {
     signOut();
@@ -180,16 +182,21 @@ export function MenuMobile() {
           >
             <Flex flexDir="column">
               <Box
+                as="button"
                 display="flex"
                 flexDir="row"
                 gap={4}
                 alignItems="center"
                 mt="10px"
+                onClick={() => {
+                  router.push("/modules/perfil");
+                  onClose();
+                }}
               >
                 <Image
                   w="55px"
                   h="55px"
-                  src={defaultPicture}
+                  src={user?.profilePicture || defaultPicture}
                   borderRadius="100%"
                 />
                 <Text color="white" fontWeight="bold" fontSize="16px">
@@ -303,6 +310,40 @@ export function MenuMobile() {
                     );
                   })}
                 </Accordion>
+
+                <Box
+                  as="button"
+                  onClick={() => {
+                    router.push("/modules/perfil");
+                    onClose();
+                  }}
+                  h="60px"
+                  bg={isPerfilPage ? "white" : undefined}
+                  borderRadius={4}
+                  p={2}
+                  mt={3}
+                  display="flex"
+                  flexDir="row"
+                  alignItems="center"
+                  gap={3}
+                  _hover={{
+                    borderRadius: 4,
+                    fontWeight: "bold",
+                  }}
+                >
+                  <Icon
+                    as={FaUserCircle}
+                    boxSize={7}
+                    color={isPerfilPage ? "menu_principal" : "white"}
+                  />
+                  <Text
+                    color={isPerfilPage ? "menu_principal" : "white"}
+                    fontSize="md"
+                    fontWeight="semi-bold"
+                  >
+                    Perfil
+                  </Text>
+                </Box>
               </Stack>
             </Flex>
 
