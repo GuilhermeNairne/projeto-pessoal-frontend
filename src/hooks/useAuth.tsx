@@ -74,8 +74,10 @@ export function useAuth() {
     return response.data;
   }
 
-  async function deleteAccount() {
-    const response = await api.delete("auth/me");
+  async function deleteAccount(currentPassword: string) {
+    const response = await api.delete("auth/me", {
+      data: { currentPassword },
+    });
 
     return response.data;
   }

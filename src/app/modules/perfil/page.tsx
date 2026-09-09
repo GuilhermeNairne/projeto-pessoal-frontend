@@ -31,6 +31,8 @@ import { useAuth } from "@/hooks/useAuth";
 const defaultPicture =
   "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg";
 
+const MAX_PROFILE_PICTURE_SIZE = 5 * 1024 * 1024;
+
 export default function Perfil() {
   const { user, signOut, updateUser } = useAuthContext();
   const {
@@ -56,6 +58,7 @@ export default function Perfil() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteAccountPassword, setDeleteAccountPassword] = useState("");
 
   function handleSelectPicture() {
     fileInputRef.current?.click();
@@ -76,6 +79,17 @@ export default function Perfil() {
       return;
     }
 
+    if (file.size > MAX_PROFILE_PICTURE_SIZE) {
+      toast({
+        position: "top",
+        status: "error",
+        isClosable: true,
+        title: "Imagem muito grande",
+        description: `A imagem deve ter no máximo ${MAX_PROFILE_PICTURE_SIZE / (1024 * 1024)}MB.`,
+      });
+      return;
+    }
+
     const previewUrl = URL.createObjectURL(file);
     setProfilePicture(previewUrl);
 
@@ -91,15 +105,25 @@ export default function Perfil() {
         isClosable: true,
         title: "Foto de perfil atualizada!",
       });
-    } catch {
+    } catch (error: any) {
       setProfilePicture(user?.profilePicture || defaultPicture);
 
-      toast({
-        position: "top",
-        status: "error",
-        isClosable: true,
-        title: "Erro ao atualizar a foto de perfil!",
-      });
+      if (error?.response?.status === 413) {
+        toast({
+          position: "top",
+          status: "error",
+          isClosable: true,
+          title: "Imagem muito grande",
+          description: `A imagem deve ter no máximo ${MAX_PROFILE_PICTURE_SIZE / (1024 * 1024)}MB.`,
+        });
+      } else {
+        toast({
+          position: "top",
+          status: "error",
+          isClosable: true,
+          title: "Erro ao atualizar a foto de perfil!",
+        });
+      }
     } finally {
       setIsUploadingPicture(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -216,10 +240,20 @@ export default function Perfil() {
   }
 
   async function handleDeleteAccount() {
+    if (!deleteAccountPassword) {
+      toast({
+        position: "top",
+        status: "warning",
+        isClosable: true,
+        title: "Informe sua senha para confirmar a exclusão.",
+      });
+      return;
+    }
+
     try {
       setIsDeletingAccount(true);
 
-      await deleteAccount();
+      await deleteAccount(deleteAccountPassword);
 
       toast({
         position: "top",
@@ -229,17 +263,38 @@ export default function Perfil() {
       });
 
       onClose();
-      signOut();
-    } catch {
-      toast({
-        position: "top",
-        status: "error",
-        isClosable: true,
-        title: "Erro ao excluir a conta!",
-      });
+
+      try {
+        await signOut();
+      } catch {
+        // account no longer exists — session is already invalid server-side
+      }
+
+      window.location.href = "/login";
+    } catch (error: any) {
+      if (error?.response?.status === 401 || error?.response?.status === 400) {
+        toast({
+          position: "top",
+          status: "error",
+          isClosable: true,
+          title: "Senha incorreta.",
+        });
+      } else {
+        toast({
+          position: "top",
+          status: "error",
+          isClosable: true,
+          title: "Erro ao excluir a conta!",
+        });
+      }
     } finally {
       setIsDeletingAccount(false);
     }
+  }
+
+  function handleCloseDeleteDialog() {
+    setDeleteAccountPassword("");
+    onClose();
   }
 
   return (
@@ -452,7 +507,7 @@ export default function Perfil() {
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
-        onClose={onClose}
+        onClose={handleCloseDeleteDialog}
       >
         <AlertDialogOverlay />
 
@@ -465,16 +520,25 @@ export default function Perfil() {
             <Text mb={3}>
               Tem certeza que deseja excluir sua conta <b>{user?.name}</b>?
             </Text>
-            <Text color={"text.muted"} fontSize={"sm"}>
+            <Text color={"text.muted"} fontSize={"sm"} mb={4}>
               Esta ação é permanente e não pode ser desfeita. Todos os dados
               associados à sua conta, incluindo contas financeiras, tarefas,
               categorias e notificações cadastradas, serão excluídos
               definitivamente.
             </Text>
+
+            <DefaultInput
+              position="cima"
+              title="Confirme sua senha"
+              placeholder="Informe sua senha atual"
+              type="password"
+              value={deleteAccountPassword}
+              onChange={(e) => setDeleteAccountPassword(e.target.value)}
+            />
           </AlertDialogBody>
 
           <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
+            <Button ref={cancelRef} onClick={handleCloseDeleteDialog}>
               Cancelar
             </Button>
 
