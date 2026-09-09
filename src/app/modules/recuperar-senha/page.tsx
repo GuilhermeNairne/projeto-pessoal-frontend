@@ -180,7 +180,7 @@ export default function RecuperarSenha() {
       w={"full"}
       h={"full"}
       p={{ base: 4, md: 6, lg: 10 }}
-      bg={"white"}
+      bg={"surface.canvas"}
     >
       <FirstScreen />
 
@@ -218,7 +218,7 @@ export default function RecuperarSenha() {
             <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight={"bold"} mt={2}>
               Esqueceu sua senha?
             </Text>
-            <Text fontSize={{ base: "md", md: "lg" }} color={"gray.400"}>
+            <Text fontSize={{ base: "md", md: "lg" }} color={"text.muted"}>
               Informe seu e-mail para receber um código de verificação
             </Text>
 
@@ -226,7 +226,7 @@ export default function RecuperarSenha() {
               <Text fontWeight={"bold"}>E-mail</Text>
               <InputGroup>
                 <InputLeftElement pointerEvents="none" mt={1}>
-                  <Icon as={MdOutlineEmail} boxSize={6} color="gray.400" />
+                  <Icon as={MdOutlineEmail} boxSize={6} color="text.muted" />
                 </InputLeftElement>
 
                 <Input
@@ -234,7 +234,7 @@ export default function RecuperarSenha() {
                   h="50px"
                   borderWidth={1}
                   boxShadow={"sm"}
-                  borderColor="gray.300"
+                  borderColor="border.default"
                   value={emailForm.values.email}
                   placeholder="seu@email.com"
                   onChange={emailForm.handleChange("email")}
@@ -267,9 +267,9 @@ export default function RecuperarSenha() {
             <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight={"bold"} mt={2}>
               Verifique seu e-mail
             </Text>
-            <Text fontSize={{ base: "md", md: "lg" }} color={"gray.400"}>
+            <Text fontSize={{ base: "md", md: "lg" }} color={"text.muted"}>
               Enviamos um código de 6 dígitos para{" "}
-              <Text as="span" fontWeight={"bold"} color={"gray.600"}>
+              <Text as="span" fontWeight={"bold"} color={"text.primary"}>
                 {recoveryEmail}
               </Text>
             </Text>
@@ -288,7 +288,7 @@ export default function RecuperarSenha() {
                   fontWeight={"bold"}
                   borderWidth={1}
                   boxShadow={"sm"}
-                  borderColor="gray.300"
+                  borderColor="border.default"
                   maxLength={1}
                   inputMode="numeric"
                   value={codeForm.values.code[index] ?? ""}
@@ -327,7 +327,7 @@ export default function RecuperarSenha() {
               mt={5}
             >
               <Text
-                color={"menu_principal"}
+                color={"text.primary"}
                 fontWeight={"bold"}
                 fontSize={"sm"}
                 textAlign={"center"}
@@ -343,7 +343,7 @@ export default function RecuperarSenha() {
             <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight={"bold"} mt={2}>
               Crie uma nova senha
             </Text>
-            <Text fontSize={{ base: "md", md: "lg" }} color={"gray.400"}>
+            <Text fontSize={{ base: "md", md: "lg" }} color={"text.muted"}>
               Sua nova senha precisa ser diferente da anterior
             </Text>
 
@@ -351,13 +351,13 @@ export default function RecuperarSenha() {
               <Text fontWeight={"bold"}>Nova senha</Text>
               <InputGroup>
                 <InputLeftElement pointerEvents="none" mt={1}>
-                  <Icon as={RiLockPasswordLine} boxSize={6} color="gray.400" />
+                  <Icon as={RiLockPasswordLine} boxSize={6} color="text.muted" />
                 </InputLeftElement>
                 <InputRightElement mt={1}>
                   <Icon
                     as={showPassword ? FaRegEye : FaRegEyeSlash}
                     boxSize={5}
-                    color="gray.400"
+                    color="text.muted"
                     cursor={"pointer"}
                     onClick={() => setShowPassword(!showPassword)}
                   />
@@ -368,7 +368,7 @@ export default function RecuperarSenha() {
                   pl="40px"
                   borderWidth={1}
                   boxShadow={"sm"}
-                  borderColor="gray.300"
+                  borderColor="border.default"
                   value={passwordForm.values.newPassword}
                   placeholder="Informe sua nova senha"
                   onChange={passwordForm.handleChange("newPassword")}
@@ -386,13 +386,13 @@ export default function RecuperarSenha() {
               <Text fontWeight={"bold"}>Confirme a nova senha</Text>
               <InputGroup>
                 <InputLeftElement pointerEvents="none" mt={1}>
-                  <Icon as={RiLockPasswordLine} boxSize={6} color="gray.400" />
+                  <Icon as={RiLockPasswordLine} boxSize={6} color="text.muted" />
                 </InputLeftElement>
                 <InputRightElement mt={1}>
                   <Icon
                     as={showPassword ? FaRegEye : FaRegEyeSlash}
                     boxSize={5}
-                    color="gray.400"
+                    color="text.muted"
                     cursor={"pointer"}
                     onClick={() => setShowPassword(!showPassword)}
                   />
@@ -403,7 +403,7 @@ export default function RecuperarSenha() {
                   pl="40px"
                   borderWidth={1}
                   boxShadow={"sm"}
-                  borderColor="gray.300"
+                  borderColor="border.default"
                   value={passwordForm.values.newPasswordRepeated}
                   placeholder="Confirme sua nova senha"
                   onChange={passwordForm.handleChange("newPasswordRepeated")}
@@ -434,7 +434,7 @@ export default function RecuperarSenha() {
             <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight={"bold"} mt={2}>
               Senha redefinida!
             </Text>
-            <Text fontSize={{ base: "md", md: "lg" }} color={"gray.400"}>
+            <Text fontSize={{ base: "md", md: "lg" }} color={"text.muted"}>
               Sua senha foi atualizada com sucesso. Você já pode fazer login com a
               nova senha.
             </Text>
@@ -457,7 +457,7 @@ export default function RecuperarSenha() {
             mt={5}
           >
             <Text
-              color={"gray.400"}
+              color={"text.muted"}
               fontWeight={"bold"}
               fontSize={"sm"}
               textAlign={"center"}
