@@ -16,6 +16,10 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
+import {
+  maskCurrencyInput,
+  parseCurrencyInput,
+} from "@/utils/convert-to-real";
 
 type Props = {
   isOpen: boolean;
@@ -26,7 +30,7 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
   const toast = useToast();
   const { user } = useAuthContext();
   const { createPanel } = usePanels();
-  const { values, handleChange, resetForm } = useFormik({
+  const { values, handleChange, setFieldValue, resetForm } = useFormik({
     initialValues: {
       name: "",
       inicial_value: "",
@@ -39,7 +43,9 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
       const params = {
         user_id: user?.id ?? "",
         name: values.name,
-        initial_value: values.inicial_value,
+        initial_value: String(
+          parseCurrencyInput(values.inicial_value),
+        ),
       };
 
       await createPanel(params);
@@ -85,8 +91,12 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
             title="Valor"
             value={values.inicial_value}
             mt="20px"
-            type="number"
-            onChange={handleChange("inicial_value")}
+            onChange={(e) =>
+              setFieldValue(
+                "inicial_value",
+                maskCurrencyInput(e.target.value),
+              )
+            }
           />
         </ModalBody>
 

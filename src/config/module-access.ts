@@ -12,8 +12,15 @@ export const MODULE_ROLES: Record<ModuleKey, string[]> = {
   admin: [ADMIN_ROLE],
 };
 
+function normalizeRoleName(name: string) {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase();
+}
+
 export function hasModuleAccess(user: UserWithRoles, moduleKey: ModuleKey) {
-  const roleNames = user?.roles?.map((role) => role.name) ?? [];
+  const roleNames = user?.roles?.map((role) => normalizeRoleName(role.name)) ?? [];
 
   if (roleNames.includes(ADMIN_ROLE)) return true;
 

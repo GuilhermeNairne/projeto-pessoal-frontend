@@ -274,11 +274,7 @@ export default function Home() {
                     }}
                   >
                     <HStack gap={4} minW={0}>
-                      <Icon
-                        as={item.icon}
-                        boxSize={6}
-                        color={"text.primary"}
-                      />
+                      <Icon as={item.icon} boxSize={6} color={"text.primary"} />
 
                       <Box textAlign={"left"} minW={0}>
                         <Text
@@ -289,7 +285,11 @@ export default function Home() {
                         >
                           {item.nome}
                         </Text>
-                        <Text fontSize={"md"} color={"text.muted"} noOfLines={1}>
+                        <Text
+                          fontSize={"md"}
+                          color={"text.muted"}
+                          noOfLines={1}
+                        >
                           {item.descricao}
                         </Text>
                       </Box>
