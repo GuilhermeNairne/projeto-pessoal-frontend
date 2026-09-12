@@ -159,6 +159,7 @@ export function Menu() {
           <Image
             w={"70px"}
             h={"70px"}
+            objectFit={"cover"}
             src={user?.profilePicture || defaultPicture}
             borderRadius={"100%"}
           />
