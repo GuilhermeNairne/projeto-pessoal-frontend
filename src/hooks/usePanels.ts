@@ -6,6 +6,7 @@ import {
   PanelsType,
   TotalSalaryType,
 } from "@/types/financial-types";
+import { parseCurrencyInput } from "@/utils/convert-to-real";
 
 export function usePanels() {
   async function listPanels(user_id: string) {
@@ -41,7 +42,7 @@ export function usePanels() {
   async function editPanel(values: EditPanelType) {
     const result = await api.patch(`financial-panel/update/${values.id}`, {
       name: values.panel,
-      initial_value: Number(values.value.replace(/,/g, ".")),
+      initial_value: parseCurrencyInput(values.value),
     });
 
     return result;

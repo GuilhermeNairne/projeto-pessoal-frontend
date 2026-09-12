@@ -5,6 +5,7 @@ import {
   MovementsPaginaionType,
   MovementsType,
 } from "@/types/financial-types";
+import { parseCurrencyInput } from "@/utils/convert-to-real";
 
 export function useMovements() {
   async function listMovements(
@@ -26,7 +27,7 @@ export function useMovements() {
     const bodyUpdated = {
       ...body,
       category_id: Number(body.category_id),
-      value: Number(String(body.value).replace(/\./g, "").replace(",", ".")),
+      value: parseCurrencyInput(String(body.value)),
       date: new Date(body.date),
     };
 
@@ -55,9 +56,7 @@ export function useMovements() {
         category_id: Number(body.category_id),
       }),
       ...(body.value !== undefined && {
-        value: Number(
-          String(body.value).replace(/\./g, "").replace(",", "."),
-        ),
+        value: parseCurrencyInput(String(body.value)),
       }),
       ...(body.date !== undefined && { date: new Date(body.date) }),
     };

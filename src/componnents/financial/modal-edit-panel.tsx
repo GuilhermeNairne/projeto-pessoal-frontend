@@ -17,6 +17,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { maskCurrencyInput } from "@/utils/convert-to-real";
 
 type Props = {
   isOpen: boolean;
@@ -34,11 +35,13 @@ export function EditPanelModal({
   const toast = useToast();
   const { editPanel } = usePanels();
   const [isLoading, setIsLoading] = useState(false);
-  const { values, handleChange, resetForm } = useFormik({
+  const { values, handleChange, setFieldValue, resetForm } = useFormik({
     initialValues: {
       id: panelValues.id,
       panel: panelValues.panel,
-      value: panelValues.value,
+      value: maskCurrencyInput(
+        String(Math.round(Number(panelValues.value) * 100)),
+      ),
     },
     enableReinitialize: true,
     onSubmit: (values) => { },
@@ -93,7 +96,9 @@ export function EditPanelModal({
               title="Valor"
               mt="20px"
               value={String(values.value)}
-              onChange={handleChange("value")}
+              onChange={(e) =>
+                setFieldValue("value", maskCurrencyInput(e.target.value))
+              }
             />
           </Stack>
         </ModalBody>

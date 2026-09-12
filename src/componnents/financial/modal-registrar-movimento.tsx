@@ -25,7 +25,7 @@ import {
 import { useMovements } from "@/hooks/useMovements";
 import { useState } from "react";
 import { brToIso } from "@/utils/brToIso";
-import { formatarValorBR } from "@/utils/convert-to-real";
+import { maskCurrencyInput } from "@/utils/convert-to-real";
 
 type Props = {
   isOpen: boolean;
@@ -73,10 +73,12 @@ export function ModalRegistrarMovimento({
     ? (painelEscolhido?.categories ?? [])
     : (categorys ?? []);
 
-  const { values, handleChange, resetForm } = useFormik({
+  const { values, handleChange, setFieldValue, resetForm } = useFormik({
     initialValues: {
       name: movement?.name ?? "",
-      value: movement ? formatarValorBR(movement.value) ?? "" : "",
+      value: movement
+        ? maskCurrencyInput(String(Math.round(movement.value * 100)))
+        : "",
       category_id: movement?.category_id ?? 0,
       movement_type: movement?.movement_type ?? "",
       painel_id: Number(painelIdAtual),
@@ -224,7 +226,9 @@ export function ModalRegistrarMovimento({
             position="cima"
             mt="20px"
             value={String(values.value)}
-            onChange={handleChange("value")}
+            onChange={(e) =>
+              setFieldValue("value", maskCurrencyInput(e.target.value))
+            }
           />
 
           <DefaultInput
