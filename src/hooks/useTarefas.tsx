@@ -85,7 +85,7 @@ export function useTarefas() {
 
   async function createTarefa(body: createTarefaType) {
     const [horas, minutos] = String(body.tempo).split(":").map(Number);
-    const tempoEmMinutos = horas * 60 + minutos;
+    const tempoEmMinutos = body.tempo ? horas * 60 + minutos : 0;
 
     const result = await api.post("/tarefas", {
       ...body,
