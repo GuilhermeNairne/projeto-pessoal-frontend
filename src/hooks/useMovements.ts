@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import { useQueryClient } from "react-query";
 import { FiltrosMovementsType } from "@/componnents/financial/filtros";
 import {
   ExpensesByMonthType,
@@ -8,6 +9,13 @@ import {
 import { parseCurrencyInput } from "@/utils/convert-to-real";
 
 export function useMovements() {
+  const queryClient = useQueryClient();
+
+  function refreshGraphics() {
+    queryClient.invalidateQueries("graphics");
+    queryClient.invalidateQueries("salary");
+  }
+
   async function listMovements(
     id_panel: string,
     filtros: FiltrosMovementsType | null,
@@ -32,6 +40,7 @@ export function useMovements() {
     };
 
     const result = await api.post("financial-movement/create", bodyUpdated);
+    refreshGraphics();
 
     return result;
   }
@@ -45,6 +54,7 @@ export function useMovements() {
     const result = await api.delete(`financial-movement/delete/${id}`, {
       data: body,
     });
+    refreshGraphics();
 
     return result;
   }
@@ -65,6 +75,7 @@ export function useMovements() {
       `financial-movement/update/${id}`,
       bodyUpdated,
     );
+    refreshGraphics();
 
     return result;
   }
