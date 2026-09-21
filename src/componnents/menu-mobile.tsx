@@ -196,6 +196,7 @@ export function MenuMobile() {
                 <Image
                   w="55px"
                   h="55px"
+                  objectFit="cover"
                   src={user?.profilePicture || defaultPicture}
                   borderRadius="100%"
                 />
