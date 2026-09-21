@@ -8,6 +8,7 @@ type Props = {
   mt?: string;
   value?: string;
   type?: string;
+  isDisabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -19,6 +20,7 @@ export function DefaultInput({
   mt,
   type,
   value,
+  isDisabled,
   onChange,
 }: Props) {
   return (
@@ -34,6 +36,7 @@ export function DefaultInput({
             onChange={onChange}
             value={value}
             bg={"surface.card"}
+            isDisabled={isDisabled}
             type={type ?? "string"}
           />
         </Stack>
@@ -48,6 +51,7 @@ export function DefaultInput({
             bg={"surface.card"}
             onChange={onChange}
             value={value}
+            isDisabled={isDisabled}
             type={type ?? "string"}
           />
         </HStack>

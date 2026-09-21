@@ -137,6 +137,7 @@ export default function Notificacoes() {
                 position="cima"
                 title="Telefone (WhatsApp)"
                 value={telefone}
+                isDisabled
                 onChange={(e) => setTelefone(e.target.value)}
               />
             </Box>
