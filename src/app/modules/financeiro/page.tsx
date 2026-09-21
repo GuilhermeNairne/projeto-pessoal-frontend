@@ -154,7 +154,7 @@ export default function Financeiro() {
                   onClick={() =>
                     handleEditPanel({
                       panel: panel.name,
-                      value: panel.initial_value,
+                      value: String(panel.initial_value),
                       id: panel.id ?? 0,
                     })
                   }

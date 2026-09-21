@@ -143,7 +143,8 @@ export default function Calendario() {
           borderLeftWidth={1}
           borderTopRadius={10}
           alignSelf={`center`}
-          borderColor={"border.default"}
+          borderColor={"cinza_900"}
+          _dark={{ borderColor: "fio" }}
           justifyContent={`space-between`}
         >
           {daysName.map((name) => (
@@ -188,7 +189,8 @@ export default function Calendario() {
                 onClick={() => day && navigateTarefas(day.getDate())}
                 overflowY={{ base: "hidden", md: "auto" }}
                 css={ScrollBarcss}
-                borderColor={"border.default"}
+                borderColor={"cinza_900"}
+                _dark={{ borderColor: "fio" }}
                 _hover={{
                   bg: "surface.hover",
                   cursor: "pointer",
