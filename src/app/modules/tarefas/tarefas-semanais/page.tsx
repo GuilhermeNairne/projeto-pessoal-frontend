@@ -30,9 +30,11 @@ import { useQuery } from "react-query";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function TarefasSemanais() {
   const router = useRouter();
+  const { user } = useAuthContext();
   const searchParams = useSearchParams();
   const { listTarefaPorDia } = useTarefas();
   const dateParam = searchParams.get("date");
@@ -60,11 +62,13 @@ export default function TarefasSemanais() {
   });
 
   const { data: tarefas, refetch } = useQuery({
-    queryKey: ["tarefas-semana", startOfWeek, endOfWeek],
+    queryKey: ["tarefas-semana", startOfWeek, endOfWeek, user?.id],
+    enabled: !!user?.id,
     queryFn: async () =>
       listTarefaPorDia(
         ConvertDataToBR(String(startOfWeek)),
         ConvertDataToBR(String(endOfWeek)),
+        user?.id ?? "",
       ),
   });
 

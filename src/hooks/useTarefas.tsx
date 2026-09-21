@@ -71,9 +71,13 @@ export function useTarefas() {
     return result;
   }
 
-  async function listTarefaPorDia(primeiroDia: string, ultimoDia: string) {
+  async function listTarefaPorDia(
+    primeiroDia: string,
+    ultimoDia: string,
+    user_id: string,
+  ) {
     const result = await api.get<ListTarefasSemanaType>("/tarefas/semana", {
-      params: { primeiroDia, ultimoDia },
+      params: { primeiroDia, ultimoDia, user_id },
     });
 
     return result;
