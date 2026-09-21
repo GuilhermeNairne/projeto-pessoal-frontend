@@ -1,10 +1,17 @@
 import { useFormik } from "formik";
-import { FaSave } from "react-icons/fa";
+import { FaSave, FaTrash } from "react-icons/fa";
 import { DefaultInput } from "../default-input";
 import { DefaultButton } from "../default-button";
 import { usePanels } from "@/hooks/usePanels";
 import { EditPanelType } from "@/types/financial-types";
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,9 +21,10 @@ import {
   ModalOverlay,
   Stack,
   Text,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { maskCurrencyInput } from "@/utils/convert-to-real";
 
 type Props = {
@@ -33,8 +41,14 @@ export function EditPanelModal({
   panelValues,
 }: Props) {
   const toast = useToast();
-  const { editPanel } = usePanels();
+  const { editPanel, deletePanel } = usePanels();
+  const cancelRef = useRef<HTMLButtonElement>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    isOpen: isConfirmOpen,
+    onOpen: onConfirmOpen,
+    onClose: onConfirmClose,
+  } = useDisclosure();
   const { values, handleChange, setFieldValue, resetForm } = useFormik({
     initialValues: {
       id: panelValues.id,
@@ -46,6 +60,31 @@ export function EditPanelModal({
     enableReinitialize: true,
     onSubmit: (values) => { },
   });
+
+  async function handleDelete() {
+    try {
+      setIsLoading(true);
+      await deletePanel(panelValues.id);
+      onConfirmClose();
+      onClose();
+      refetch();
+      return toast({
+        title: "Painel excluído com sucesso!",
+        status: "success",
+        position: "top",
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao excluir painel",
+        status: "error",
+        position: "top",
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   async function handleEdit() {
     try {
@@ -102,7 +141,20 @@ export function EditPanelModal({
             />
           </Stack>
         </ModalBody>
-        <ModalFooter mt={"30px"} display={"flex"} justifyContent={"center"}>
+        <ModalFooter
+          mt={"30px"}
+          gap={5}
+          display={"flex"}
+          justifyContent={"center"}
+        >
+          <DefaultButton
+            icon={FaTrash}
+            title="Excluir"
+            bg="linear(to-r, #41150f, #650d0d)"
+            w="150px"
+            isLoading={isLoading}
+            onClick={onConfirmOpen}
+          />
           <DefaultButton
             icon={FaSave}
             title="Salvar"
@@ -112,6 +164,37 @@ export function EditPanelModal({
           />
         </ModalFooter>
       </ModalContent>
+      <AlertDialog
+        isOpen={isConfirmOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onConfirmClose}
+      >
+        <AlertDialogOverlay />
+        <AlertDialogContent mx={{ base: 4 }}>
+          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+            Excluir painel
+          </AlertDialogHeader>
+
+          <AlertDialogBody>
+            Deseja excluir o painel <b>{panelValues.panel}</b>? Todos os dados
+            vinculados a ele também serão apagados e esta ação não pode ser
+            desfeita.
+          </AlertDialogBody>
+
+          <AlertDialogFooter gap={3}>
+            <Button ref={cancelRef} onClick={onConfirmClose}>
+              Cancelar
+            </Button>
+            <Button
+              colorScheme="red"
+              isLoading={isLoading}
+              onClick={handleDelete}
+            >
+              Excluir
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Modal>
   );
 }

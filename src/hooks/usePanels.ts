@@ -48,6 +48,12 @@ export function usePanels() {
     return result;
   }
 
+  async function deletePanel(id: number) {
+    const result = await api.delete(`financial-panel/delete/${id}`);
+
+    return result;
+  }
+
   async function feesByMonth(panel_id: number) {
     const result = await api.get<FeesByMonthType[]>(
       `financial-panel/fees/${panel_id}`,
@@ -74,6 +80,7 @@ export function usePanels() {
     listPanels,
     createPanel,
     editPanel,
+    deletePanel,
     expensesGraphics,
     feesByMonth,
     totalSalary,
