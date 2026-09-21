@@ -1,4 +1,9 @@
 
+/* Orange accent: colors the nav arrows and today's date */
+.rdp-root {
+  --rdp-accent-color: #f97316;
+}
+
 .rdp-month {
   background: white;
   border-radius: 12px;
