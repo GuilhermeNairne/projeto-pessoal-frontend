@@ -16,10 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
-import {
-  maskCurrencyInput,
-  parseCurrencyInput,
-} from "@/utils/convert-to-real";
+import { maskCurrencyInput, parseCurrencyInput } from "@/utils/convert-to-real";
 
 type Props = {
   isOpen: boolean;
@@ -35,7 +32,7 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
       name: "",
       inicial_value: "",
     },
-    onSubmit: (values) => { },
+    onSubmit: (values) => {},
   });
 
   async function handleClick() {
@@ -43,9 +40,7 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
       const params = {
         user_id: user?.id ?? "",
         name: values.name,
-        initial_value: String(
-          parseCurrencyInput(values.inicial_value),
-        ),
+        initial_value: Number(parseCurrencyInput(values.inicial_value)),
       };
 
       await createPanel(params);
@@ -94,7 +89,7 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
             onChange={(e) =>
               setFieldValue(
                 "inicial_value",
-                maskCurrencyInput(e.target.value),
+                Number(maskCurrencyInput(e.target.value)),
               )
             }
           />

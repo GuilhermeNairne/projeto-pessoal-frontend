@@ -2,7 +2,7 @@ export type PanelsType = {
   id?: number;
   user_id: string;
   name: string;
-  initial_value: string;
+  initial_value: number;
   categories?: CategoriesType[];
   movements?: MovementsType[];
 };
