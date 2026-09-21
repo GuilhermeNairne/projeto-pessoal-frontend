@@ -87,10 +87,7 @@ export function ModalNovoPainel({ isOpen, onClose }: Props) {
             value={values.inicial_value}
             mt="20px"
             onChange={(e) =>
-              setFieldValue(
-                "inicial_value",
-                Number(maskCurrencyInput(e.target.value)),
-              )
+              setFieldValue("inicial_value", maskCurrencyInput(e.target.value))
             }
           />
         </ModalBody>
