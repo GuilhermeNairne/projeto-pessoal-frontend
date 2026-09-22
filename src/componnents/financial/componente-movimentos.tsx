@@ -4,6 +4,7 @@ import { useMovements } from "@/hooks/useMovements";
 import { MovementsType, PanelsType } from "@/types/financial-types";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import { ModalRegistrarMovimento } from "./modal-registrar-movimento";
+import { ModalConfirmarExclusaoMovimento } from "./modal-confirmar-exclusao-movimento";
 import {
   Box,
   Flex,
@@ -31,6 +32,9 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
   const [editingMovement, setEditingMovement] = useState<MovementsType | null>(
     null,
   );
+  const [movementToDelete, setMovementToDelete] =
+    useState<MovementsType | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   async function handleDelete(
     id: number,
@@ -38,8 +42,10 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
     movement_value: number,
   ) {
     try {
+      setIsDeleting(true);
       await deleteMovement(id, panel_id, movement_value);
 
+      setMovementToDelete(null);
       refetch();
 
       return toast({
@@ -55,6 +61,8 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
         position: "top",
         isClosable: true,
       });
+    } finally {
+      setIsDeleting(false);
     }
   }
   return (
@@ -167,9 +175,7 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
                   <Icon
                     w="2%"
                     as={FaTrash}
-                    onClick={() =>
-                      handleDelete(occ.id ?? 0, panel.id ?? 0, occ.value)
-                    }
+                    onClick={() => setMovementToDelete(occ)}
                   />
                 </Box>
               ))
@@ -185,6 +191,20 @@ export function ComponenteMovimentos({ panel, refetch, navigate }: Props) {
         painel_id={String(panel.id ?? "")}
         categorys={panel.categories ?? []}
         movement={editingMovement}
+      />
+
+      <ModalConfirmarExclusaoMovimento
+        movement={movementToDelete}
+        isLoading={isDeleting}
+        onClose={() => setMovementToDelete(null)}
+        onConfirm={() =>
+          movementToDelete &&
+          handleDelete(
+            movementToDelete.id ?? 0,
+            panel.id ?? 0,
+            movementToDelete.value,
+          )
+        }
       />
     </>
   );

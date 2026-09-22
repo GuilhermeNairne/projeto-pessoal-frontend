@@ -12,6 +12,7 @@ import { formatarValorBR } from "@/utils/convert-to-real";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import { Filtros, FiltrosMovementsType } from "@/componnents/financial/filtros";
 import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
+import { ModalConfirmarExclusaoMovimento } from "@/componnents/financial/modal-confirmar-exclusao-movimento";
 import {
   FaChevronDown,
   FaChevronLeft,
@@ -48,6 +49,9 @@ export default function Movimentacoes() {
   const [filtros, setFiltros] = useState<FiltrosMovementsType | null>({});
   const [editingMovement, setEditingMovement] =
     useState<MovementsType | null>(null);
+  const [movementToDelete, setMovementToDelete] =
+    useState<MovementsType | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const {
     data: result,
@@ -74,8 +78,10 @@ export default function Movimentacoes() {
     movement_value: number,
   ) {
     try {
+      setIsDeleting(true);
       await deleteMovement(id, panel_id, movement_value);
 
+      setMovementToDelete(null);
       refetch();
 
       return toast({
@@ -91,6 +97,8 @@ export default function Movimentacoes() {
         position: "top",
         isClosable: true,
       });
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -229,13 +237,7 @@ export default function Movimentacoes() {
                   <Icon
                     w="2%"
                     as={FaTrash}
-                    onClick={() =>
-                      handleDelete(
-                        occ.id ?? 0,
-                        Number(id_panel) ?? 0,
-                        occ.value,
-                      )
-                    }
+                    onClick={() => setMovementToDelete(occ)}
                   />
                   <Icon
                     w="2%"
@@ -330,6 +332,20 @@ export default function Movimentacoes() {
         painel_id={id_panel ?? ""}
         categorys={categories?.data ?? []}
         movement={editingMovement}
+      />
+
+      <ModalConfirmarExclusaoMovimento
+        movement={movementToDelete}
+        isLoading={isDeleting}
+        onClose={() => setMovementToDelete(null)}
+        onConfirm={() =>
+          movementToDelete &&
+          handleDelete(
+            movementToDelete.id ?? 0,
+            Number(id_panel) ?? 0,
+            movementToDelete.value,
+          )
+        }
       />
     </Flex>
   );

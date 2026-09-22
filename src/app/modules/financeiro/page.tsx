@@ -6,6 +6,7 @@ import { Menu } from "@/componnents/menu";
 import { FaPencil } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { usePanels } from "@/hooks/usePanels";
+import { FaTags } from "react-icons/fa";
 import { GrTransaction } from "react-icons/gr";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useAuthContext } from "@/contexts/AuthContext";
@@ -13,7 +14,6 @@ import { PainelContas } from "@/componnents/financial/painel-contas";
 import { EditPanelModal } from "@/componnents/financial/modal-edit-panel";
 import { ModalNovoPainel } from "@/componnents/financial/modal-novo-painel";
 import { ComponenteMovimentos } from "@/componnents/financial/componente-movimentos";
-import { CategoriasComponente } from "@/componnents/financial/categorias-componente";
 import { ModalRegistrarMovimento } from "@/componnents/financial/modal-registrar-movimento";
 import {
   CategoriesType,
@@ -198,22 +198,31 @@ export default function Financeiro() {
               />
             )}
 
-            <HStack
+            <Flex
               w={"100%"}
-              display={"flex"}
-              mt={"60px"}
+              mt={{ base: "30px", lg: "60px" }}
+              flexDir={{ base: "column", lg: "row" }}
+              gap={{ base: 6, lg: 5 }}
               justifyContent={"space-between"}
               alignItems={"flex-start"}
             >
               <GraficoGastosMes painelSelecionado={panel.id ?? 0} />
 
-              {isMobile ? null : (
-                <CategoriasComponente
-                  panel={panel}
-                  refetch={() => refetchPanel()}
-                />
-              )}
-            </HStack>
+              <Link
+                order={{ base: -1, lg: 0 }}
+                alignSelf={{ base: "flex-end", lg: "flex-start" }}
+                onClick={() =>
+                  router.push(
+                    `/modules/financeiro/categorias?id_panel=${panel.id}`,
+                  )
+                }
+              >
+                <HStack>
+                  <Text fontSize={"lg"}>Gerenciar categorias</Text>
+                  <Icon as={FaTags} boxSize={"5"} />
+                </HStack>
+              </Link>
+            </Flex>
           </Box>
         ))}
       </Flex>

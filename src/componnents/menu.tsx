@@ -12,6 +12,7 @@ import {
   FaKey,
   FaHome,
   FaUserCircle,
+  FaTags,
 } from "react-icons/fa";
 
 import {
@@ -62,6 +63,11 @@ const menuOpcoes: {
         pagina: "Gráficos",
         rota: "modules/financeiro/graficos",
         icon: FaChartBar,
+      },
+      {
+        pagina: "Categorias",
+        rota: "modules/financeiro/categorias",
+        icon: FaTags,
       },
     ],
   },
