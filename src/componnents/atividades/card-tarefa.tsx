@@ -28,12 +28,9 @@ export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
 
   async function handleEditaTarefa() {
     try {
-      const body = {
-        ...dadosTarefa,
-        tempo: String(dadosTarefa.tempo),
+      await editTarefa(dadosTarefa.id, {
         status: dadosTarefa.status === "Concluida" ? "Pendente" : "Concluida",
-      };
-      await editTarefa(dadosTarefa.id, body);
+      });
 
       refetch();
     } catch (error) {
@@ -56,7 +53,11 @@ export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
       flexDir={`column`}
       borderLeftWidth={2}
       alignSelf={"center"}
-      bg={dadosTarefa.status === "Concluido" ? "surface.taskDone" : "surface.taskActive"}
+      bg={
+        dadosTarefa.status === "Concluido"
+          ? "surface.taskDone"
+          : "surface.taskActive"
+      }
       borderLeftColor={
         dadosTarefa.status === "Concluida" ? "border.default" : "text.primary"
       }
@@ -65,14 +66,18 @@ export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
         <HStack>
           <Icon
             as={LuClipboardCheck}
-            color={dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"}
+            color={
+              dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"
+            }
             boxSize={5}
             sx={{ strokeWidth: 2 }}
           />
           <Text
             fontWeight={`bold`}
             maxW={`80%`}
-            color={dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"}
+            color={
+              dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"
+            }
           >
             {dadosTarefa.nome}
           </Text>
@@ -105,10 +110,14 @@ export function CardTarefa({ dadosTarefa, onClick, refetch }: Props) {
           <Icon
             as={CiClock2}
             sx={{ strokeWidth: 1 }}
-            color={dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"}
+            color={
+              dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"
+            }
           />
           <Text
-            color={dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"}
+            color={
+              dadosTarefa.status === "Concluida" ? "text.muted" : "text.primary"
+            }
           >
             {tempoFormatado} horas
           </Text>

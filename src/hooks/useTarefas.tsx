@@ -19,6 +19,7 @@ export type ListTarefasReturnType = {
     nome: string;
     cor: string;
   };
+  notificacao: { id: number; date: string; isCurrent: boolean } | null;
 };
 
 type createTarefaType = {
@@ -28,7 +29,13 @@ type createTarefaType = {
   data: string;
   userId: string;
   categoriaId: number;
+  enviarAviso?: boolean;
+  dataAviso?: string;
 };
+
+// PATCH aceita apenas os campos editados: o backend repassa o body ao Prisma,
+// então campos como id, categoria e notificacao não podem ser enviados.
+type editTarefaType = Partial<createTarefaType> & { status?: string };
 
 type ListTarefasSemanaType = Record<
   string,
@@ -84,29 +91,42 @@ export function useTarefas() {
   }
 
   async function createTarefa(body: createTarefaType) {
-    const [horas, minutos] = String(body.tempo).split(":").map(Number);
-    const tempoEmMinutos = body.tempo ? horas * 60 + minutos : 0;
+    const { enviarAviso, dataAviso, ...tarefa } = body;
+    const [horas, minutos] = String(tarefa.tempo).split(":").map(Number);
+    const tempoEmMinutos = tarefa.tempo ? horas * 60 + minutos : 0;
 
     const result = await api.post("/tarefas", {
-      ...body,
-      categoriaId: Number(body.categoriaId),
+      ...tarefa,
+      categoriaId: Number(tarefa.categoriaId),
       tempo: Number(tempoEmMinutos),
+      ...(enviarAviso ? { enviarAviso: true, dataAviso } : {}),
     });
 
     return result;
   }
 
-  async function editTarefa(id_tarefa: number, body: createTarefaType) {
-    const [horas, minutos] = String(body.tempo).split(":").map(Number);
-    const tempoEmMinutos = horas * 60 + minutos;
+  async function editTarefa(id_tarefa: number, body: editTarefaType) {
+    const { enviarAviso, dataAviso, tempo, data, ...campos } = body;
+    const payload: Record<string, unknown> = { ...campos };
 
-    const result = await api.patch(`/tarefas/${id_tarefa}`, {
-      ...body,
-      data: new Date(body.data),
-      tempo: body.tempo.includes(":")
-        ? Number(tempoEmMinutos)
-        : Number(body.tempo),
-    });
+    if (tempo !== undefined) {
+      const [horas, minutos] = String(tempo).split(":").map(Number);
+      payload.tempo = String(tempo).includes(":")
+        ? horas * 60 + minutos
+        : Number(tempo);
+    }
+
+    if (data !== undefined) payload.data = new Date(data);
+
+    if (enviarAviso === true) {
+      payload.enviarAviso = true;
+      payload.dataAviso = dataAviso;
+    } else if (enviarAviso === false) {
+      // Desmarcar na edição remove a notificação da tarefa
+      payload.enviarAviso = false;
+    }
+
+    const result = await api.patch(`/tarefas/${id_tarefa}`, payload);
 
     return result;
   }
