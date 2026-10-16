@@ -8,6 +8,8 @@ export type NotificacaoType = {
   date: string;
   isCurrent: boolean;
   method: "EMAIL" | "WHATSAPP" | "BOTH";
+  tarefaId: number | null;
+  recurring: boolean;
   createdAt: string;
   updatedAt: string;
 };

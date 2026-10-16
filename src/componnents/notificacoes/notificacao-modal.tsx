@@ -20,6 +20,7 @@ import { DefaultButton } from "../default-button";
 import { FaSave, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { useFormik } from "formik";
+import { useQueryClient } from "react-query";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { NotificacaoType, useNotifications } from "@/hooks/useNotifications";
 
@@ -39,8 +40,18 @@ export function NotificacaoModal({
   const toast = useToast();
   const { user } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
   const { createNotification, editNotification, deleteNotification } =
     useNotifications();
+  const isTarefa = !!notificacao?.tarefaId;
+  // Para notificação de tarefa, isCurrent significa "pendente", não recorrente
+  const isRecurring = notificacao?.recurring ?? notificacao?.isCurrent ?? false;
+
+  // A notificação de uma tarefa aparece como checkbox/data no modal da tarefa
+  function reloadTarefas() {
+    queryClient.invalidateQueries("tarefas");
+    queryClient.invalidateQueries("tarefas-semana");
+  }
 
   const { values, handleChange, resetForm, handleSubmit, setFieldValue } =
     useFormik({
@@ -48,10 +59,11 @@ export function NotificacaoModal({
         title: notificacao?.title ?? "",
         description: notificacao?.description ?? "",
         date: notificacao?.date ? notificacao.date.substring(0, 10) : "",
-        recurrentDay: notificacao?.isCurrent && notificacao?.date
-          ? String(new Date(notificacao.date).getUTCDate())
-          : "1",
-        isCurrent: notificacao?.isCurrent ?? false,
+        recurrentDay:
+          isRecurring && notificacao?.date
+            ? String(new Date(notificacao.date).getUTCDate())
+            : "1",
+        isCurrent: isRecurring,
         method: notificacao?.method ?? "EMAIL",
       },
       enableReinitialize: true,
@@ -64,12 +76,9 @@ export function NotificacaoModal({
     if (values.isCurrent) {
       const today = new Date();
       const day = Number(values.recurrentDay);
-      const month = today.getDate() >= day
-        ? today.getMonth() + 1
-        : today.getMonth();
-      const year = month > 11
-        ? today.getFullYear() + 1
-        : today.getFullYear();
+      const month =
+        today.getDate() >= day ? today.getMonth() + 1 : today.getMonth();
+      const year = month > 11 ? today.getFullYear() + 1 : today.getFullYear();
       const adjustedMonth = month > 11 ? 0 : month;
       return new Date(year, adjustedMonth, day).toISOString().substring(0, 10);
     }
@@ -117,7 +126,8 @@ export function NotificacaoModal({
         title: values.title,
         description: values.description,
         date: buildDate(),
-        isCurrent: values.isCurrent,
+        // Não alterar isCurrent de notificação de tarefa (controlado pelo backend)
+        ...(isTarefa ? {} : { isCurrent: values.isCurrent }),
         method: values.method as "EMAIL" | "WHATSAPP" | "BOTH",
       });
 
@@ -130,6 +140,7 @@ export function NotificacaoModal({
 
       onClose();
       reload();
+      reloadTarefas();
       resetForm();
     } catch (error: any) {
       toast({
@@ -157,6 +168,7 @@ export function NotificacaoModal({
 
       onClose();
       reload();
+      reloadTarefas();
       resetForm();
     } catch (error: any) {
       toast({
@@ -202,15 +214,17 @@ export function NotificacaoModal({
             />
           </Stack>
 
-          <Stack mt={5}>
-            <Checkbox
-              isChecked={values.isCurrent}
-              onChange={(e) => setFieldValue("isCurrent", e.target.checked)}
-              colorScheme="blue"
-            >
-              <Text fontWeight={"bold"}>Notificação recorrente</Text>
-            </Checkbox>
-          </Stack>
+          {!isTarefa && (
+            <Stack mt={5}>
+              <Checkbox
+                isChecked={values.isCurrent}
+                onChange={(e) => setFieldValue("isCurrent", e.target.checked)}
+                colorScheme="blue"
+              >
+                <Text fontWeight={"bold"}>Notificação recorrente</Text>
+              </Checkbox>
+            </Stack>
+          )}
 
           {values.isCurrent ? (
             <Stack mt={5}>

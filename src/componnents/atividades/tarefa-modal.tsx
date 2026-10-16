@@ -1,4 +1,6 @@
 import {
+  Badge,
+  Checkbox,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -29,8 +31,20 @@ type Props = {
   reload: () => void;
 };
 
+function getErrorMessage(error: any, fallback: string) {
+  const message = error?.response?.data?.message;
+
+  if (Array.isArray(message)) return message.join("\n");
+  if (typeof message === "string" && error?.response?.status === 400) {
+    return message;
+  }
+
+  return fallback;
+}
+
 export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
   const toast = useToast();
+  const hoje = brToIso(new Date().toLocaleDateString("pt-BR"));
   const { user } = useAuthContext();
   const tempoMinutos = tarefa?.tempo ?? 0;
   const horas = Math.floor(Number(tempoMinutos) / 60);
@@ -44,29 +58,61 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
     queryFn: async () => listCategorias(user?.id ?? ""),
   });
 
-  const { values, handleChange, resetForm, handleSubmit } = useFormik({
-    initialValues: {
-      nome: tarefa?.nome ?? "",
-      tempo: tarefa?.tempo
-        ? `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}`
-        : "",
-      descricao: tarefa?.descricao ?? "",
-      categoriaId: Number(tarefa?.categoriaId) ?? 0,
-      data: tarefa?.data
-        ? tarefa.data.split("T")[0]
-        : brToIso(new Date().toLocaleDateString("pt-BR")),
-      userId: user?.id ?? "",
-    },
-    enableReinitialize: true,
-    onSubmit: () => {
-      tarefa?.id ? handleEditTarefa() : handleCreateTarefa();
-    },
-  });
+  const { values, handleChange, resetForm, handleSubmit, setFieldValue } =
+    useFormik({
+      initialValues: {
+        nome: tarefa?.nome ?? "",
+        tempo: tarefa?.tempo
+          ? `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}`
+          : "",
+        descricao: tarefa?.descricao ?? "",
+        categoriaId: Number(tarefa?.categoriaId) ?? 0,
+        data: tarefa?.data
+          ? tarefa.data.split("T")[0]
+          : brToIso(new Date().toLocaleDateString("pt-BR")),
+        userId: user?.id ?? "",
+        enviarAviso: !!tarefa?.notificacao,
+        dataAviso: tarefa?.notificacao?.date.slice(0, 10) ?? "",
+      },
+      enableReinitialize: true,
+      onSubmit: () => {
+        if (!validateAviso()) return;
+
+        tarefa?.id ? handleEditTarefa() : handleCreateTarefa();
+      },
+    });
+
+  // Aviso existente com a data intacta: nada a validar nem a enviar no PATCH
+  const avisoInalterado =
+    values.enviarAviso &&
+    !!tarefa?.notificacao &&
+    values.dataAviso === tarefa.notificacao.date.slice(0, 10);
+
+  function validateAviso() {
+    if (!values.enviarAviso || avisoInalterado) return true;
+
+    const title = !values.dataAviso
+      ? "Informe a data do aviso!"
+      : values.dataAviso < hoje
+        ? "A data do aviso deve ser hoje ou posterior!"
+        : "";
+
+    if (title) {
+      toast({ position: "top", isClosable: true, status: "error", title });
+    }
+
+    return !title;
+  }
 
   async function handleEditTarefa() {
     try {
       setIsLoading(true);
-      await editTarefa(tarefa?.id ?? 0, values);
+      const { enviarAviso, dataAviso, ...campos } = values;
+
+      await editTarefa(
+        tarefa?.id ?? 0,
+        avisoInalterado ? campos : { ...campos, enviarAviso, dataAviso },
+      );
 
       toast({
         position: "top",
@@ -83,7 +129,7 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
         position: "top",
         isClosable: true,
         status: "error",
-        title: "Erro ao editar tarefa!",
+        title: getErrorMessage(error, "Erro ao editar tarefa!"),
       });
     } finally {
       setIsLoading(false);
@@ -136,7 +182,7 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
         position: "top",
         isClosable: true,
         status: "error",
-        title: "Erro ao cadastrar tarefa!",
+        title: getErrorMessage(error, "Erro ao cadastrar tarefa!"),
       });
     } finally {
       setIsLoading(false);
@@ -213,6 +259,39 @@ export function TarefaModal({ isOpen, onClose, tarefa, reload }: Props) {
             value={values.data}
             onChange={handleChange("data")}
           />
+
+          <Stack mt={5}>
+            <Checkbox
+              isChecked={values.enviarAviso}
+              onChange={(e) => setFieldValue("enviarAviso", e.target.checked)}
+              colorScheme="blue"
+            >
+              <Text fontWeight={"bold"}>Enviar aviso</Text>
+            </Checkbox>
+          </Stack>
+
+          {values.enviarAviso && (
+            <>
+              <DefaultInput
+                title="Data do aviso"
+                placeholder="Informe a data do aviso"
+                position="cima"
+                mt="20px"
+                type="date"
+                min={hoje}
+                value={values.dataAviso}
+                onChange={handleChange("dataAviso")}
+              />
+              {tarefa?.notificacao && !tarefa.notificacao.isCurrent && (
+                <Stack mt={2} direction={"row"} alignItems={"center"}>
+                  <Badge colorScheme="gray">Aviso enviado</Badge>
+                  <Text fontSize={"sm"} color={"text.muted"}>
+                    Alterar a data reativa o aviso.
+                  </Text>
+                </Stack>
+              )}
+            </>
+          )}
         </ModalBody>
         <ModalFooter gap={5} mt={"30px"} display={"flex"}>
           {tarefa?.nome && (

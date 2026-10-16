@@ -54,6 +54,12 @@ export default function Notificacoes() {
     });
   }
 
+  // Notificações vindas de tarefa têm isCurrent true enquanto pendentes,
+  // mas nunca se repetem: o campo que vale é recurring.
+  function isRecurring(notificacao: NotificacaoType) {
+    return notificacao.recurring ?? notificacao.isCurrent;
+  }
+
   function getMethodLabel(method: string) {
     switch (method) {
       case "EMAIL":
@@ -218,7 +224,14 @@ export default function Notificacoes() {
                 >
                   Título:
                 </Text>
-                <Text fontWeight={"semi-bold"}>{notificacao.title}</Text>
+                <Text fontWeight={"semi-bold"} noOfLines={1}>
+                  {notificacao.title}
+                </Text>
+                {notificacao.tarefaId && (
+                  <Badge colorScheme="orange" borderRadius={4} px={2}>
+                    Tarefa
+                  </Badge>
+                )}
               </HStack>
 
               <HStack w={{ base: "100%", md: "25%" }}>
@@ -243,7 +256,7 @@ export default function Notificacoes() {
                   Data:
                 </Text>
                 <Text fontWeight={"semi-bold"}>
-                  {notificacao.isCurrent
+                  {isRecurring(notificacao)
                     ? `Dia ${new Date(notificacao.date).getUTCDate()}`
                     : ConvertDataToBR(notificacao.date)}
                 </Text>
@@ -287,11 +300,11 @@ export default function Notificacoes() {
                   Recorrente:
                 </Text>
                 <Badge
-                  colorScheme={notificacao.isCurrent ? "green" : "gray"}
+                  colorScheme={isRecurring(notificacao) ? "green" : "gray"}
                   borderRadius={4}
                   px={2}
                 >
-                  {notificacao.isCurrent ? "Sim" : "Não"}
+                  {isRecurring(notificacao) ? "Sim" : "Não"}
                 </Badge>
               </HStack>
 
