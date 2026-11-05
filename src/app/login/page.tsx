@@ -34,7 +34,7 @@ export default function Login() {
   const { signIn } = useAuthContext();
   const [showPassword, setShowPassword] = useState(false);
 
-  const { values, handleChange, resetForm, handleSubmit } = useFormik({
+  const { values, handleChange, setFieldValue, handleSubmit } = useFormik({
     initialValues: {
       email: "",
       password: "",
@@ -58,6 +58,8 @@ export default function Login() {
         title: "Login realizado com sucesso!",
       });
     } catch (error: any) {
+      setFieldValue("password", "");
+
       if (error?.response?.status === 429) {
         toast({
           position: "top",
@@ -75,7 +77,6 @@ export default function Login() {
         });
       }
     } finally {
-      resetForm();
       setIsLoading(false);
     }
   }
