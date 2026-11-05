@@ -6,6 +6,7 @@ import { Menu } from "@/componnents/menu";
 import { MenuMobile } from "@/componnents/menu-mobile";
 import { usePanels } from "@/hooks/usePanels";
 import { PiPiggyBankFill } from "react-icons/pi";
+import { FiltroMes } from "@/componnents/financial/filtro-mes";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { formatarValorBR } from "@/utils/convert-to-real";
 import { GraficoGastosMes } from "@/componnents/financial/grafico-gastos-mes";
@@ -22,6 +23,8 @@ export default function Graficos() {
     id_panel: number;
     panel: string;
   } | null>(null);
+  const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
+  const [mesAtual, setMesAtual] = useState(new Date().getMonth() + 1);
 
   const { data: panels } = useQuery({
     queryKey: ["panels", user?.id],
@@ -135,10 +138,26 @@ export default function Graficos() {
             flexDir={"column"}
             borderRadius={10}
           >
-            <GraficoGastosMes painelSelecionado={painelSelecionado.id_panel} />
+            <FiltroMes
+              mb={10}
+              mesAtual={mesAtual}
+              anoAtual={anoAtual}
+              onChange={(mes, ano) => {
+                setMesAtual(mes);
+                setAnoAtual(ano);
+              }}
+            />
+
+            <GraficoGastosMes
+              painelSelecionado={painelSelecionado.id_panel}
+              mesAtual={mesAtual}
+              anoAtual={anoAtual}
+            />
 
             <GraficoSalarioDespesas
               painelSelecionado={painelSelecionado.id_panel}
+              mesAtual={mesAtual}
+              anoAtual={anoAtual}
             />
 
             <GraficoJurosMensais

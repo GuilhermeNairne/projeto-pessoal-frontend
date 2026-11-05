@@ -3,15 +3,11 @@ import { formatarValorBR } from "@/utils/convert-to-real";
 import {
   Box,
   Center,
-  HStack,
-  Icon,
   Spinner,
   Stack,
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useQuery } from "react-query";
 import {
   VictoryAxis,
@@ -23,6 +19,8 @@ import {
 
 type Props = {
   painelSelecionado: number;
+  mesAtual: number;
+  anoAtual: number;
 };
 
 const CORES = {
@@ -30,19 +28,14 @@ const CORES = {
   despesas: "#d50c20",
 };
 
-export function GraficoSalarioDespesas({ painelSelecionado }: Props) {
+export function GraficoSalarioDespesas({
+  painelSelecionado,
+  mesAtual,
+  anoAtual,
+}: Props) {
   const { totalSalary, expensesGraphics } = usePanels();
-  const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
-  const [mesAtual, setMesAtual] = useState(new Date().getMonth() + 1);
   const chartWidth = useBreakpointValue({ base: 320, md: 550 }) ?? 550;
   const chartHeight = 110;
-
-  function alteraMes(funcao: "proximo" | "anterior") {
-    const data = new Date(anoAtual, mesAtual - 1);
-    data.setMonth(data.getMonth() + (funcao === "proximo" ? 1 : -1));
-    setMesAtual(data.getMonth() + 1);
-    setAnoAtual(data.getFullYear());
-  }
 
   const { data: salaryData, isLoading: isLoadingSalary } = useQuery({
     queryKey: ["salary", mesAtual, anoAtual, painelSelecionado],
@@ -78,19 +71,6 @@ export function GraficoSalarioDespesas({ painelSelecionado }: Props) {
       <Text fontSize={"lg"} fontWeight={"bold"}>
         Salário x Despesas do mês
       </Text>
-
-      <HStack mt={5} justifyContent={"space-between"} w={"150px"}>
-        <Icon as={FaChevronLeft} onClick={() => alteraMes("anterior")} />
-        <HStack>
-          <Text style={{ textTransform: "capitalize" }}>
-            {new Date(2026, mesAtual - 1).toLocaleString("pt-BR", {
-              month: "long",
-            })}
-          </Text>
-          <Text>{anoAtual}</Text>
-        </HStack>
-        <Icon as={FaChevronRight} onClick={() => alteraMes("proximo")} />
-      </HStack>
 
       {isLoading ? (
         <Center mt={10}>
