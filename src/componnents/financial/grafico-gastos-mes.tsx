@@ -3,25 +3,31 @@ import {
   Box,
   Center,
   HStack,
-  Icon,
   Spinner,
   Stack,
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useQuery } from "react-query";
 import { VictoryPie, VictoryTheme } from "victory";
+import { FiltroMes } from "./filtro-mes";
 
 type Props = {
   painelSelecionado: number;
+  // Quando informados, o mês é controlado por fora e o filtro interno não aparece
+  mesAtual?: number;
+  anoAtual?: number;
 };
 
-export function GraficoGastosMes({ painelSelecionado }: Props) {
+export function GraficoGastosMes({ painelSelecionado, ...props }: Props) {
   const { expensesGraphics } = usePanels();
-  const [anoAtual, setAnoAtual] = useState(new Date().getFullYear());
-  const [mesAtual, setMesAtual] = useState(new Date().getMonth() + 1);
+  const [anoInterno, setAnoInterno] = useState(new Date().getFullYear());
+  const [mesInterno, setMesInterno] = useState(new Date().getMonth() + 1);
+  const filtroExterno =
+    props.mesAtual !== undefined && props.anoAtual !== undefined;
+  const mesAtual = props.mesAtual ?? mesInterno;
+  const anoAtual = props.anoAtual ?? anoInterno;
   const pieSize = useBreakpointValue({ base: 260, md: 350 }) ?? 350;
   const pieInnerRadius = useBreakpointValue({ base: 50, md: 80 }) ?? 80;
 
@@ -35,33 +41,24 @@ export function GraficoGastosMes({ painelSelecionado }: Props) {
       expensesGraphics(painelSelecionado ?? 0, mesAtual, anoAtual),
   });
 
-  function alteraMes(funcao: "proximo" | "anterior") {
-    const data = new Date(anoAtual, mesAtual - 1);
-    data.setMonth(data.getMonth() + (funcao === "proximo" ? 1 : -1));
-    setMesAtual(data.getMonth() + 1);
-    setAnoAtual(data.getFullYear());
-  }
-
   return (
     <Box>
       <Text fontSize={"lg"} fontWeight={"bold"}>
         Gráfico de gastos do mês
       </Text>
 
-      {expensesGraphicsData?.total_expenses === 0 ? null : (
-        <HStack mt={10} justifyContent={"space-between"} w={"150px"}>
-          <Icon as={FaChevronLeft} onClick={() => alteraMes("anterior")} />
-          <HStack>
-            <Text style={{ textTransform: "capitalize" }}>
-              {new Date(2026, mesAtual - 1).toLocaleString("pt-BR", {
-                month: "long",
-              })}
-            </Text>
-            <Text>{anoAtual}</Text>
-          </HStack>
-          <Icon as={FaChevronRight} onClick={() => alteraMes("proximo")} />
-        </HStack>
+      {filtroExterno ? null : (
+        <FiltroMes
+          mt={10}
+          mesAtual={mesAtual}
+          anoAtual={anoAtual}
+          onChange={(mes, ano) => {
+            setMesInterno(mes);
+            setAnoInterno(ano);
+          }}
+        />
       )}
+
       {expensesGraphicsData?.total_expenses === 0 ? (
         <Text mt={10} fontWeight={`bold`}>
           Nenhum movimento registrado nesse mês
