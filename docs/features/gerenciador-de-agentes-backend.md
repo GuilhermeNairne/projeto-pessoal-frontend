@@ -316,6 +316,8 @@ Isso não cria colunas na tabela `users`.
 - `worktreePath` e o caminho do clone são **derivados de UUIDs** (`<AGENTS_DATA_DIR>/repos/<repoId>.git` e
   `<AGENTS_DATA_DIR>/worktrees/<taskId>`), nunca de texto do usuário.
 - Retenção: os eventos vivem enquanto a task existir; apagar a task apaga os eventos (cascade).
+- Eventos de exclusão (`task.deleted`, `repository.deleted`, 7.2) são gravados **sem** `taskId`/`repositoryId` (o id excluído
+  vai no `payload`), na mesma transação do delete e depois dele. Assim o cascade não os apaga e eles continuam no replay.
 
 ### 3.6 Exclusão de conta e de usuário
 
@@ -401,8 +403,12 @@ para `failed` com `statusReason = server_restart`.
 1. Valida `(from → to)` na tabela acima (constante única, testada exaustivamente).
 2. Numa transação: `UPDATE agent_tasks SET status = :to, … WHERE id = :id AND status IN (:from)`. Se nenhuma linha
    for afetada → `409 INVALID_TRANSITION` (outra ação chegou antes).
-3. Na mesma transação: insere `task.status_changed` com `{ from, to, reason, actor }`.
+3. Na mesma transação: insere `task.status_changed` com `{ from, to, reason, actor, attempt, task }`, em que `task` é o
+   objeto `Task` da seção 9.2 **depois** da transição (com `allowedActions`, `queuePosition`, `blockedBy`, `pendingApprovals`,
+   `costUsd` e `cancelRequestedAt`).
 4. Depois do commit: publica o evento no bus (7.4) e, se aplicável, acorda o scheduler.
+5. A resposta HTTP da ação é montada **depois** do commit, então o `Task.lastEventId` devolvido já inclui o evento gerado
+   pela própria ação (9.2).
 
 ---
 
@@ -596,7 +602,7 @@ Todas as operações git usam `execFile('git', [...args], { cwd, timeout, env })
    3. `abortController.abort()` e `Query.close()`;
    4. depois de 10 s sem encerrar: kill da árvore de processos;
    5. aprovações → `cancelled`; transição para `cancelled`.
-3. Resposta `202` com a task. O estado final chega por SSE (`task.status_changed`).
+3. Resposta `202` com a task, já com `cancelRequestedAt` preenchido (9.2). O estado final chega por SSE (`task.status_changed`).
 
 ### 6.7 Recuperação após reinício do servidor
 
@@ -653,10 +659,14 @@ Envelope (o mesmo no SSE e no histórico REST):
 
 | `type` | Origem | Persistido | `payload` |
 |---|---|---|---|
+| `repository.created` | RepositoriesService | sim | `{ repository: Repository }` |
+| `repository.updated` | RepositoriesService (PATCH) | sim | `{ changes: { name?, allowedBashCommands? } }` |
 | `repository.status_changed` | GitService | sim | `{ status, statusMessage?, defaultBranch? }` |
+| `repository.deleted` | RepositoriesService | sim | `{ repositoryId }` (envelope com `repositoryId`, `taskId` e `seq` nulos; ver 3.5) |
 | `task.created` | TasksService | sim | `{ task: Task }` (objeto da seção 9) |
 | `task.updated` | TasksService | sim | `{ changes: { title?, prompt?, priority?, … } }` |
-| `task.status_changed` | StateMachine | sim | `{ from, to, reason?, actor: "user" \| "scheduler" \| "runner" \| "watchdog" \| "recovery", attempt }` |
+| `task.status_changed` | StateMachine | sim | `{ from, to, reason?, actor: "user" \| "scheduler" \| "runner" \| "watchdog" \| "recovery", attempt, task: Task }` (`task` = estado depois da transição, 4.4) |
+| `task.deleted` | TasksService | sim | `{ taskId, repositoryId }` (envelope com `taskId`, `seq` e `repositoryId` nulos; ver 3.5) |
 | `worktree.created` | GitService | sim | `{ branch, baseBranch, reused: boolean }` |
 | `worktree.removed` | GitService | sim | `{ branchKept: boolean }` |
 | `agent.session_started` | Runner (`system`/`init`) | sim | `{ sessionId, model, permissionMode, tools: string[], resumed: boolean }` |
@@ -667,15 +677,15 @@ Envelope (o mesmo no SSE e no histórico REST):
 | `agent.tool_result` | Runner (`tool_result` de outras ferramentas) | sim | `{ toolUseId, tool, isError, summary }` |
 | `agent.file_changed` | Hook `PostToolUse` (Write, Edit, MultiEdit, NotebookEdit) | sim | `{ toolUseId, path, changeType: "created" \| "modified" \| "deleted", tool }` (`path` relativo ao worktree) |
 | `agent.changes_summary` | Runner (fim da execução, `git diff --numstat`) | sim | `{ files: [{ path, additions, deletions, status }], committed: boolean, commitSha? }` |
-| `agent.question` | `canUseTool` com `AskUserQuestion` | sim | `{ approvalId, questions: [{ question, header, options: [{ label, description }], multiSelect }] }` |
+| `agent.question` | `canUseTool` com `AskUserQuestion` | sim | `{ approvalId, questions: [{ question, header, options: [{ label, description }], multiSelect }], expiresAt }` |
 | `approval.requested` | `canUseTool` (demais ferramentas) | sim | `{ approvalId, tool, input, reason?, expiresAt }` |
 | `approval.resolved` | ApprovalsService | sim | `{ approvalId, status: "approved" \| "denied" \| "answered" \| "expired" \| "cancelled", message?, answers? }` |
 | `agent.notice` | Runner (retry de API, rate limit, compactação de contexto) | sim | `{ kind, message }` |
 | `agent.result` | Runner (`result`) | sim | `{ subtype, isError, numTurns, costUsd, durationMs, result? }` |
 | `agent.error` | Runner/Watchdog | sim | `{ code, message }` (ex.: `timeout`, `process_crashed`, `sdk_error`) |
 | `system.metrics` | MetricsService | **não** | ver `GET /agents/system/metrics` (só no stream de métricas) |
-| `system.pressure` | AdmissionService | **não** | `{ level: "warning" \| "critical", reason, memPercent, cpuPercent }` (só no stream de métricas) |
-| `stream.ready` | EventsController | **não** | `{ replayed: number, lastEventId }` (fim do replay) |
+| `system.pressure` | AdmissionService | **não** | `{ level: "normal" \| "warning" \| "critical", reason, memPercent, cpuPercent }` (só no stream de métricas; `normal`, com `reason: "ok"`, é enviado quando a pressão volta ao normal) |
+| `stream.ready` | EventsController | **não** | `{ replayed: number, lastEventId: string \| null }` (fim do replay; `lastEventId` é o cursor a guardar, ver 7.4) |
 | `stream.resync_required` | EventsController | **não** | `{ reason: "too_many_missed" \| "cursor_unknown" }` |
 | `stream.reauth` | EventsController | **não** | `{}` (o JWT vai expirar; reconecte após `/auth/refresh`) |
 
@@ -712,16 +722,24 @@ flowchart LR
 1. Autentica (API key + JWT + role) como qualquer rota HTTP.
 2. Lê o cursor: header `Last-Event-ID` (reconexão nativa) ou `?lastEventId=` (primeira conexão após carregar o histórico por REST).
 3. **Assina o bus primeiro** e guarda os eventos ao vivo num buffer.
-4. Consulta `agent_events WHERE userId = :me AND id > :cursor [AND taskId = …] ORDER BY id LIMIT 1000`.
-   - Mais de 1000 pendentes → envia `stream.resync_required` e encerra. O cliente recarrega por REST e reconecta com o cursor novo.
+4. **Com cursor:** consulta `agent_events WHERE userId = :me AND id > :cursor [AND taskId = …] ORDER BY id LIMIT 1000`.
+   - Mais de 1000 pendentes → envia `stream.resync_required` e encerra. O cliente recarrega por REST e reconecta **sem cursor**.
    - Cursor maior que o último id existente → `stream.resync_required` com `cursor_unknown`.
+
+   **Sem cursor:** não há replay (só eventos ao vivo). O servidor lê o maior `id` do usuário (respeitando os filtros
+   `taskId`/`repositoryId`), que vira o `lastEventId` do `stream.ready`; eventos do buffer com `id` menor ou igual a ele são
+   descartados, porque o cliente carrega o estado por REST depois do `stream.ready`.
 5. Envia o replay, depois o buffer **sem duplicar** (descarta `id <= último enviado`) e então o fluxo ao vivo.
-6. Envia `stream.ready`.
-7. Comentário SSE `: ping` a cada 15 s (mantém proxies abertos). Headers `Cache-Control: no-cache` e `X-Accel-Buffering: no`.
+6. Envia `stream.ready` com `lastEventId` = último `id` enviado no replay ou, sem cursor, o maior `id` do usuário lido no
+   passo 4 (`null` se o usuário não tem eventos; o cliente trata como `"0"`).
+7. Comentário SSE `: ping` a cada 15 s (mantém proxies abertos). O heartbeat continua sendo comentário, não há evento
+   `stream.ping`. Headers `Cache-Control: no-cache` e `X-Accel-Buffering: no`.
 8. No `exp` do access token (1 h, ver `docs/backend/arquitetura.md`), envia `stream.reauth` e fecha. O cliente chama
    `POST /auth/refresh` e reconecta com `Last-Event-ID`, sem perder eventos.
 
 **Contrato para o cliente:**
+- Primeira conexão (ou depois de `stream.resync_required`): conectar **sem cursor**, guardar o `lastEventId` do `stream.ready`
+  e só então carregar o estado por REST.
 - Guardar o maior `id` recebido; reconectar com ele. Deduplicar por `id`. Para a tela de uma task, `seq` contínuo permite
   detectar buracos (se `seq` pular, recarregar `GET /agents/tasks/:id/events?afterSeq=`).
 - O `EventSource` nativo não envia headers customizados. Opções: `?api_key=` (aceito pelo `ApiKeyGuard`, mas a chave
@@ -842,7 +860,7 @@ sequenceDiagram
 | `PRESET_NOT_ALLOWED` | 403 | `autonomous` sem role `ADMIN` |
 | `NOT_FOUND` | 404 | inexistente ou de outro usuário |
 | `REPOSITORY_ALREADY_EXISTS` | 409 | mesmo `gitUrl` para o mesmo usuário |
-| `REPOSITORY_NOT_READY` | 409 | criar task ou dar fetch com o repositório em `cloning`, `fetching` ou `error` |
+| `REPOSITORY_NOT_READY` | 409 | criar, enfileirar ou tentar de novo uma task com o repositório em `cloning`, `fetching` ou `error`; dar fetch com o repositório em `cloning` ou `fetching` (em `error` o fetch é permitido, 9.3) |
 | `REPOSITORY_HAS_ACTIVE_TASKS` | 409 | apagar repositório com tasks `queued`, `running` ou `waiting_approval` |
 | `BRANCH_NOT_FOUND` | 422 | `baseBranch` não existe no remoto |
 | `INVALID_TRANSITION` | 409 | ação incompatível com o status atual |
@@ -879,7 +897,8 @@ interface Task {
   timeoutSeconds: number; maxTurns: number; attempt: number;
   activeMs: number; numTurns: number | null; costUsd: string | null; resultSummary: string | null;
   worktreeAvailable: boolean; pendingApprovals: number;
-  lastEventId: string | null; lastSeq: number;
+  cancelRequestedAt: string | null;        // preenchido no cancelamento assíncrono (6.6), até a task chegar em cancelled
+  lastEventId: string | null; lastSeq: number; // nas respostas de mutação, já inclui o evento gerado pela mutação (4.4)
   queuePosition: number | null;            // só em queued (1 = próxima)
   blockedBy: AdmissionReason | null;       // só em queued
   allowedActions: Array<'edit' | 'enqueue' | 'dequeue' | 'cancel' | 'retry' | 'delete'>; // derivado da máquina de estados
@@ -940,6 +959,8 @@ Erros: `404` · `409 REPOSITORY_NOT_READY`.
 
 #### `POST /agents/repositories/:id/fetch` — AG, throttle 30/h
 Atualiza as refs remotas. Response `202`: `Repository` com `status: "fetching"`. Erros: `404` · `409 REPOSITORY_NOT_READY` (já em `cloning`/`fetching`).
+Em `error` o fetch é **permitido** (é a saída prevista em 6.7). Se não houver clone local válido, o que acontece (re-clonar
+ou voltar para `error` com `statusMessage`) fica _a confirmar_ na implementação.
 
 #### `DELETE /agents/repositories/:id` — AG
 Apaga o repositório, suas tasks e eventos (cascade) e os arquivos (clone e worktrees). Response `200`: `{ "deleted": true }`.
@@ -982,7 +1003,8 @@ Exceção: `priority` também pode mudar em `queued`.
 Response `200`: `Task`. Erros: `400` · `403 PRESET_NOT_ALLOWED` · `404` · `409 TASK_NOT_EDITABLE` · `422 BRANCH_NOT_FOUND`.
 
 #### Ações de estado — AG
-Todas sem body e com response `Task`. O estado final também chega por `task.status_changed`.
+Todas sem body e com response `Task`, cujo `lastEventId` já inclui o evento gerado pela ação (4.4). O estado final também
+chega por `task.status_changed`, que traz a `Task` completa.
 
 | Método | Rota | Transição | Sucesso | Erros |
 |---|---|---|---|---|
@@ -1048,6 +1070,7 @@ Query (lida com `@Query('x')`, não com DTO de classe):
 - `api_key?` (alternativa ao header, para `EventSource` nativo).
 
 Header: `Last-Event-ID` (tem precedência sobre `lastEventId`).
+**Sem cursor**, o stream só entrega eventos ao vivo e o `stream.ready` traz o cursor a guardar (`lastEventId`, ver 7.4).
 
 Formato no fio: todos os eventos usam o tipo padrão `message`. O tipo real vai em `data.type`, então o cliente precisa de um
 único listener. Eventos persistidos têm `id:`; os de controle (`stream.*`) não têm.
@@ -1073,7 +1096,7 @@ Response `200`: `SystemMetrics` (9.2). `perAgent` traz só as tasks do usuário;
 
 #### `GET /agents/system/metrics/stream` — AG (SSE)
 Um evento sem `id` a cada `AGENTS_METRICS_INTERVAL_MS`: `data: {"type":"system.metrics","payload":SystemMetrics}`.
-Também envia `system.pressure` quando o nível muda. Não há replay (são métricas efêmeras).
+Também envia `system.pressure` quando o nível muda, inclusive a volta para `normal`. Não há replay (são métricas efêmeras).
 
 #### `GET /agents/system/config` — JWT + roles `ADMIN`
 Response `200`: os valores efetivos das variáveis `AGENTS_*`, exceto segredos e caminhos absolutos:
@@ -1203,6 +1226,24 @@ ler o `.env` e enviar o conteúdo para fora. É a maior superfície de risco do 
 7. **P7 (D9/D8):** aprovações costumam ser respondidas na hora ou você quer deixar tasks esperando por horas? Isso decide se vale suspender a sessão para liberar slot.
 8. **P8 (D12):** os repositórios têm `CLAUDE.md` ou configurações que o agente deveria seguir?
 
+### 11.4 Ajustes vindos da revisão do front-end (2026-10-21)
+
+Lacunas apontadas em `docs/features/gerenciador-de-agentes-frontend.md` (seção 10.2) e incorporadas a este contrato:
+
+| Lacuna do front | Decisão | Seções alteradas | Fase |
+|---|---|---|---|
+| L1: cursor inicial | Sem cursor = só ao vivo; `stream.ready.lastEventId` é o cursor a guardar; depois de `resync_required`, reconectar sem cursor | 7.2, 7.4, 9.6 | 3 |
+| L2: `status_changed` sem campos derivados | `payload.task` com a `Task` completa depois da transição | 4.4, 7.2, 9.4 | 3 |
+| L4: exclusões e repositório sem evento | Novos `task.deleted`, `repository.created`, `repository.updated`, `repository.deleted` | 3.5, 7.2 | 3 |
+| L5: `agent.question` sem `expiresAt` | `expiresAt` no payload | 7.2 | 6 |
+| L6: pressão sem volta ao normal | `system.pressure` com `level: "normal"` | 7.2, 9.7 | 7 |
+| L9: fetch em `error` | Permitido; o 409 é só em `cloning`/`fetching` | 9.1, 9.3 | 1 |
+| L14: `cancelRequestedAt` | Exposto na `Task` | 6.6, 9.2 | 2 (campo) / 4 (cancelamento assíncrono) |
+| L16: `lastEventId` nas mutações | A resposta é montada depois do commit e inclui o evento da ação | 4.4, 9.2, 9.4 | 2/3 |
+
+O heartbeat continua como comentário `: ping` (7.4). As demais lacunas do front (L3, L7, L8, L10–L13, L15, L17, L19–L23)
+seguem em aberto.
+
 ---
 
 ## 12. Plano de implementação
@@ -1221,7 +1262,7 @@ repositório bare **local** criado em diretório temporário. Para isso, `GIT_AL
 
 ### Fase 1: Repositórios (clone)
 - Tabela `agent_repositories`; `GitService` (`execFile`, timeouts, protocolo restrito); endpoints da seção 9.3; clone em segundo
-  plano; validação de URL (https, sem credenciais, sem IP privado).
+  plano; validação de URL (https, sem credenciais, sem IP privado); `POST /fetch` permitido em `error` (9.3).
 - Eventos ainda só no `Logger` (a persistência vem na fase 3).
 - **Aceite:** `POST` de um repositório público → `202 cloning` → `ready` com `defaultBranch` e `branches`. URLs `file://`,
   `http://`, `https://user:pw@…` e `https://127.0.0.1/…` → 400. Repositório de outro usuário → 404. `DELETE` remove o diretório.
@@ -1229,7 +1270,7 @@ repositório bare **local** criado em diretório temporário. Para isso, `GIT_AL
 
 ### Fase 2: Tasks e máquina de estados (sem execução)
 - Tabela `agent_tasks`; `TaskStateMachine` com a tabela da seção 4.2; endpoints da seção 9.4, exceto `changes`/`diff`;
-  `allowedActions` derivado da máquina.
+  `allowedActions` derivado da máquina; `cancelRequestedAt` exposto na `Task` (9.2).
 - **Aceite:** teste unitário que percorre **todas** as combinações de status × ação (permitidas → sucesso; demais → `409
   INVALID_TRANSITION`). Teste de corrida: dois `cancel`/`dequeue` simultâneos → exatamente um vence. Os PATCH validam o body
   (sem `Partial<>`). Task de outro usuário → 404.
@@ -1237,8 +1278,12 @@ repositório bare **local** criado em diretório temporário. Para isso, `GIT_AL
 ### Fase 3: Eventos persistidos e SSE
 - Tabela `agent_events`; `EventsService` (writer único, publica após o commit, redação de segredos, truncamento); a máquina de
   estados e o `GitService` passam a emitir eventos; `GET /agents/tasks/:id/events`; `GET /agents/events/stream` com
-  `Last-Event-ID`, replay, `stream.ready`, ping e `stream.reauth`.
-- **Aceite:** `curl -N` no stream mostra `task.status_changed` ao enfileirar e cancelar. Teste: desconectar, gerar 5 eventos,
+  `Last-Event-ID`, replay, `stream.ready` (com o cursor), conexão sem cursor só ao vivo, ping e `stream.reauth`;
+  `task.status_changed` com `payload.task`; `task.deleted` e `repository.created/updated/deleted` (3.5, 7.2); `lastEventId`
+  nas respostas das mutações (4.4).
+- **Aceite:** `curl -N` no stream mostra `task.status_changed` ao enfileirar e cancelar, com a `Task` completa no payload.
+  Conectar sem cursor → nenhum replay e `stream.ready` com o maior `id` do usuário. Excluir uma task → `task.deleted` chega e
+  continua no replay depois do cascade. A resposta de `enqueue` traz `lastEventId` igual ao `id` do `task.status_changed` gerado. Teste: desconectar, gerar 5 eventos,
   reconectar com `Last-Event-ID` → recebe exatamente os 5, em ordem, sem duplicatas. Usuário B não recebe eventos do usuário A.
   Mais de 1000 eventos pendentes → `stream.resync_required`. O id BigInt sai como string.
 
@@ -1263,7 +1308,7 @@ repositório bare **local** criado em diretório temporário. Para isso, `GIT_AL
   comando de diagnóstico no FakeRunner e inspeção do `env` montado).
 
 ### Fase 6: Aprovações e perguntas
-- Tabela `agent_approvals`; `canUseTool` → `approval.requested`/`agent.question`; transições `running ⇄ waiting_approval`;
+- Tabela `agent_approvals`; `canUseTool` → `approval.requested`/`agent.question` (ambos com `expiresAt`); transições `running ⇄ waiting_approval`;
   `POST /agents/approvals/:id/respond`; `GET /agents/approvals`; expiração pelo watchdog; presets `safe`, `edits` (com allowlist
   de Bash) e `autonomous` (só ADMIN).
 - **Aceite:** preset `safe` + prompt que exige `npm test` → task em `waiting_approval` com o comando visível. Aprovar → volta a
@@ -1274,7 +1319,7 @@ repositório bare **local** criado em diretório temporário. Para isso, `GIT_AL
 ### Fase 7: Métricas e limite dinâmico
 - `MetricsService` (CPU por diferença de `os.cpus()`, `MemAvailable`/cgroup, árvore de processos por agente); `AdmissionService`
   com a fórmula da seção 5.3 (histerese, cooldown, memória crítica); `GET /agents/system/metrics`, SSE de métricas,
-  `system.pressure`; `queuePosition` e `blockedBy` na task.
+  `system.pressure` (inclusive `level: "normal"` ao normalizar); `queuePosition` e `blockedBy` na task.
 - **Aceite:** testes unitários da fórmula com amostras simuladas (CPU acima do HIGH bloqueia e só libera abaixo do RESUME;
   memória insuficiente reduz o `effectiveLimit`; cooldown respeitado). Com um `MetricsService` falso, uma task fica em `queued`
   com `blockedBy: "cpu_high"` e é admitida quando a CPU simulada cai. O stream de métricas emite no intervalo configurado.
@@ -1310,4 +1355,5 @@ flowchart LR
 ```
 
 As fases 6 e 7 podem ser feitas em paralelo depois da 5 (a 7 só depende da 4). O front pode começar na fase 3, com
-eventos reais e o FakeRunner a partir da 4, sem custo de API.
+eventos reais e o FakeRunner a partir da 4, sem custo de API. O plano do front (seção 11 de `gerenciador-de-agentes-frontend.md`)
+faz primeiro a fatia vertical FE0–FE4 sobre as fases 0–4 daqui, e depois aprovações (fase 6) e recursos (fase 7).
