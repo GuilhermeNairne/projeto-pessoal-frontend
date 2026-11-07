@@ -21,19 +21,21 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { FaPencil } from "react-icons/fa6";
 import { FaWhatsapp, FaSave } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConvertDataToBR } from "@/utils/convert-data-to-BR";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { NotificacaoType, useNotifications } from "@/hooks/useNotifications";
 
 export default function Notificacoes() {
   const { user } = useAuthContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const toast = useToast();
-  const { listNotifications } = useNotifications();
+  const queryClient = useQueryClient();
+  const { listNotifications, getContact, updateContact } = useNotifications();
 
-  const [email, setEmail] = useState(user?.email ?? "");
+  const [email, setEmail] = useState("");
+  const [salvandoContato, setSalvandoContato] = useState(false);
   const [telefone, setTelefone] = useState("");
   const [notificacaoSelecionada, setNotificacaoSelecionada] = useState<
     NotificacaoType | undefined
@@ -45,13 +47,56 @@ export default function Notificacoes() {
     // enabled: !!user?.id,
   });
 
-  function handleSalvarContato() {
-    toast({
-      position: "top",
-      isClosable: true,
-      status: "success",
-      title: "Dados de contato salvos com sucesso!",
-    });
+  const { data: contato } = useQuery({
+    queryKey: ["notificacoes-contato", user?.id],
+    queryFn: getContact,
+    enabled: !!user?.id,
+    refetchOnWindowFocus: false,
+  });
+
+  // Mostra o e-mail de notificação salvo; sem ele, o envio usa o e-mail de login.
+  useEffect(() => {
+    if (contato) setEmail(contato.notificationEmail ?? contato.loginEmail);
+  }, [contato]);
+
+  async function handleSalvarContato() {
+    const novoEmail = email.trim();
+
+    if (novoEmail && !/^\S+@\S+\.\S+$/.test(novoEmail)) {
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "error",
+        title: "Informe um e-mail válido.",
+      });
+      return;
+    }
+
+    try {
+      setSalvandoContato(true);
+      const salvo = await updateContact(novoEmail || null);
+      setEmail(salvo.notificationEmail ?? salvo.loginEmail);
+      queryClient.setQueryData(["notificacoes-contato", user?.id], salvo);
+
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "success",
+        title: "Dados de contato salvos com sucesso!",
+      });
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      toast({
+        position: "top",
+        isClosable: true,
+        status: "error",
+        title: Array.isArray(message)
+          ? message.join(", ")
+          : (message ?? "Erro ao salvar dados de contato!"),
+      });
+    } finally {
+      setSalvandoContato(false);
+    }
   }
 
   // Notificações vindas de tarefa têm isCurrent true enquanto pendentes,
@@ -151,6 +196,7 @@ export default function Notificacoes() {
             <DefaultButton
               icon={FaSave}
               title="Salvar"
+              isLoading={salvandoContato}
               w={{ base: "100%", md: "150px" } as any}
               onClick={handleSalvarContato}
             />

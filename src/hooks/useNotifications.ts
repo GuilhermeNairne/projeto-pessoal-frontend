@@ -23,7 +23,29 @@ type CreateNotificacaoType = {
   method: "EMAIL" | "WHATSAPP" | "BOTH";
 };
 
+export type ContatoNotificacaoType = {
+  notificationEmail: string | null;
+  loginEmail: string;
+};
+
 export function useNotifications() {
+  async function getContact() {
+    const result = await api.get<ContatoNotificacaoType>(
+      "/notifications/contact",
+    );
+
+    return result.data;
+  }
+
+  async function updateContact(notificationEmail: string | null) {
+    const result = await api.put<ContatoNotificacaoType>(
+      "/notifications/contact",
+      { notificationEmail },
+    );
+
+    return result.data;
+  }
+
   async function listNotifications(userId: string) {
     const result = await api.get<NotificacaoType[]>(`/notifications/${userId}`);
 
@@ -52,6 +74,8 @@ export function useNotifications() {
   }
 
   return {
+    getContact,
+    updateContact,
     listNotifications,
     createNotification,
     editNotification,
